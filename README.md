@@ -1,5 +1,8 @@
-# OpenIW4
-An attempt to document and reimplement important functions for IW4MP (159)
+<h1 align="center"> OpenIW4 </h1>
+
+<p align="center">
+  <img width="640" height="320" src="/../assets/logo.png">
+</p>
 
 # Compiling
 Run `generate.bat` if on Windows platform for Visual Studio 2022

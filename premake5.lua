@@ -1,3 +1,5 @@
+require "lua"
+
 workspace "OpenIW4"
 	location "./build/"
 

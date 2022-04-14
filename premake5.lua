@@ -79,7 +79,7 @@ workspace "OpenIW4"
 		forceincludes "stdafx.hpp"
 		
 		links {
-			"DbgHelp",
+			"Winmm",
 		}
 
 		files {

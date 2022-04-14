@@ -2,14 +2,20 @@
 
 #include <utils/memory/memory.hpp>
 
-//THUNK : 0x005C0AB0
+//THUNK : 0x004FF220
 void Com_InitParse()
 {
-	memory::call<void()>(0x005C0AB0)();
+	memory::call<void()>(0x004FF220)();
 }
 
-//THUNK : 0x0056B4B0
-void Com_Frame()
+//THUNK : 0x004B7230
+int Com_Frame()
 {
-	memory::call<void()>(0x0056B4B0)();
+	return memory::call<int()>(0x004B7230)();
+}
+
+//THUNK : 0x004D9640
+void Com_Init(char* src)
+{
+	memory::call<void(char*)>(0x004D9640)(src);
 }

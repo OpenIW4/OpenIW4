@@ -3,4 +3,5 @@
 #include "../stdafx.hpp"
 
 void Com_InitParse();
-void Com_Frame();
+int Com_Frame();
+void Com_Init(char* src);

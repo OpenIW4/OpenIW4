@@ -154,13 +154,37 @@ int Sys_Milliseconds()
 }
 
 //THUNK : 0x004EC730
-int Sys_GetValue(int a1)
+int* Sys_GetValue(int a1)
 {
-    return memory::call<int(int)>(0x004EC730)(a1);
+    return memory::call<int*(int)>(0x004EC730)(a1);
 }
 
 //THUNK : 0x0064D300
 void Sys_getcwd()
 {
     memory::call<void()>(0x0064D300)();
+}
+
+//THUNK : 0x004C37D0
+bool Sys_IsMainThread()
+{
+    return memory::call<bool()>(0x004C37D0)();
+}
+
+//DONE : 0x004FC200
+void Sys_EnterCriticalSection(int a1)
+{
+    EnterCriticalSection((LPCRITICAL_SECTION)(24 * a1 + 0x6499BC8));
+}
+
+//DONE : 0x004FC200
+void Sys_LeaveCriticalSection(int a1)
+{
+    LeaveCriticalSection((LPCRITICAL_SECTION)(24 * a1 + 105487304));
+}
+
+//THUNK : 0x0064CF10
+void Sys_EnumerateHw()
+{
+    memory::call<void()>(0x0064CF10)();
 }

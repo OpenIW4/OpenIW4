@@ -10,12 +10,6 @@
 
 #include <utils/memory/memory.hpp>
 
-//THUNK : 0x0064CF10
-void Sys_EnumerateHw()
-{
-	memory::call<void()>(0x0064CF10)();
-}
-
 //THUNK : 0x0064AE50
 double inlined_2()
 {
@@ -56,7 +50,7 @@ char* va(char* Format, ...)
     va_list ArgList; // [esp+Ch] [ebp+8h] BYREF
 
     va_start(ArgList, Format);
-    Value = Sys_GetValue(1);
+    Value = *Sys_GetValue(1);
     v2 = *(DWORD*)(Value + 2048);
     *(DWORD*)(Value + 2048) = (v2 + 1) % 2;
     v3 = (char*)(Value + (v2 << 10));
@@ -83,8 +77,10 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
     Sys_InitMainThread();
     if (Win_InitLocalization(0))
     {
-        //if (!sub_426080(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (sub_64D200(), sub_411350()))
-        //{
+#ifdef MATCHING
+        if (!sub_426080(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (sub_64D200(), sub_411350()))
+        {
+#endif
             if (!hPrevInstance)
             {
                 Com_InitParse();
@@ -105,15 +101,21 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
                 Cbuf_AddText(0, "readStats\n");
                 Sys_getcwd();
                 SetFocus(*(HWND*)(0x064A3AD0) /*g_wv*/);
+
                 while (1)
                 {
                     if (*(int*)(0x0064A3ADC))
+                    {
                         Sys_Sleep(5u);
+                    }
+
                     Sys_CheckQuitRequest();
                     Com_Frame();
                 }
             }
-        //}
+#ifdef MATCHING
+        }
+#endif
         Win_ShutdownLocalization();
         return 0;
     }
@@ -123,7 +125,7 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
         error_msg = va(
             "Could not load %s.\n\nPlease make sure Modern Warfare 2 is run from the correct folder.",
             LocalizationFilename);
-        MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", 0x10u);
+        MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
 }

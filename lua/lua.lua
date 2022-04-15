@@ -37,7 +37,7 @@ newaction {
 		end
 		
 		--According to IDA
-		totalFuncs = 11937
+		totalFuncs = 11911
 		
 		donePercent = ((totalDone/totalFuncs)*100)
 		thunkPercent = ((totalThunks/totalFuncs)*100)

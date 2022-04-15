@@ -68,6 +68,7 @@ void Session_InitDvars()
     
 }
 
+//DONE : 0x004513D0
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     const char* LocalizationFilename; // eax

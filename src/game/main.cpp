@@ -5,6 +5,8 @@
 #include "Win/Win.hpp"
 #include "Dvar/Dvar.hpp"
 
+#include "defs.hpp"
+
 #include <utils/memory/memory.hpp>
 
 //THUNK : 0x0064CF10
@@ -25,18 +27,10 @@ void InitTiming()
 	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = inlined_2() * 1000.0;
 }
 
-
 //THUNK : 0x004D6F80
 char* __cdecl I_strncpyz(char* Destination, char* Source, int a3)
 {
     return memory::call<char* (char*, char*, int)>(0x004D6F80)(Destination, Source, a3);
-    /*
-    char* result;
-
-    result = strncpy(Destination, Source, a3 - 1);
-    Destination[a3 - 1] = 0;
-    return result;
-    */
 }
 
 //THUNK : 0x00404B20
@@ -120,9 +114,36 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
     }
 }
 
+//Temp fix until further reimp
+static std::uint32_t GetXAssetHandlerSize(XAssetType type)
+{
+    typedef std::uint32_t(__cdecl* DB_GetXAssetSizeHandler_t)();
+    auto DB_GetXAssetSizeHandler = (DB_GetXAssetSizeHandler_t*)0x799488;
+    return DB_GetXAssetSizeHandler[type]();
+}
+
+void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
+{
+    auto DB_XAssetPool = (void**)0x007998A8;
+    auto g_poolSize = (std::uint32_t*)0x007995E8;
+
+    auto size = GetXAssetHandlerSize(type);
+    auto poolEntry = malloc(newSize * size);
+    DB_XAssetPool[type] = poolEntry;
+    g_poolSize[type] = newSize;
+
+    return poolEntry;
+}
+
+void patches()
+{
+    ReallocateAssetPool(XAssetType::ASSET_TYPE_WEAPON, 3000);
+}
+
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	loader::load("iw4mp.exe");  //177
+    patches();
 	memory::replace(0x004513D0, main);
 	return memory::call<int()>(0x006BAC0F)();
 }

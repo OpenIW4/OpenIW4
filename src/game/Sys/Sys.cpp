@@ -1,5 +1,7 @@
 #include "Sys.hpp"
 #include "../Com/Com.hpp"
+#include "../Cbuf/Cbuf.hpp"
+#include "../CL/CL.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -17,9 +19,9 @@ LRESULT Sys_ShowConsole()
 }
 
 //THUNK : 0x004288A0
-ATOM Sys_CreateConsole(HINSTANCE hInstance)
+void Sys_CreateConsole(HINSTANCE hInstance)
 {
-    return memory::call<ATOM(HINSTANCE)>(0x004288A0)(hInstance);
+    memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
 }
 
 //THUNK : 0x0042F0A0
@@ -40,10 +42,41 @@ void Sys_Sleep(DWORD dwMilliseconds)
     Sleep(dwMilliseconds);
 }
 
-//THUNK : 0x0043EBB0
+//THUNK but needs to move!
+//TODO : 0x0064C620
+bool IsServerRunning()
+{
+    return memory::call<bool()>(0x0064C620)();
+}
+
+//DONE : 0x0043EBB0
 void Sys_CheckQuitRequest()
 {
-    memory::call<void()>(0x0043EBB0)();
+    int FirstActiveLocalClient; // eax
+    auto onlinegame = (char*)(0x00B2BB48);
+    auto xblive_privatematch = (char*)(0x0649E714);
+    auto dword_649FF68 = (int*)(0x649FF68);
+
+    if (*(bool*)(0x0649FB61)/*g_quitRequested*/ && Sys_IsMainThread())
+    {
+        if ( onlinegame[16]
+            && !xblive_privatematch[16]
+            && IsServerRunning()
+            && Sys_Milliseconds() - *(int*)(0x0649FF94) < dword_649FF68[4])
+        {
+            if (!*(bool*)(0x0649FB60)/*g_quitMigrationStarted*/)
+            {
+                *(bool*)(0x0649FB60)/*g_quitMigrationStarted*/ = true;
+                FirstActiveLocalClient = CL_GetFirstActiveLocalClient();
+                Cbuf_AddText(FirstActiveLocalClient, "hostmigration_start\n");
+            }
+        }
+        else
+        {
+            *(int*)(0x00A7FE90)/*cls*/ = 1;
+            Cbuf_AddText(0, "quit\n");
+        }
+    }
 }
 
 //THUNK : 0x004C8E30

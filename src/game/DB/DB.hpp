@@ -2,4 +2,5 @@
 
 #include "../stdafx.hpp"
 
-int DB_Update();
+void DB_Update();
+void DB_PostLoadXZone();

@@ -188,3 +188,16 @@ void Sys_EnumerateHw()
 {
     memory::call<void()>(0x0064CF10)();
 }
+
+//DONE : 0x004CA4A0
+bool Sys_IsDatabaseReady()
+{
+    return WaitForSingleObject(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/, 0) == 0;
+}
+
+//DONE : 0x00441280
+bool Sys_IsDatabaseReady2()
+{
+    return WaitForSingleObject(*(HANDLE*)(0x01CDE858)/*databaseCompletedEvent2*/, 0) == 0;
+}
+

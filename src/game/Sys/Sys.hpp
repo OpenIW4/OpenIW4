@@ -20,3 +20,5 @@ bool Sys_IsMainThread();
 void Sys_EnterCriticalSection(int);
 void Sys_LeaveCriticalSection(int);
 void Sys_EnumerateHw();
+bool Sys_IsDatabaseReady();
+bool Sys_IsDatabaseReady2();

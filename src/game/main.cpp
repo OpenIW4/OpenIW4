@@ -5,6 +5,7 @@
 #include "Win/Win.hpp"
 #include "Dvar/Dvar.hpp"
 #include "Cmd/Cmd.hpp"
+#include "DB/DB.hpp"
 
 #include "defs.hpp"
 
@@ -132,19 +133,13 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
 }
 
 //Temp fix until further reimp
-static std::uint32_t GetXAssetHandlerSize(XAssetType type)
-{
-    typedef std::uint32_t(__cdecl* DB_GetXAssetSizeHandler_t)();
-    auto DB_GetXAssetSizeHandler = (DB_GetXAssetSizeHandler_t*)0x799488;
-    return DB_GetXAssetSizeHandler[type]();
-}
 
 void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
 {
     auto DB_XAssetPool = (void**)0x007998A8;
     auto g_poolSize = (std::uint32_t*)0x007995E8;
 
-    auto size = GetXAssetHandlerSize(type);
+    auto size = DB_GetXAssetTypeSize(type);
     auto poolEntry = malloc(newSize * size);
     DB_XAssetPool[type] = poolEntry;
     g_poolSize[type] = newSize;
@@ -160,7 +155,7 @@ void commands()
 void patches()
 {
     Sys_ShowConsole();
-    ReallocateAssetPool(XAssetType::ASSET_TYPE_WEAPON, 3000);
+    ReallocateAssetPool(ASSET_TYPE_WEAPON, 3000);
 }
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)

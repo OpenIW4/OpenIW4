@@ -4,6 +4,7 @@
 #include "Com/Com.hpp"
 #include "Win/Win.hpp"
 #include "Dvar/Dvar.hpp"
+#include "Cmd/Cmd.hpp"
 
 #include "defs.hpp"
 
@@ -39,6 +40,12 @@ int __cdecl Cbuf_AddText(int a1, const char* a2)
     return memory::call<int(int, const char*)>(0x00404B20)(a1, a2);
 }
 
+//THUNK : 0x000x437EB0
+void* Field_Clear(std::uint32_t* a1)
+{
+    return memory::call<void*(std::uint32_t*)>(0x00437EB0)(a1);
+}
+
 //DONE : 0x004785B0
 char* va(char* Format, ...)
 {
@@ -58,6 +65,13 @@ char* va(char* Format, ...)
     if (v4 < 0 || v4 >= 1024)
         //Com_Error(1, (char*)&byte_70924C);
     return v3;
+}
+
+//This function is blank in 177
+//DONE : 0x004BB9B0
+void Session_InitDvars()
+{
+    
 }
 
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -86,7 +100,7 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
                 Sys_RegisterClass();
                 SetErrorMode(1u);
                 Sys_Milliseconds();
-                //Session_InitDvars();
+                Session_InitDvars();
                 Com_Init((char*)(0x0649F760) /*sys_cmdline*/);
                 Cbuf_AddText(0, "readStats\n");
                 Sys_getcwd();
@@ -135,14 +149,23 @@ void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
     return poolEntry;
 }
 
+void commands()
+{
+    *(int*)(0x009FBE24) /*cg_fov*/ = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+}
+
 void patches()
 {
+    Sys_ShowConsole();
     ReallocateAssetPool(XAssetType::ASSET_TYPE_WEAPON, 3000);
 }
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+    ::AllocConsole();
+
 	loader::load("iw4mp.exe");  //177
+    commands();
     patches();
 	memory::replace(0x004513D0, main);
 	return memory::call<int()>(0x006BAC0F)();

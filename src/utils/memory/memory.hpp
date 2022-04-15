@@ -14,4 +14,9 @@ namespace memory
         *reinterpret_cast<std::uint8_t*>(address) = 0xE9;
         *reinterpret_cast<std::uint32_t*>(address + 1) = ((std::uint32_t)function - address - 5);
     }
+
+    template <typename T> inline void xor(std::uint32_t place, T value)
+    {
+        *reinterpret_cast<T*>(place) ^= value;
+    }
 }

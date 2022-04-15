@@ -50,9 +50,19 @@ enum XAssetType : std::uint32_t
 	ASSET_TYPE_ASSETLIST = 0x2C,
 };
 
-struct XZoneInfo
+typedef struct XZoneInfo
 {
 	const char* name;
 	std::uint32_t allocFlags;
 	std::uint32_t unloadFlags;
-};
+} XZoneInfo;
+
+typedef struct cmd_function_s
+{
+	cmd_function_s* next;
+	const char* name;
+	const char* autoCompleteDir;
+	const char* autoCompleteExt;
+	void(__cdecl* function)();
+	int flags;
+} cmd_function_t;

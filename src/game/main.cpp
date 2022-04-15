@@ -5,6 +5,7 @@
 #include "Win/Win.hpp"
 #include "Dvar/Dvar.hpp"
 #include "Cmd/Cmd.hpp"
+#include "Cbuf/Cbuf.hpp"
 #include "DB/DB.hpp"
 
 #include "defs.hpp"
@@ -27,12 +28,6 @@ void InitTiming()
 char* __cdecl I_strncpyz(char* Destination, char* Source, int a3)
 {
     return memory::call<char* (char*, char*, int)>(0x004D6F80)(Destination, Source, a3);
-}
-
-//THUNK : 0x00404B20
-int __cdecl Cbuf_AddText(int a1, const char* a2)
-{
-    return memory::call<int(int, const char*)>(0x00404B20)(a1, a2);
 }
 
 //THUNK : 0x000x437EB0

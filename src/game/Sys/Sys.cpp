@@ -234,3 +234,9 @@ bool Sys_IsDatabaseReady2()
     return WaitForSingleObject(*(HANDLE*)(0x01CDE858)/*databaseCompletedEvent2*/, 0) == 0;
 }
 
+//THUNK : 0x0043D570
+void Sys_Error(char* Format, ...)
+{
+    va_list args;
+    memory::call<void(char*, va_list)>(0x0043D570)(Format, args);
+}

@@ -1,4 +1,5 @@
 #include "Com.hpp"
+#include "../main.hpp"
 #include "../Sys/Sys.hpp"
 #include "../Render/Render.hpp"
 #include "../DB/DB.hpp"
@@ -59,7 +60,24 @@ void Com_Frame()
 //THUNK : 0x004D9640
 void Com_Init(char* src)
 {
-	memory::call<void(char*)>(0x004D9640)(src);
+    int* Value; // eax
+    char* v2; // eax
+
+    Value = Sys_GetValue(2);
+    if (_setjmp(Value))
+    {
+        v2 = va("Error during initialization:\n%s\n", (char*)(0x01AD7EC0)/*com_errorMessage*/);
+        Sys_Error(v2);
+    }
+    Com_Init_Cont();
+    Com_AddStartupCommands();
+    Com_StartHunkUsers();
+}
+
+//THUNK : 0x0060BAE0
+void Com_Init_Cont()
+{
+    memory::call<void()>(0x0060BAE0)();
 }
 
 //THUNK : 0x0047DCA0
@@ -90,4 +108,10 @@ int Com_ErrorCleanup()
 int Com_StartHunkUsers()
 {
     return memory::call<int()>(0x0060BF40)();
+}
+
+//THUNK : 0x0060C3D0
+void Com_AddStartupCommands()
+{
+    memory::call<void()>(0x0060C3D0)();
 }

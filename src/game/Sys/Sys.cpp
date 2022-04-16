@@ -67,7 +67,7 @@ void Sys_CheckQuitRequest()
             if (!*(bool*)(0x0649FB60)/*g_quitMigrationStarted*/)
             {
                 *(bool*)(0x0649FB60)/*g_quitMigrationStarted*/ = true;
-                FirstActiveLocalClient = CL_GetFirstActiveLocalClient();
+                FirstActiveLocalClient = CL_ControllerIndexFromClientNum();
                 Cbuf_AddText(FirstActiveLocalClient, "hostmigration_start\n");
             }
         }
@@ -239,4 +239,10 @@ void Sys_Error(char* Format, ...)
 {
     va_list args;
     memory::call<void(char*, va_list)>(0x0043D570)(Format, args);
+}
+
+//DONE : 0x004F5250
+bool Sys_ReleaseThreadOwnership()
+{
+    return SetEvent(*(HANDLE*)(0x01CDE704) /*noThreadOwnershipEvent*/);
 }

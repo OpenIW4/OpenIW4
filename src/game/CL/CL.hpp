@@ -2,4 +2,4 @@
 
 #include "../stdafx.hpp"
 
-int CL_GetFirstActiveLocalClient();
+int CL_ControllerIndexFromClientNum();

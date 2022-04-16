@@ -53,7 +53,9 @@ char* va(char* Format, ...)
     v4 = _vsnprintf(v3, 0x400u, Format, ArgList);
     v3[1023] = 0;
     if (v4 < 0 || v4 >= 1024)
-        //Com_Error(1, (char*)&byte_70924C);
+    {
+        //Com_Error(ERR_DROP, (char*)&byte_70924C);
+    }
     return v3;
 }
 

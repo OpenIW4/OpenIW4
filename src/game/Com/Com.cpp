@@ -6,10 +6,51 @@
 
 #include <utils/memory/memory.hpp>
 
-//THUNK : 0x004FF220
+// None of these do anything to my knowledge
+// but for sake of completion they are here
+//DONE : 0x004FF220
 void Com_InitParse()
 {
-	memory::call<void()>(0x004FF220)();
+    *(int*)(0x06466A28) = 1;
+    *(bool*)(0x06466A2C) = 0;
+    *(bool*)(0x06466A2D) = 1;
+    *(bool*)(0x06466A2E) = 0;
+    *(bool*)(0x06466A2F) = 0;
+    *(bool*)(0x06466A30) = 0;
+    *(int*)(0x06466A34) = 0;
+    *(int*)(0x06466A38) = 0;
+    *(int*)(0x06466A3C) = 0;
+    *(int*)(0x06466A40) = 0;
+    *(int*)(0x0646B034) = 1;
+    *(bool*)(0x0646B038) = 0;
+    *(bool*)(0x0646B039) = 1;
+    *(bool*)(0x0646B03A) = 0;
+    *(bool*)(0x0646B03B) = 0;
+    *(bool*)(0x0646B03C) = 0;
+    *(int*)(0x0646B040) = 0;
+    *(int*)(0x0646B044) = 0;
+    *(int*)(0x0646B048) = 0;
+    *(int*)(0x0646B04C) = 0;
+    *(int*)(0x0646F640) = 1;
+    *(bool*)(0x0646F644) = 0;
+    *(bool*)(0x0646F645) = 1;
+    *(bool*)(0x0646F646) = 0;
+    *(bool*)(0x0646F647) = 0;
+    *(bool*)(0x0646F648) = 0;
+    *(int*)(0x0646F64C) = 0;
+    *(int*)(0x0646F650) = 0;
+    *(int*)(0x0646F654) = 0;
+    *(int*)(0x0646F658) = 0;
+    *(int*)(0x06473C4C) = 1;
+    *(bool*)(0x06473C50) = 0;
+    *(bool*)(0x06473C51) = 1;
+    *(bool*)(0x06473C52) = 0;
+    *(bool*)(0x06473C53) = 0;
+    *(bool*)(0x06473C54) = 0;
+    *(int*)(0x06473C58) = 0;
+    *(int*)(0x06473C5C) = 0;
+    *(int*)(0x06473C60) = 0;
+    *(int*)(0x06473C64) = 0;
 }
 
 //DONE : 0x004B7230
@@ -46,7 +87,7 @@ void Com_Frame()
 
         if (Sys_IsMainThread())
         {
-            Com_LeaveError();
+            R_PushRemoteScreenUpdate(*(int*)(0x001AD8F2C));
         }
 
         if (v1)
@@ -57,7 +98,7 @@ void Com_Frame()
     }
 }
 
-//THUNK : 0x004D9640
+//DONE : 0x004D9640
 void Com_Init(char* src)
 {
     int* Value; // eax
@@ -86,16 +127,20 @@ void Com_Frame_Try_Block_Function()
     memory::call<void()>(0x0047DCA0)();
 }
 
-//THUNK : 0x005091E0
+//DONE : 0x005091E0
 bool Com_EnterError()
 {
-    return memory::call<bool()>(0x005091E0)();
-}
+    bool result; // eax
 
-//THUNK : 0x0050B070
-int Com_LeaveError()
-{
-    return memory::call<int()>(0x0050B070)();
+    if (*(bool*)(0x066DAD5D))
+    {
+        if (*(int*)(0x066DAD5C) /*r_glob_0*/)
+        {
+            result = Sys_ReleaseThreadOwnership();
+            *(int*)(0x066DAD5C) /*r_glob_0*/ = 0;
+        }
+    }
+    return result;
 }
 
 //THUNK : 0x0060BFD0

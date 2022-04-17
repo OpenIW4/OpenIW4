@@ -149,6 +149,11 @@ void commands()
     *(int*)(0x009FBE24) /*cg_fov*/ = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
 }
 
+void replace_funcs()
+{
+    memory::replace(0x004513D0, main);
+}
+
 void patches()
 {
     Sys_ShowConsole();
@@ -162,6 +167,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	loader::load("iw4mp.exe");  //177
     commands();
     patches();
-	memory::replace(0x004513D0, main);
+    replace_funcs();
 	return memory::call<int()>(0x006BAC0F)();
 }

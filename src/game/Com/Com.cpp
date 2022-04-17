@@ -160,3 +160,15 @@ void Com_AddStartupCommands()
 {
     memory::call<void()>(0x0060C3D0)();
 }
+
+//THUNK : 0x402500
+void Com_Printf(std::uint32_t channel, char* Format, ...)
+{
+    char Buffer[4096];
+    va_list ArgList;
+
+    va_start(ArgList, Format);
+    _vsnprintf(Buffer, 0x1000u, Format, ArgList);
+    Buffer[4095] = 0;
+    memory::call<void(std::uint32_t, char[], char*)>(0x4AA830)(channel, Buffer, Format);
+}

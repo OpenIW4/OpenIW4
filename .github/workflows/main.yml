@@ -1,7 +1,4 @@
-- name: Setup premake
-  # You may pin to the exact commit or the version.
-  # uses: abel0b/setup-premake@1e2c760b41abce778e60f3ef9702849d812dc2ed
-  uses: abel0b/setup-premake@v2
-  with:
-    # Premake version
-    version: 
+name: Setup premake
+uses: abel0b/setup-premake@v2
+with:
+  version: "5.0.0-beta1"

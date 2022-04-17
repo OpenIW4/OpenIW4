@@ -7,6 +7,7 @@
 #include "Cmd/Cmd.hpp"
 #include "Cbuf/Cbuf.hpp"
 #include "DB/DB.hpp"
+#include "LSP/LSP.hpp"
 
 #include "defs.hpp"
 
@@ -152,6 +153,7 @@ void commands()
 void replace_funcs()
 {
     memory::replace(0x004513D0, main);
+    memory::replace(0x48A9D0, LSP_Init);
 }
 
 void patches()

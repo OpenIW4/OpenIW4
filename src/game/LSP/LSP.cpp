@@ -17,7 +17,7 @@ void LSP_Init()
 }
 
 //DONE : 0x4EC640
-char LSP_Connected()
+bool LSP_Connected()
 {
-	return *(char*)0x66C7638; //lsp_connected
+	return *(bool*)0x66C7638; //lsp_connected
 }

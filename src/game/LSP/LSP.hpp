@@ -4,4 +4,4 @@
 #include "game/Dvar/Dvar.hpp"
 
 void LSP_Init();
-char LSP_Connected();
+bool LSP_Connected();

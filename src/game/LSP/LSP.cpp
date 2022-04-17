@@ -1,4 +1,5 @@
 #include "LSP.hpp"
+#include "../Dvar/Dvar.hpp"
 
 #include <utils/memory/memory.hpp>
 

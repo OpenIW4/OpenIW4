@@ -15,3 +15,9 @@ void LSP_Init()
 	*(std::uint32_t*)0x66C714c = 4; //g_iwnetLoggingServerAddr
 
 }
+
+//DONE : 0x4EC640
+char LSP_Connected()
+{
+	return *(char*)0x66C7638; //lsp_connected
+}

@@ -154,6 +154,7 @@ void replace_funcs()
 {
     memory::replace(0x004513D0, main);
     memory::replace(0x48A9D0, LSP_Init);
+    memory::replace(0x4EC640, LSP_Connected);
 }
 
 void patches()

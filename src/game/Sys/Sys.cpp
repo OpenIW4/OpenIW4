@@ -254,13 +254,13 @@ bool Sys_DatabaseCompleted()
     *(DWORD*)0x1CDE84C = 1; //dword_1CDE84C
     Sys_LeaveCriticalSection(12);
 
-    auto result = *(HANDLE*)0x1CDE85C; //dword_1CDE85C
+    HANDLE result = *(HANDLE*)0x1CDE85C; //dword_1CDE85C
 
     if(result)
     {
         WaitForSingleObject(result, INFINITE);
     }
 
-    auto event = *(HANDLE*)0x1CDE7F8; //dword_1CDE7F8
+    HANDLE event = *(HANDLE*)0x1CDE7F8; //dword_1CDE7F8
     return SetEvent(event);
 }

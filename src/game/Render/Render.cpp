@@ -53,11 +53,10 @@ void R_EndRemoteScreenUpdate()
 bool R_PushRemoteScreenUpdate(std::int32_t a1)
 {
     int i; // edi
-    bool IsMainThread; // al
+    bool IsMainThread = Sys_IsMainThread(); // al
 
     for (i = a1; i; --i)
     {
-        IsMainThread = Sys_IsMainThread();
         if (IsMainThread)
         {
             if (*(bool*)(0x066DAD5D))

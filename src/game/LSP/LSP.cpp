@@ -1,5 +1,6 @@
 #include "LSP.hpp"
 #include "../Dvar/Dvar.hpp"
+#include "../IWNet/IWNet.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -21,4 +22,18 @@ void LSP_Init()
 bool LSP_Connected()
 {
 	return *(bool*)0x66C7638; //lsp_connected
+}
+
+//DONE : 0x004664A0
+bool LSP_FindTitleServers()
+{
+	bool result = IWNet_DNSResolved();
+	*(bool*)0x4664A5 = result; //lsp_connected
+	return result;
+}
+
+//DONE : 0x005A95F0
+bool LSP_FindTitleServers_f()
+{
+	return LSP_FindTitleServers();
 }

@@ -246,3 +246,21 @@ bool Sys_ReleaseThreadOwnership()
 {
     return SetEvent(*(HANDLE*)(0x01CDE704) /*noThreadOwnershipEvent*/);
 }
+
+//DONE : 0x004C3650
+BOOL Sys_DatabaseCompleted()
+{
+    Sys_EnterCriticalSection(12);
+    *(DWORD*)0x1CDE84C = 1; //dword_1CDE84C
+    Sys_LeaveCriticalSection(12);
+
+    auto result = *(HANDLE*)0x1CDE85C; //dword_1CDE85C
+
+    if(result)
+    {
+        WaitForSingleObject(result, INFINITE);
+    }
+
+    auto event = *(HANDLE*)0x1CDE7F8; //dword_1CDE7F8
+    return SetEvent(event);
+}

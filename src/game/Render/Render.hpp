@@ -4,4 +4,4 @@
 
 int R_PopRemoteScreenUpdate();
 void R_EndRemoteScreenUpdate();
-bool R_PushRemoteScreenUpdate(int a1);
+bool R_PushRemoteScreenUpdate();

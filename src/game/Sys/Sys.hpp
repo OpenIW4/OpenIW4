@@ -24,4 +24,4 @@ bool Sys_IsDatabaseReady();
 bool Sys_IsDatabaseReady2();
 void Sys_Error(char* Format, ...);
 bool Sys_ReleaseThreadOwnership();
-BOOL Sys_DatabaseCompleted();
+bool Sys_DatabaseCompleted();

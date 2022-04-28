@@ -248,7 +248,7 @@ bool Sys_ReleaseThreadOwnership()
 }
 
 //DONE : 0x004C3650
-BOOL Sys_DatabaseCompleted()
+bool Sys_DatabaseCompleted()
 {
     Sys_EnterCriticalSection(12);
     *(DWORD*)0x1CDE84C = 1; //dword_1CDE84C

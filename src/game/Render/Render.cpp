@@ -50,7 +50,7 @@ void R_EndRemoteScreenUpdate()
 }
 
 //DONE : 0x0050B070
-bool R_PushRemoteScreenUpdate()
+bool R_PushRemoteScreenUpdate(std::int32_t a1)
 {
     int i; // edi
     bool IsMainThread; // al

@@ -172,3 +172,14 @@ void Com_Printf(std::uint32_t channel, char* Format, ...)
     Buffer[4095] = 0;
     memory::call<void(std::uint32_t, char[], char*)>(0x4AA830)(channel, Buffer, Format);
 }
+
+//DONE : 0x00413DE0
+std::int32_t Com_sprintf(char* Buffer, size_t BufferCount, char* Format, ...)
+{
+    va_list ArgList;
+
+    va_start(ArgList, Format);
+    std::int32_t result = _vsnprintf(Buffer, BufferCount, Format, ArgList);
+    Buffer[BufferCount - 1] = 0;
+    return result;
+}

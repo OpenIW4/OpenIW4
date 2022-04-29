@@ -25,3 +25,5 @@ bool Sys_IsDatabaseReady2();
 void Sys_Error(char* Format, ...);
 bool Sys_ReleaseThreadOwnership();
 bool Sys_DatabaseCompleted();
+LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
+LRESULT __stdcall sub_470190(HWND hWnd, std::uint32_t msg, WPARAM wParam, LPARAM lParam);

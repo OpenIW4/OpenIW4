@@ -5,6 +5,8 @@
 
 #include <utils/memory/memory.hpp>
 
+#define COPY_ID			1 // might be logo
+
 #define EDIT_ID			100
 #define INPUT_ID		101
 
@@ -95,23 +97,22 @@ void Sys_CreateConsole(HINSTANCE hInstance)
         CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_MODERN | FIXED_PITCH, "Courier New");
 
     ReleaseDC(*(HWND*)0x64A3288 /*s_wcd.hWnd*/, hDC);
-    logo = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 16);
+    logo = LoadImage(hInstance, "openiw4-logo.bmp", 0, 0, 0, 16);
 
     if (logo)
     {
-        *(std::int32_t*)0x64A3290 = (std::int32_t)CreateWindowEx(
-            0,
-            "Static",
-            0,
-            0x5000000E,
+        *(HWND*)0x64A3290 = CreateWindow(
+            "static",
+            NULL,
+            WS_CHILD | WS_VISIBLE | SS_SUNKEN,
             5,
             5,
             0,
             0,
-            *(HWND*)0x64A3288,
-            (HMENU)1,
+            *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
+            (HMENU)COPY_ID,
             hInstance,
-            0);
+            NULL);
 
         SendMessage(*(HWND*)0x64A3290, 370, 0, (LPARAM)logo);
     }
@@ -150,10 +151,10 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     *(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndProc*/ = (WNDPROC)SetWindowLong(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, GWL_WNDPROC, (long)InputLineWndProc);
     SendMessage(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, WM_SETFONT, *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/, 0);
     
-    SetFocus(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
-    memory::call<void* (void*, int)>(0x4AFB80)(v13, 0x4000);
-    memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, String);
-    SetWindowTextA(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, (LPCSTR)String);
+    ShowWindow(*(HWND*)0x64A3288, SW_SHOWDEFAULT);
+    UpdateWindow(*(HWND*)0x64A3288);
+    SetForegroundWindow(*(HWND*)0x64A3288);
+    SetFocus(*(HWND*)0x64A3298);
 }
 
 //DONE : 0x0064DC50

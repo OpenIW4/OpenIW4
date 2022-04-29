@@ -174,7 +174,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 {
     ::AllocConsole();
 
-    loader::load("iw4mp.exe");  //177
+    loader::load("iw4mp.exe"); //177
     commands();
     patches();
     replace_funcs();

@@ -46,8 +46,8 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(hInstance, (LPCSTR)1);
-    wc.hCursor = LoadCursor(0, (LPCSTR)0x7F00);
+    wc.hIcon = LoadIcon(hInstance, (LPCSTR)1); // this may fail
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)5;
     wc.lpszMenuName = 0;
     wc.lpszClassName = DEDCLASS;
@@ -157,37 +157,32 @@ void Sys_CreateConsole(HINSTANCE hInstance)
 }
 
 //DONE : 0x0064DC50
-LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
+LONG WINAPI __stdcall ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    std::uint32_t v4 = msg;
-
     switch (msg)
     {
-        case 5:
-            SetWindowPos(*(HWND*)0x64A328C, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
-            SetWindowPos(*(HWND*)0x64A3298, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
-            *(std::uint16_t*)0x64A389C = (std::uint16_t)lParam;
-            *(long*)0x64A38A0 = HIWORD(lParam);
-            v4 = msg;
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
-        case 6:
-            if (wParam)
+        case WM_SIZE: // 5
+            SetWindowPos(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
+            SetWindowPos(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
+            *(int*)0x64A389C /*s_wcd.windowWidth*/ = (std::uint16_t)lParam;
+            *(int*)0x64A38A0 /*s_wcd.windowHeight*/ = HIWORD(lParam);
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
+        case WM_ACTIVATE: // 6
+            if (LOWORD(wParam) != WA_INACTIVE)
             {
-                SetFocus(*(HWND*)0x64A3298);
+                SetFocus(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
             }
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
-        case 16:
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
+        case WM_CLOSE: // 16
             PostQuitMessage(0);
             return 0;
-
         default:
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
     }
 }
 
 //TODO : 0x00470190
-// compared to quake https://github.com/id-Software/Quake-III-Arena/blob/master/code/win32/win_syscon.c#L260
-LRESULT __stdcall InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LONG WINAPI InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     char inputBuffer[1024];
     char buffer[1024];
@@ -200,17 +195,20 @@ LRESULT __stdcall InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
                 SetFocus(hWnd);
                 return 0;
             }
+            break;
         case WM_CHAR: // 258
             if (wParam == 13)
             {
-                GetWindowTextA(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, inputBuffer, sizeof(inputBuffer));
+                GetWindowText(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, inputBuffer, sizeof(inputBuffer));
                 strncat((char*)0x64A349C /*s_wcd.consoleText*/, inputBuffer, 507 - strlen((const char*)0x64A349C /*s_wcd.consoleText*/));
                 *(WORD*)((char*)0x64A349C /*s_wcd.consoleText*/ + strlen(*(const char**)0x64A349C) /*s_wcd.consoleText*/) = 10;
                 SetWindowText(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, *(LPCSTR*)0x6FAC0D);
                 Com_sprintf(buffer, 1024, "]%s\n", inputBuffer);
                 memory::call<void(char*)>(0x4914B0)(buffer);
             }
-        break;
+            break;
+        default:
+            break;
     }
 
     return CallWindowProcA(*(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndPro*/, hWnd, msg, wParam, lParam);

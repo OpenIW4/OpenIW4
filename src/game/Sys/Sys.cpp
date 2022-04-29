@@ -152,10 +152,10 @@ LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPa
     switch (msg)
     {
         case 5:
-            SetWindowPos(*(HWND*)0x64A328C, 0, 5, 70, (std::uint16_t)lParam -15, lParam - 100, 0);
-            SetWindowPos(*(HWND*)0x64A3298, 0, 5, lParam - 100 + 78, (std::uint16_t)lParam - 15, 20, 0);
-            *(std::uint16_t*)0x64A389C = lParam;
-            *(long*)0x64A38A0 = lParam;
+            SetWindowPos(*(HWND*)0x64A328C, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
+            SetWindowPos(*(HWND*)0x64A3298, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
+            *(std::uint16_t*)0x64A389C = (std::uint16_t)lParam;
+            *(long*)0x64A38A0 = HIWORD(lParam);
             v4 = msg;
             return DefWindowProcA(hWnd, v4, wParam, lParam);
         case 6:

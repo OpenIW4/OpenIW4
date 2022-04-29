@@ -5,6 +5,9 @@
 
 #include <utils/memory/memory.hpp>
 
+#define EDIT_ID			100
+#define INPUT_ID		101
+
 //DONE : 0x004305E0
 void Sys_ShowConsole()
 {
@@ -23,127 +26,136 @@ void Sys_ShowConsole()
 //DONE : 0x004288A0
 void Sys_CreateConsole(HINSTANCE hInstance)
 {
-    memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
-    
-    /*HWND DesktopWindow;
-    HDC DC;
-    HWND v3;
-    HWND Window;
+    // memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
+
+    HDC hDC;
     HDC v5;
     std::int32_t v6, v7;
     HANDLE ImageA;
-    tagRECT Rect;
-    WNDCLASSA WndClass;
-    std::int32_t DeviceCaps;
-    std::int32_t v12;
-    std::int8_t v13[16384];
+    RECT rect;
+    WNDCLASS wc;
+
+    int nHeight;
+    int swidth, sheight;
+
     std::int8_t String[16384];
 
-    WndClass.style = 0;
-    WndClass.lpfnWndProc = ConsoleWndProc;
-    WndClass.cbClsExtra = 0;
-    WndClass.cbWndExtra = 0;
-    WndClass.hInstance = hInstance;
-    WndClass.hIcon = LoadIconA(hInstance, (LPCSTR)1);
-    WndClass.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
-    WndClass.hbrBackground = (HBRUSH)5;
-    WndClass.lpszMenuName = 0;
-    WndClass.lpszClassName = "OpenIW4 WinConsole";
+    const char* DEDCLASS = "OpenIW4 WinConsole";
+    int DEDSTYLE = WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX;
 
-    if (RegisterClassA(&WndClass))
+    wc.style = 0;
+    wc.lpfnWndProc = ConsoleWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = LoadIcon(hInstance, (LPCSTR)1);
+    wc.hCursor = LoadCursor(0, (LPCSTR)0x7F00);
+    wc.hbrBackground = (HBRUSH)5;
+    wc.lpszMenuName = 0;
+    wc.lpszClassName = DEDCLASS;
+
+    if (!RegisterClassA(&WndClass))
+        return;
+
+    rect.left = 0;
+    rect.right = 620;
+    rect.top = 0;
+    rect.bottom = 450;
+    AdjustWindowRect(&rect, DEDSTYLE, FALSE);
+
+    hDC = GetDC(GetDesktopWindow());
+    swidth = GetDeviceCaps(hDC, HORZRES);
+    sheight = GetDeviceCaps(hDC, VERTRES);
+    ReleaseDC(GetDesktopWindow(), hDC);
+
+    *(int*)0x64A389C /*s_wcd.windowWidth*/ = rect.right - rect.left + 1;
+    *(int*)0x64A38A0 /*s_wcd.windowHeight*/ = rect.bottom - rect.top + 1;
+
+    *(HWND*)0x64A3288 /*s_wcd.hWnd*/ = CreateWindowEx(
+        0,
+        DEDCLASS,
+        "OpenIW4 Console",
+        DEDSTYLE,
+        (swidth - 600) / 2,
+        (sheight - 450) / 2,
+        rect.right - rect.left + 1,
+        rect.bottom - rect.top + 1,
+        NULL,
+        NULL,
+        hInstance,
+        NULL);
+
+    if (*(HWND*)0x64A3288 /*s_wcd.hWnd*/ == NULL)
+        return;
+    
+    // create fonts
+    hDC = GetDC(*(HWND*)0x64A3288);
+    nHeight = -MulDiv(8, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+
+    *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/ = (WPARAM)CreateFont(nHeight, 
+        0, 0, 0, FW_LIGHT, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
+        CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_MODERN | FIXED_PITCH, "Courier New");
+
+    ReleaseDC(*(HWND*)0x64A3288 /*s_wcd.hWnd*/, hDC);
+    logo = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 16);
+
+    if (logo)
     {
-        Rect.left = 0;
-        Rect.right = 620;
-        Rect.top = 0;
-        Rect.bottom = 450;
-        AdjustWindowRect(&Rect, 0x80CA0000, 0);
-        DesktopWindow = GetDesktopWindow();
-        DC = GetDC(DesktopWindow);
-        DeviceCaps = GetDeviceCaps(DC, 8);
-        v12 = GetDeviceCaps(DC, 10);
-        v3 = GetDesktopWindow();
-        ReleaseDC(v3, DC);
-        *(std::uint16_t*)0x64A389C = Rect.right - Rect.left + 1;
-        *(long*)0x64A38A0 = Rect.bottom - Rect.top + 1;
-        Window = CreateWindowExA(
+        *(std::int32_t*)0x64A3290 = (std::int32_t)CreateWindowEx(
             0,
-            "OpenIW4 WinConsole",
-            "OpenIW4 Console",
-            0x80CA0000,
-            (DeviceCaps - 600) / 2,
-            (v12 - 450) / 2,
-            Rect.right - Rect.left + 1,
-            Rect.bottom - Rect.top + 1,
+            "Static",
+            0,
+            0x5000000E,
+            5,
+            5,
             0,
             0,
+            *(HWND*)0x64A3288,
+            (HMENU)1,
             hInstance,
             0);
-        *(HWND*)0x64A3288 = Window;
-        if (Window)
-        {
-            v5 = GetDC(Window);
-            v6 = GetDeviceCaps(v5, 90);
-            v7 = MulDiv(8, v6, 72);
-            *(WPARAM*)0x64A3294 = (WPARAM)CreateFontA(-v7, 0, 0, 0, 300, 0, 0, 0, 1, 0, 0, 0, 49, "Courier New");
-            ReleaseDC(*(HWND*)0x64A3288, v5);
-            ImageA = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 16);
 
-            if (ImageA)
-            {
-                *(std::int32_t*)0x64A3290 = (std::int32_t)CreateWindowExA(
-                    0,
-                    "Static",
-                    0,
-                    0x5000000E,
-                    5,
-                    5,
-                    0,
-                    0,
-                    *(HWND*)0x64A3288,
-                    (HMENU)1,
-                    hInstance,
-                    0);
+        SendMessage(*(HWND*)0x64A3290, 370, 0, (LPARAM)logo);
+    }
 
-                SendMessageA(*(HWND*)0x64A3290, 370, 0, (LPARAM)ImageA);
-            }
+    // create the input line
+    *(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/ = CreateWindow(
+        "edit",
+        NULL,
+        WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT | ES_AUTOHSCROLL,
+        6,
+        400,
+        608,
+        20,
+        *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
+        (HMENU)INPUT_ID,
+        hInstance,
+        NULL);
 
-            *(HWND*)0x64A3298 = CreateWindowExA(
-                0,
-                "edit",
-                0,
-                0x50800080,
-                6,
-                400,
-                608,
-                20,
-                *(HWND*)0x64A3288,
-                (HMENU)101,
-                hInstance,
-                0);
+    // create the scrollbuffer
+    *(HWND*)0x64A328C /*s_wcd.hwndBuffer*/ = CreateWindow(
+        "edit",
+        NULL,
+        WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | 
+			ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+        6,
+        70,
+        606,
+        324,
+        *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
+        (HMENU)EDIT_ID,
+        hInstance,
+        NULL);
 
-            *(HWND*)0x64A328C = CreateWindowExA(
-                0,
-                "edit",
-                0,
-                0x50A00844,
-                6,
-                70,
-                606,
-                324,
-                *(HWND*)0x64A3288,
-                (HMENU)100,
-                hInstance,
-                0);
-
-            SendMessageA(*(HWND*)0x64A328C, 0x30, *(WPARAM*)0x64A3294, 0);
-            *(WNDPROC*)0x64A38A4 = (WNDPROC)SetWindowLongA(*(HWND*)0x64A3298, -4, (LONG)sub_470190);
-            SendMessageA(*(HWND*)0x64A3298, 0x30, *(WPARAM*)0x64A3294, 0);
-            SetFocus(*(HWND*)0x64A3298);
-            memory::call<void* (void*, int)>(0x4AFB80)(v13, 0x4000);
-            memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, String);
-            SetWindowTextA(*(HWND*)0x64A328C, (LPCSTR)String);
-        }
-    }*/
+    SendMessage(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, WM_SETFONT, *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/, 0);
+    
+    *(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndProc*/ = (WNDPROC)SetWindowLong(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, GWL_WNDPROC, (long)InputLineWndProc);
+    SendMessage(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, WM_SETFONT, *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/, 0);
+    
+    SetFocus(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
+    memory::call<void* (void*, int)>(0x4AFB80)(v13, 0x4000);
+    memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, String);
+    SetWindowTextA(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, (LPCSTR)String);
 }
 
 //DONE : 0x0064DC50

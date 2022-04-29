@@ -68,7 +68,7 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
     {
         GetWindowTextA(*(HWND*)0x64A3298, string, 1024);
         strncat((char*)0x64A349C, string, 507 - strlen((const char*)0x64A349C));
-        *(WORD*)((char*)0x64A349C + strlen((const char*)0x64A349C)) = 10;
+        *(size_t*)((char*)0x64A349C + strlen((const char*)0x64A349C)) = 10;
         SetWindowTextA(*(HWND*)0x64A3298, *(LPCSTR*)0x6FAC0D);
         Com_sprintf(buffer, 1024, "]%s\n", string);
         memory::call<void(char*)>(0x4914B0)(buffer);

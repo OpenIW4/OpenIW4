@@ -158,7 +158,7 @@ void replace_funcs()
     //memory::replace(0x4288A0, Sys_CreateConsole); //bad implementation
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x4513D0, main);
-    //memory::replace(0x470190, sub_470190); //bad implementation
+    memory::replace(0x470190, sub_470190); //semi-working
     memory::replace(0x48A9D0, LSP_Init);
     memory::replace(0x4EC640, LSP_Connected);
     memory::replace(0x64DC50, ConsoleWndProc);

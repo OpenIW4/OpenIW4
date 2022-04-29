@@ -22,8 +22,8 @@ LRESULT Sys_ShowConsole()
 void Sys_CreateConsole(HINSTANCE hInstance)
 {
     memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
-    /*
-    HWND DesktopWindow;
+    
+    /*HWND DesktopWindow;
     HDC DC;
     HWND v3;
     HWND Window;
@@ -138,7 +138,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
             SendMessageA(*(HWND*)0x64A3298, 0x30, *(WPARAM*)0x64A3294, 0);
             SetFocus(*(HWND*)0x64A3298);
             memory::call<void* (void*, int)>(0x4AFB80)(v13, 0x4000);
-            memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, nullptr);
+            memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, String);
             SetWindowTextA(*(HWND*)0x64A328C, (LPCSTR)String);
         }
     }*/
@@ -174,10 +174,10 @@ LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPa
 }
 
 //TODO : 0x00470190
-LRESULT __stdcall sub_470190(HWND hWnd, std::uint32_t msg, WPARAM wParam, LPARAM lParam)
+LRESULT __stdcall sub_470190(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    char String[1024];
-    char Buffer[1024];
+    CHAR string[1024];
+    char buffer[1024];
 
     if (msg == 8)
     {
@@ -187,15 +187,14 @@ LRESULT __stdcall sub_470190(HWND hWnd, std::uint32_t msg, WPARAM wParam, LPARAM
             return 0;
         }
     }
-    else if(msg = 258 && wParam == 13)
+    else if (msg == 258 && wParam == 13)
     {
-        char unknown = *(char*)0x64A349C;
-        GetWindowTextA(*(HWND*)0x64A3298, String, 1024);
-        strncat(&unknown, String, 507 - strlen(&unknown));
-        *(std::uint16_t*)(&unknown + strlen(&unknown)) = 10;
+        GetWindowTextA(*(HWND*)0x64A3298, string, 1024);
+        strncat((char*)0x64A349C, string, 507 - strlen((const char*)0x64A349C));
+        *(WORD*)((char*)0x64A349C + strlen(*(const char**)0x64A349C)) = 10;
         SetWindowTextA(*(HWND*)0x64A3298, *(LPCSTR*)0x6FAC0D);
-        Com_sprintf(Buffer, 0x400, "]%s\n", String);
-        memory::call<std::int32_t(char*)>(0x4914B0)(Buffer);
+        Com_sprintf(buffer, 1024, "]%s\n", string);
+        memory::call<void(char*)>(0x4914B0)(buffer);
         return 0;
     }
 

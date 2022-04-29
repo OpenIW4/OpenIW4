@@ -155,10 +155,10 @@ void replace_funcs()
     //this needs to be refactored
     //so they load in address order
     memory::replace(0x413DE0, Com_sprintf);
-    //memory::replace(0x4288A0, Sys_CreateConsole); //bad implementation
+    memory::replace(0x4288A0, Sys_CreateConsole); //bad implementation
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x4513D0, main);
-    memory::replace(0x470190, sub_470190); //semi-working
+    memory::replace(0x470190, InputLineWndProc); //semi-working
     memory::replace(0x48A9D0, LSP_Init);
     memory::replace(0x4EC640, LSP_Connected);
     memory::replace(0x64DC50, ConsoleWndProc);
@@ -174,7 +174,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 {
     ::AllocConsole();
 
-    loader::load("iw4mp.exe");  //177
+    loader::load("iw4mp.exe"); //177
     commands();
     patches();
     replace_funcs();

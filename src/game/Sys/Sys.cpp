@@ -5,11 +5,6 @@
 
 #include <utils/memory/memory.hpp>
 
-#define COPY_ID			1 // might be logo
-
-#define EDIT_ID			100
-#define INPUT_ID		101
-
 //DONE : 0x004305E0
 void Sys_ShowConsole()
 {
@@ -20,145 +15,18 @@ void Sys_ShowConsole()
         Sys_CreateConsole(handle);
     }
 
-    // seems to match case 1 of Quake code (https://github.com/id-Software/Quake-III-Arena/blob/master/code/win32/win_syscon.c#L464)
     ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, SW_SHOWNORMAL);
     SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, EM_LINESCROLL, 0, 0xFFFF);
 }
 
-//DONE : 0x004288A0
-void Sys_CreateConsole(HINSTANCE hInstance)
+//THUNK : 0x004288A0
+void Sys_CreateConsole  (HINSTANCE hInstance)
 {
-    // memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
-
-    HDC hDC;
-    HANDLE logo;
-    RECT rect;
-    WNDCLASS wc;
-
-    int nHeight;
-    int swidth, sheight;
-
-    const char* DEDCLASS = "OpenIW4 WinConsole";
-    int DEDSTYLE = WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX;
-
-    memset(&wc, 0, sizeof(wc));
-
-    wc.style = 0;
-    wc.lpfnWndProc = ConsoleWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(hInstance, (LPCSTR)1); // this may fail
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)5;
-    wc.lpszMenuName = 0;
-    wc.lpszClassName = DEDCLASS;
-
-    if (!RegisterClassA(&wc))
-        return;
-
-    rect.left = 0;
-    rect.right = 620;
-    rect.top = 0;
-    rect.bottom = 450;
-    AdjustWindowRect(&rect, DEDSTYLE, FALSE);
-
-    hDC = GetDC(GetDesktopWindow());
-    swidth = GetDeviceCaps(hDC, HORZRES);
-    sheight = GetDeviceCaps(hDC, VERTRES);
-    ReleaseDC(GetDesktopWindow(), hDC);
-
-    *(int*)0x64A389C /*s_wcd.windowWidth*/ = rect.right - rect.left + 1;
-    *(int*)0x64A38A0 /*s_wcd.windowHeight*/ = rect.bottom - rect.top + 1;
-
-    *(HWND*)0x64A3288 /*s_wcd.hWnd*/ = CreateWindowEx(
-        0,
-        DEDCLASS,
-        "OpenIW4 Console",
-        DEDSTYLE,
-        (swidth - 600) / 2,
-        (sheight - 450) / 2,
-        rect.right - rect.left + 1,
-        rect.bottom - rect.top + 1,
-        NULL,
-        NULL,
-        hInstance,
-        NULL);
-
-    if (*(HWND*)0x64A3288 /*s_wcd.hWnd*/ == NULL)
-        return;
-    
-    // create fonts
-    hDC = GetDC(*(HWND*)0x64A3288);
-    nHeight = -MulDiv(8, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-
-    *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/ = (WPARAM)CreateFont(nHeight, 
-        0, 0, 0, FW_LIGHT, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
-        CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_MODERN | FIXED_PITCH, "Courier New");
-
-    ReleaseDC(*(HWND*)0x64A3288 /*s_wcd.hWnd*/, hDC);
-    logo = LoadImage(hInstance, "openiw4-logo.bmp", 0, 0, 0, 16);
-
-    if (logo)
-    {
-        *(HWND*)0x64A3290 = CreateWindow(
-            "static",
-            NULL,
-            WS_CHILD | WS_VISIBLE | SS_SUNKEN,
-            5,
-            5,
-            0,
-            0,
-            *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
-            (HMENU)COPY_ID,
-            hInstance,
-            NULL);
-
-        SendMessage(*(HWND*)0x64A3290, 370, 0, (LPARAM)logo);
-    }
-
-    // create the input line
-    *(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/ = CreateWindow(
-        "edit",
-        NULL,
-        WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT | ES_AUTOHSCROLL,
-        6,
-        400,
-        608,
-        20,
-        *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
-        (HMENU)INPUT_ID,
-        hInstance,
-        NULL);
-
-    // create the scrollbuffer
-    *(HWND*)0x64A328C /*s_wcd.hwndBuffer*/ = CreateWindow(
-        "edit",
-        NULL,
-        WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | 
-			ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-        6,
-        70,
-        606,
-        324,
-        *(HWND*)0x64A3288 /*s_wcd.hWnd*/,
-        (HMENU)EDIT_ID,
-        hInstance,
-        NULL);
-
-    SendMessage(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, WM_SETFONT, *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/, 0);
-    
-    *(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndProc*/ = (WNDPROC)SetWindowLong(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, GWL_WNDPROC, (long)InputLineWndProc);
-    SendMessage(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, WM_SETFONT, *(WPARAM*)0x64A3294 /*s_wcd.hfBufferFont*/, 0);
-    
-    ShowWindow(*(HWND*)0x64A3288, SW_SHOWDEFAULT);
-    UpdateWindow(*(HWND*)0x64A3288);
-    SetForegroundWindow(*(HWND*)0x64A3288);
-    SetFocus(*(HWND*)0x64A3298);
+    memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
 }
 
 //DONE : 0x0064DC50
-LONG WINAPI __stdcall ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LONG WINAPI ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
@@ -182,7 +50,7 @@ LONG WINAPI __stdcall ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     }
 }
 
-//TODO : 0x00470190
+//DONE : 0x00470190
 LONG WINAPI InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     char inputBuffer[1024];

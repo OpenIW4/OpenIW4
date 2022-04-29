@@ -425,10 +425,14 @@ bool Sys_IsDatabaseReady2()
 }
 
 //THUNK : 0x0043D570
-void Sys_Error(char* Format, ...)
+void Sys_Error(char* error, ...)
 {
     va_list args;
-    memory::call<void(char*, va_list)>(0x0043D570)(Format, args);
+    va_start(args, error);
+    vprintf(error, args);
+    va_end(args);
+
+    memory::call<void(char*, va_list)>(0x0043D570)(error, args);
 }
 
 //DONE : 0x004F5250

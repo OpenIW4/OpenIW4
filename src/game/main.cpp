@@ -155,7 +155,7 @@ void replace_funcs()
     //this needs to be refactored
     //so they load in address order
     memory::replace(0x413DE0, Com_sprintf);
-    //memory::replace(0x4288A0, Sys_CreateConsole); //bad implementation
+    memory::replace(0x4288A0, Sys_CreateConsole); //bad implementation
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x4513D0, main);
     memory::replace(0x470190, InputLineWndProc); //semi-working

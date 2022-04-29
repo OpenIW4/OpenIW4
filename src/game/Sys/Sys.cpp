@@ -6,16 +6,18 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x004305E0
-LRESULT Sys_ShowConsole()
+void Sys_ShowConsole()
 {
-    HMODULE ModuleHandleA;
+    HMODULE handle;
     if (!*(HWND*)(0x064A3288))
     {
-        ModuleHandleA = GetModuleHandleA(0);
-        Sys_CreateConsole(ModuleHandleA);
+        handle = GetModuleHandleA(0);
+        Sys_CreateConsole(handle);
     }
-    ShowWindow(*(HWND*)(0x064A3288), 1);
-    return SendMessageA(*(HWND*)(0x0064A328C) /*dword_64A328C*/, 0xB6u, 0, 0xFFFF);
+
+    // seems to match case 1 of Quake code (https://github.com/id-Software/Quake-III-Arena/blob/master/code/win32/win_syscon.c#L464)
+    ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, SW_SHOWNORMAL);
+    SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, EM_LINESCROLL, 0, 0xFFFF);
 }
 
 //DONE : 0x004288A0
@@ -174,31 +176,34 @@ LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPa
 }
 
 //TODO : 0x00470190
-LRESULT __stdcall sub_470190(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+// compared to quake https://github.com/id-Software/Quake-III-Arena/blob/master/code/win32/win_syscon.c#L260
+LRESULT __stdcall InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    CHAR string[1024];
+    char inputBuffer[1024];
     char buffer[1024];
 
-    if (msg == 8)
+    switch (msg)
     {
-        if ((HWND)wParam == *(HWND*)0x64A3288)
-        {
-            SetFocus(hWnd);
-            return 0;
-        }
-    }
-    else if (msg == 258 && wParam == 13)
-    {
-        GetWindowTextA(*(HWND*)0x64A3298, string, 1024);
-        strncat((char*)0x64A349C, string, 507 - strlen((const char*)0x64A349C));
-        *(WORD*)((char*)0x64A349C + strlen(*(const char**)0x64A349C)) = 10;
-        SetWindowTextA(*(HWND*)0x64A3298, *(LPCSTR*)0x6FAC0D);
-        Com_sprintf(buffer, 1024, "]%s\n", string);
-        memory::call<void(char*)>(0x4914B0)(buffer);
-        return 0;
+        case WM_KILLFOCUS: // 8
+            if ((HWND)wParam == *(HWND*)0x64A3288 /*s_wcd.hWnd*/)
+            {
+                SetFocus(hWnd);
+                return 0;
+            }
+        case WM_CHAR: // 258
+            if (wParam == 13)
+            {
+                GetWindowTextA(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, inputBuffer, sizeof(inputBuffer));
+                strncat((char*)0x64A349C /*s_wcd.consoleText*/, inputBuffer, 507 - strlen((const char*)0x64A349C /*s_wcd.consoleText*/));
+                *(WORD*)((char*)0x64A349C /*s_wcd.consoleText*/ + strlen(*(const char**)0x64A349C) /*s_wcd.consoleText*/) = 10;
+                SetWindowText(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, *(LPCSTR*)0x6FAC0D);
+                Com_sprintf(buffer, 1024, "]%s\n", inputBuffer);
+                memory::call<void(char*)>(0x4914B0)(buffer);
+            }
+        break;
     }
 
-    return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, msg, wParam, lParam);
+    return CallWindowProcA(*(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndPro*/, hWnd, msg, wParam, lParam);
 }
 
 //THUNK : 0x0042F0A0

@@ -2,7 +2,7 @@
 
 #include "../stdafx.hpp"
 
-LRESULT Sys_ShowConsole();
+void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
 void Sys_InitializeCriticalSections();
 void Sys_InitMainThread();

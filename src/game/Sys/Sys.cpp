@@ -29,19 +29,17 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     // memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
 
     HDC hDC;
-    HDC v5;
-    std::int32_t v6, v7;
-    HANDLE ImageA;
+    HANDLE logo;
     RECT rect;
     WNDCLASS wc;
 
     int nHeight;
     int swidth, sheight;
 
-    std::int8_t String[16384];
-
     const char* DEDCLASS = "OpenIW4 WinConsole";
     int DEDSTYLE = WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX;
+
+    memset(&wc, 0, sizeof(wc));
 
     wc.style = 0;
     wc.lpfnWndProc = ConsoleWndProc;
@@ -54,7 +52,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     wc.lpszMenuName = 0;
     wc.lpszClassName = DEDCLASS;
 
-    if (!RegisterClassA(&WndClass))
+    if (!RegisterClassA(&wc))
         return;
 
     rect.left = 0;

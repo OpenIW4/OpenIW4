@@ -159,7 +159,7 @@ void replace_funcs()
     memory::replace(0x413DE0, Com_sprintf);
 
     memory::replace(0x64DC50, ConsoleWndProc);
-    memory::replace(0x00470190, InputLineWndProc);
+    //memory::replace(0x470190, InputLineWndProc); //still makes garbage text, just got lucky on last commit
 
     memory::replace(0x48A9D0, LSP_Init);
     memory::replace(0x4EC640, LSP_Connected);

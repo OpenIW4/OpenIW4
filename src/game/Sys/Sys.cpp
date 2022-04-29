@@ -26,20 +26,20 @@ void Sys_CreateConsole  (HINSTANCE hInstance)
 }
 
 //DONE : 0x0064DC50
-LONG WINAPI ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
     switch (msg)
     {
         case WM_SIZE: // 5
-            SetWindowPos(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
-            SetWindowPos(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
-            *(int*)0x64A389C /*s_wcd.windowWidth*/ = (std::uint16_t)lParam;
-            *(int*)0x64A38A0 /*s_wcd.windowHeight*/ = HIWORD(lParam);
+            SetWindowPos(*(HWND*)0x64A328C /*dword_64A328C*/, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
+            SetWindowPos(*(HWND*)0x64A3298 /*::hWnd*/, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
+            *(std::uint16_t*)0x64A389C /*dword_64A389C*/ = (std::uint16_t)lParam;
+            *(long*)0x64A38A0 /*dword_64A38A0*/ = HIWORD(lParam);
             return DefWindowProcA(hWnd, msg, wParam, lParam);
         case WM_ACTIVATE: // 6
-            if (LOWORD(wParam) != WA_INACTIVE)
+            if (wParam)
             {
-                SetFocus(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
+                SetFocus(*(HWND*)0x64A3298 /*::hWnd*/);
             }
             return DefWindowProcA(hWnd, msg, wParam, lParam);
         case WM_CLOSE: // 16
@@ -51,36 +51,31 @@ LONG WINAPI ConsoleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 //DONE : 0x00470190
-LONG WINAPI InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
-    char inputBuffer[1024];
+    char string[1024];
     char buffer[1024];
 
-    switch (msg)
+    if (msg == 8)
     {
-        case WM_KILLFOCUS: // 8
-            if ((HWND)wParam == *(HWND*)0x64A3288 /*s_wcd.hWnd*/)
-            {
-                SetFocus(hWnd);
-                return 0;
-            }
-            break;
-        case WM_CHAR: // 258
-            if (wParam == 13)
-            {
-                GetWindowText(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, inputBuffer, sizeof(inputBuffer));
-                strncat((char*)0x64A349C /*s_wcd.consoleText*/, inputBuffer, 507 - strlen((const char*)0x64A349C /*s_wcd.consoleText*/));
-                *(WORD*)((char*)0x64A349C /*s_wcd.consoleText*/ + strlen(*(const char**)0x64A349C) /*s_wcd.consoleText*/) = 10;
-                SetWindowText(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/, *(LPCSTR*)0x6FAC0D);
-                Com_sprintf(buffer, 1024, "]%s\n", inputBuffer);
-                memory::call<void(char*)>(0x4914B0)(buffer);
-            }
-            break;
-        default:
-            break;
+        if ((HWND)wParam == *(HWND*)0x64A3288)
+        {
+            SetFocus(hWnd);
+            return 0;
+        }
+    }
+    else if (msg == 258 && wParam == 13)
+    {
+        GetWindowTextA(*(HWND*)0x64A3298, string, 1024);
+        strncat((char*)0x64A349C, string, 507 - strlen((const char*)0x64A349C));
+        *(WORD*)((char*)0x64A349C + strlen((const char*)0x64A349C)) = 10;
+        SetWindowTextA(*(HWND*)0x64A3298, *(LPCSTR*)0x6FAC0D);
+        Com_sprintf(buffer, 1024, "]%s\n", string);
+        memory::call<void(char*)>(0x4914B0)(buffer);
+        return 0;
     }
 
-    return CallWindowProcA(*(WNDPROC*)0x64A38A4 /*s_wcd.SysInputLineWndPro*/, hWnd, msg, wParam, lParam);
+    return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, msg, wParam, lParam);
 }
 
 //THUNK : 0x0042F0A0

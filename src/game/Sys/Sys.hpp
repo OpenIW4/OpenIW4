@@ -25,5 +25,5 @@ bool Sys_IsDatabaseReady2();
 void Sys_Error(char* Format, ...);
 bool Sys_ReleaseThreadOwnership();
 bool Sys_DatabaseCompleted();
-LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
-LRESULT __stdcall InputLineWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
+long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);

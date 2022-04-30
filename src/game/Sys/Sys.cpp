@@ -50,15 +50,15 @@ long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam
     }
 }
 
-//DONE : 0x00470190
+//TODO : 0x00470190
 long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
-    char string[1024];
-    char buffer[1024];
+    char displayBuffer[1024];
+    char inputBuffer[1024];
 
     if (msg == 8)
     {
-        if ((HWND)wParam == *(HWND*)0x64A3288)
+        if ((HWND)wParam == *(HWND*)(0x64A3288))
         {
             SetFocus(hWnd);
             return 0;
@@ -66,16 +66,16 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
     }
     else if (msg == 258 && wParam == 13)
     {
-        GetWindowTextA(*(HWND*)0x64A3298, string, 1024);
-        strncat((char*)0x64A349C, string, 507 - strlen((const char*)0x64A349C));
-        *(size_t*)((char*)0x64A349C + strlen((const char*)0x64A349C)) = 10;
-        SetWindowTextA(*(HWND*)0x64A3298, *(LPCSTR*)0x6FAC0D);
-        Com_sprintf(buffer, 1024, "]%s\n", string);
-        memory::call<void(char*)>(0x4914B0)(buffer);
+        GetWindowTextA(*(HWND*)(0x64A3298), inputBuffer, 1024);
+        strncat((char*)(0x64A349C), inputBuffer, 507 - strlen((char*)(0x64A349C)));
+        strcat((char*)(0x64A349C), "\n");
+        SetWindowTextA(*(HWND*)(0x64A3298), "");
+        Com_sprintf(displayBuffer, 1024, "]%s\n", inputBuffer);
+        memory::call<void(char*)>(0x4914B0)(displayBuffer); // Sys_Print
         return 0;
     }
 
-    return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, msg, wParam, lParam);
+    return CallWindowProcA(*(WNDPROC*)(0x64A38A4), hWnd, msg, wParam, lParam);
 }
 
 //THUNK : 0x0042F0A0

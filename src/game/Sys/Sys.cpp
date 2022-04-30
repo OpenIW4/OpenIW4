@@ -15,14 +15,103 @@ void Sys_ShowConsole()
         Sys_CreateConsole(handle);
     }
 
-    ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, SW_SHOWNORMAL);
-    SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, EM_LINESCROLL, 0, 0xFFFF);
+    ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, 1);
+    SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
 }
 
 //THUNK : 0x004288A0
-void Sys_CreateConsole  (HINSTANCE hInstance)
+void Sys_CreateConsole(HINSTANCE hInstance)
 {
-    memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
+    HDC hDC;
+    WNDCLASSA wc;
+    tagRECT rect;
+    const char* DEDCLASS = "OpenIW4 WinConsole";
+    int nHeight;
+    int swidth, sheight;
+
+    // char text[16384];
+    // char target[16384];
+
+    wc.style = 0;
+    wc.lpfnWndProc = ConsoleWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = LoadIconA(hInstance, (LPCSTR)1);
+    wc.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
+    wc.hbrBackground = (HBRUSH)5;
+    wc.lpszMenuName = 0;
+    wc.lpszClassName = DEDCLASS;
+
+    if (!RegisterClassA(&wc))
+    {
+        return;
+    }
+
+    rect.left = 0;
+    rect.right = 620;
+    rect.top = 0;
+    rect.bottom = 450;
+    AdjustWindowRect(&rect, 0x80CA0000, 0);
+
+    hDC = GetDC(GetDesktopWindow());
+    swidth = GetDeviceCaps(hDC, 8);
+    sheight = GetDeviceCaps(hDC, 10);
+    ReleaseDC(GetDesktopWindow(), hDC);
+
+    *(int*)(0x64A389C) = rect.right - rect.left + 1;
+    *(int*)(0x64A38A0) = rect.bottom - rect.top + 1;
+
+    *(HWND*)(0x64A3288) = CreateWindowExA( // hWndParent
+        0, DEDCLASS, "OpenIW4 Console >_<", 0x80CA0000, (swidth - 600) / 2, (sheight - 450) / 2,
+        rect.right - rect.left + 1, rect.bottom - rect.top + 1, 0, 0, hInstance, 0);
+
+    if (!*(HWND*)(0x64A3288))
+    {
+        return;
+    }
+
+    // create fonts
+    hDC = GetDC(*(HWND*)(0x64A3288));
+    nHeight = MulDiv(8, GetDeviceCaps(hDC, 90), 72);
+
+    *(WPARAM*)(0x64A3294) = (WPARAM)CreateFontA( // wParam
+        -nHeight, 0, 0, 0, 300, 0, 0, 0, 1u, 0, 0, 0, 0x31u, "Courier New");
+
+    ReleaseDC(*(HWND*)(0x64A3288), hDC);
+
+    auto logo = LoadImageA(0, "logo.bmp", 0, 0, 0, 0x10u);
+
+    if (logo)
+    {
+        *(HWND*)(0x64A3290) = CreateWindowExA(
+            0, "Static", 0, 0x5000000Eu, 5, 5, 0, 0, *(HWND*)(0x64A3288), (HMENU)1, hInstance, 0);
+        SendMessageA(*(HWND*)(0x64A3290), 0x172u, 0, (LPARAM)logo);
+    }
+
+    // create the input line
+    *(HWND*)(0x64A3298) = CreateWindowExA( // hwndInputLine
+        0, "edit", 0, 0x50800080u, 6, 400, 608, 20, *(HWND*)(0x64A3288), (HMENU)0x65, hInstance, 0);
+    *(HWND*)(0x64A328C) = CreateWindowExA( // hwndBuffer
+        0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, *(HWND*)(0x64A3288), (HMENU)0x64, hInstance, 0);
+    SendMessageA(*(HWND*)(0x64A328C), 0x30, *(WPARAM*)0x64A3294, 0);
+
+    *(WNDPROC*)(0x64A38A4) = (WNDPROC)SetWindowLongA(*(HWND*)(0x64A3298), -4, (long)InputLineWndProc);
+    SendMessageA(*(HWND*)(0x64A3298), 0x30, *(WPARAM*)0x64A3294, 0);
+
+    SetFocus(*(HWND*)(0x64A3298));
+
+    // Quake code for showing console window (temporary)
+    ShowWindow(*(HWND*)(0x64A3288), 10);
+    UpdateWindow(*(HWND*)(0x64A3288));
+    SetForegroundWindow(*(HWND*)(0x64A3288));
+
+    // IW4 code for showing console window
+    /*
+    Con_GetTextCopy(text, 0x4000);
+    Conbuf_CleanText(text, target, 0x4000);
+    SetWindowTextA(*(HWND*)(0x64A328C), target);
+    */
 }
 
 //DONE : 0x0064DC50

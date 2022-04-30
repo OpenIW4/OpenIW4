@@ -19,52 +19,51 @@ void Sys_ShowConsole()
     SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
 }
 
-//THUNK : 0x004288A0
+//TODO : 0x004288A0
 void Sys_CreateConsole(HINSTANCE hInstance)
 {
     HDC hDC;
-    WNDCLASSA wc;
-    tagRECT rect;
-    const char* DEDCLASS = "OpenIW4 WinConsole";
+    WNDCLASSA WndClass;
+    tagRECT Rect;
     int nHeight;
     int swidth, sheight;
 
     // char text[16384];
     // char target[16384];
 
-    wc.style = 0;
-    wc.lpfnWndProc = ConsoleWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIconA(hInstance, (LPCSTR)1);
-    wc.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
-    wc.hbrBackground = (HBRUSH)5;
-    wc.lpszMenuName = 0;
-    wc.lpszClassName = DEDCLASS;
+    WndClass.style = 0;
+    WndClass.lpfnWndProc = ConWndProc;
+    WndClass.cbClsExtra = 0;
+    WndClass.cbWndExtra = 0;
+    WndClass.hInstance = hInstance;
+    WndClass.hIcon = LoadIconA(hInstance, (LPCSTR)1);
+    WndClass.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
+    WndClass.hbrBackground = (HBRUSH)5;
+    WndClass.lpszMenuName = 0;
+    WndClass.lpszClassName = "OpenIW4 WinConsole";
 
-    if (!RegisterClassA(&wc))
+    if (!RegisterClassA(&WndClass))
     {
         return;
     }
 
-    rect.left = 0;
-    rect.right = 620;
-    rect.top = 0;
-    rect.bottom = 450;
-    AdjustWindowRect(&rect, 0x80CA0000, 0);
+    Rect.left = 0;
+    Rect.right = 620;
+    Rect.top = 0;
+    Rect.bottom = 450;
+    AdjustWindowRect(&Rect, 0x80CA0000, 0);
 
     hDC = GetDC(GetDesktopWindow());
     swidth = GetDeviceCaps(hDC, 8);
     sheight = GetDeviceCaps(hDC, 10);
     ReleaseDC(GetDesktopWindow(), hDC);
 
-    *(int*)(0x64A389C) = rect.right - rect.left + 1;
-    *(int*)(0x64A38A0) = rect.bottom - rect.top + 1;
+    *(int*)(0x64A389C) = Rect.right - Rect.left + 1;
+    *(int*)(0x64A38A0) = Rect.bottom - Rect.top + 1;
 
     *(HWND*)(0x64A3288) = CreateWindowExA( // hWndParent
-        0, DEDCLASS, "OpenIW4 Console >_<", 0x80CA0000, (swidth - 600) / 2, (sheight - 450) / 2,
-        rect.right - rect.left + 1, rect.bottom - rect.top + 1, 0, 0, hInstance, 0);
+        0, "OpenIW4 WinConsole", "OpenIW4 Console", 0x80CA0000, (swidth - 600) / 2, (sheight - 450) / 2,
+        Rect.right - Rect.left + 1, Rect.bottom - Rect.top + 1, 0, 0, hInstance, 0);
 
     if (!*(HWND*)(0x64A3288))
     {
@@ -75,7 +74,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     hDC = GetDC(*(HWND*)(0x64A3288));
     nHeight = MulDiv(8, GetDeviceCaps(hDC, 90), 72);
 
-    *(WPARAM*)(0x64A3294) = (WPARAM)CreateFontA( // wParam
+    *(HFONT*)(0x64A3294) = CreateFontA( // hfBufferFont
         -nHeight, 0, 0, 0, 300, 0, 0, 0, 1u, 0, 0, 0, 0x31u, "Courier New");
 
     ReleaseDC(*(HWND*)(0x64A3288), hDC);
@@ -94,10 +93,10 @@ void Sys_CreateConsole(HINSTANCE hInstance)
         0, "edit", 0, 0x50800080u, 6, 400, 608, 20, *(HWND*)(0x64A3288), (HMENU)0x65, hInstance, 0);
     *(HWND*)(0x64A328C) = CreateWindowExA( // hwndBuffer
         0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, *(HWND*)(0x64A3288), (HMENU)0x64, hInstance, 0);
-    SendMessageA(*(HWND*)(0x64A328C), 0x30, *(WPARAM*)0x64A3294, 0);
+    SendMessageA(*(HWND*)(0x64A328C), 0x30, *(WPARAM*)(0x64A3294), 0);
 
     *(WNDPROC*)(0x64A38A4) = (WNDPROC)SetWindowLongA(*(HWND*)(0x64A3298), -4, (long)InputLineWndProc);
-    SendMessageA(*(HWND*)(0x64A3298), 0x30, *(WPARAM*)0x64A3294, 0);
+    SendMessageA(*(HWND*)(0x64A3298), 0x30, *(WPARAM*)(0x64A3294), 0);
 
     SetFocus(*(HWND*)(0x64A3298));
 
@@ -115,7 +114,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
 }
 
 //DONE : 0x0064DC50
-long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
+long __stdcall ConWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
     switch (msg)
     {
@@ -139,7 +138,7 @@ long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam
     }
 }
 
-//TODO : 0x00470190
+//DONE : 0x00470190
 long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
     char displayBuffer[1024];

@@ -6,170 +6,47 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x004305E0
-LRESULT Sys_ShowConsole()
+void Sys_ShowConsole()
 {
-    HMODULE ModuleHandleA;
+    HMODULE handle;
     if (!*(HWND*)(0x064A3288))
     {
-        ModuleHandleA = GetModuleHandleA(0);
-        Sys_CreateConsole(ModuleHandleA);
+        handle = GetModuleHandleA(0);
+        Sys_CreateConsole(handle);
     }
-    ShowWindow(*(HWND*)(0x064A3288), 1);
-    return SendMessageA(*(HWND*)(0x0064A328C) /*dword_64A328C*/, 0xB6u, 0, 0xFFFF);
+
+    ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, SW_SHOWNORMAL);
+    SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, EM_LINESCROLL, 0, 0xFFFF);
 }
 
-//DONE : 0x004288A0
-void Sys_CreateConsole(HINSTANCE hInstance)
+//THUNK : 0x004288A0
+void Sys_CreateConsole  (HINSTANCE hInstance)
 {
     memory::call<void(HINSTANCE)>(0x004288A0)(hInstance);
-    
-    /*HWND DesktopWindow;
-    HDC DC;
-    HWND v3;
-    HWND Window;
-    HDC v5;
-    std::int32_t v6, v7;
-    HANDLE ImageA;
-    tagRECT Rect;
-    WNDCLASSA WndClass;
-    std::int32_t DeviceCaps;
-    std::int32_t v12;
-    std::int8_t v13[16384];
-    std::int8_t String[16384];
-
-    WndClass.style = 0;
-    WndClass.lpfnWndProc = ConsoleWndProc;
-    WndClass.cbClsExtra = 0;
-    WndClass.cbWndExtra = 0;
-    WndClass.hInstance = hInstance;
-    WndClass.hIcon = LoadIconA(hInstance, (LPCSTR)1);
-    WndClass.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
-    WndClass.hbrBackground = (HBRUSH)5;
-    WndClass.lpszMenuName = 0;
-    WndClass.lpszClassName = "OpenIW4 WinConsole";
-
-    if (RegisterClassA(&WndClass))
-    {
-        Rect.left = 0;
-        Rect.right = 620;
-        Rect.top = 0;
-        Rect.bottom = 450;
-        AdjustWindowRect(&Rect, 0x80CA0000, 0);
-        DesktopWindow = GetDesktopWindow();
-        DC = GetDC(DesktopWindow);
-        DeviceCaps = GetDeviceCaps(DC, 8);
-        v12 = GetDeviceCaps(DC, 10);
-        v3 = GetDesktopWindow();
-        ReleaseDC(v3, DC);
-        *(std::uint16_t*)0x64A389C = Rect.right - Rect.left + 1;
-        *(long*)0x64A38A0 = Rect.bottom - Rect.top + 1;
-        Window = CreateWindowExA(
-            0,
-            "OpenIW4 WinConsole",
-            "OpenIW4 Console",
-            0x80CA0000,
-            (DeviceCaps - 600) / 2,
-            (v12 - 450) / 2,
-            Rect.right - Rect.left + 1,
-            Rect.bottom - Rect.top + 1,
-            0,
-            0,
-            hInstance,
-            0);
-        *(HWND*)0x64A3288 = Window;
-        if (Window)
-        {
-            v5 = GetDC(Window);
-            v6 = GetDeviceCaps(v5, 90);
-            v7 = MulDiv(8, v6, 72);
-            *(WPARAM*)0x64A3294 = (WPARAM)CreateFontA(-v7, 0, 0, 0, 300, 0, 0, 0, 1, 0, 0, 0, 49, "Courier New");
-            ReleaseDC(*(HWND*)0x64A3288, v5);
-            ImageA = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 16);
-
-            if (ImageA)
-            {
-                *(std::int32_t*)0x64A3290 = (std::int32_t)CreateWindowExA(
-                    0,
-                    "Static",
-                    0,
-                    0x5000000E,
-                    5,
-                    5,
-                    0,
-                    0,
-                    *(HWND*)0x64A3288,
-                    (HMENU)1,
-                    hInstance,
-                    0);
-
-                SendMessageA(*(HWND*)0x64A3290, 370, 0, (LPARAM)ImageA);
-            }
-
-            *(HWND*)0x64A3298 = CreateWindowExA(
-                0,
-                "edit",
-                0,
-                0x50800080,
-                6,
-                400,
-                608,
-                20,
-                *(HWND*)0x64A3288,
-                (HMENU)101,
-                hInstance,
-                0);
-
-            *(HWND*)0x64A328C = CreateWindowExA(
-                0,
-                "edit",
-                0,
-                0x50A00844,
-                6,
-                70,
-                606,
-                324,
-                *(HWND*)0x64A3288,
-                (HMENU)100,
-                hInstance,
-                0);
-
-            SendMessageA(*(HWND*)0x64A328C, 0x30, *(WPARAM*)0x64A3294, 0);
-            *(WNDPROC*)0x64A38A4 = (WNDPROC)SetWindowLongA(*(HWND*)0x64A3298, -4, (LONG)sub_470190);
-            SendMessageA(*(HWND*)0x64A3298, 0x30, *(WPARAM*)0x64A3294, 0);
-            SetFocus(*(HWND*)0x64A3298);
-            memory::call<void* (void*, int)>(0x4AFB80)(v13, 0x4000);
-            memory::call<std::uint8_t*(std::uint8_t*, std::int32_t, std::int8_t*)>(0x64DD30)((std::uint8_t*)v13, 0x4000, String);
-            SetWindowTextA(*(HWND*)0x64A328C, (LPCSTR)String);
-        }
-    }*/
 }
 
 //DONE : 0x0064DC50
-LRESULT __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
+long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
-    std::uint32_t v4 = msg;
-
     switch (msg)
     {
-        case 5:
-            SetWindowPos(*(HWND*)0x64A328C, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
-            SetWindowPos(*(HWND*)0x64A3298, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
-            *(std::uint16_t*)0x64A389C = (std::uint16_t)lParam;
-            *(long*)0x64A38A0 = HIWORD(lParam);
-            v4 = msg;
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
-        case 6:
+        case WM_SIZE: // 5
+            SetWindowPos(*(HWND*)0x64A328C /*dword_64A328C*/, 0, 5, 70, lParam - 15, HIWORD(lParam) - 100, 0);
+            SetWindowPos(*(HWND*)0x64A3298 /*::hWnd*/, 0, 5, HIWORD(lParam) - 100 + 78, lParam - 15, 20, 0);
+            *(std::uint16_t*)0x64A389C /*dword_64A389C*/ = (std::uint16_t)lParam;
+            *(long*)0x64A38A0 /*dword_64A38A0*/ = HIWORD(lParam);
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
+        case WM_ACTIVATE: // 6
             if (wParam)
             {
-                SetFocus(*(HWND*)0x64A3298);
+                SetFocus(*(HWND*)0x64A3298 /*::hWnd*/);
             }
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
-        case 16:
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
+        case WM_CLOSE: // 16
             PostQuitMessage(0);
             return 0;
-
         default:
-            return DefWindowProcA(hWnd, v4, wParam, lParam);
+            return DefWindowProcA(hWnd, msg, wParam, lParam);
     }
 }
 
@@ -412,10 +289,14 @@ bool Sys_IsDatabaseReady2()
 }
 
 //THUNK : 0x0043D570
-void Sys_Error(char* Format, ...)
+void Sys_Error(char* error, ...)
 {
     va_list args;
-    memory::call<void(char*, va_list)>(0x0043D570)(Format, args);
+    va_start(args, error);
+    vprintf(error, args);
+    va_end(args);
+
+    memory::call<void(char*, va_list)>(0x0043D570)(error, args);
 }
 
 //DONE : 0x004F5250

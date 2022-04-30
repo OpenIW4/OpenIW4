@@ -58,7 +58,7 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
 
     if (msg == 8)
     {
-        if ((HWND)wParam == *(HWND*)(0x64A3288))
+        if ((HWND)wParam == *(HWND*)0x64A3288)
         {
             SetFocus(hWnd);
             return 0;
@@ -67,11 +67,12 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
     else if (msg == 258 && wParam == 13)
     {
         GetWindowTextA(*(HWND*)(0x64A3298), inputBuffer, 1024);
-        strncat((char*)(0x64A349C), inputBuffer, 507 - strlen((char*)(0x64A349C)));
-        strcat((char*)(0x64A349C), "\n");
-        SetWindowTextA(*(HWND*)(0x64A3298), "");
+        strncat((char*)0x64A349C, inputBuffer, 507 - strlen((char*)0x64A349C));
+        *(WORD*)((char*)0x64A349C + strlen((const char*)0x64A349C)) = 10;
+        SetWindowTextA(*(HWND*)0x64A3298, inputBuffer);
         Com_sprintf(displayBuffer, 1024, "]%s\n", inputBuffer);
         memory::call<void(char*)>(0x4914B0)(displayBuffer); // Sys_Print
+                                                            //is that actually Sys_Print?
         return 0;
     }
 

@@ -176,11 +176,10 @@ void Com_Printf(std::uint32_t channel, char* Format, ...)
 //DONE : 0x00413DE0
 int Com_sprintf(char* buf, size_t bufCount, char* fmt, ...)
 {
-    int result;
     va_list va;
 
     va_start(va, fmt);
-    result = _vsnprintf(buf, bufCount, fmt, va);
+    std::int32_t result = _vsnprintf(buf, bufCount, fmt, va);
     buf[bufCount - 1] = 0;
     va_end(va);
 

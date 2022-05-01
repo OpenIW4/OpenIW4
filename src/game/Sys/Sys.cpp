@@ -19,7 +19,7 @@ void Sys_ShowConsole()
     SendMessageA(*(HWND*)0x0064A328C /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
 }
 
-//TODO : 0x004288A0
+//DONE : 0x004288A0
 void Sys_CreateConsole(HINSTANCE hInstance)
 {
     HDC hDC;

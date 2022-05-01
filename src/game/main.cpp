@@ -170,8 +170,6 @@ void patches()
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    ::AllocConsole();
-
     loader::load("iw4mp.exe"); //177
     commands();
     patches();

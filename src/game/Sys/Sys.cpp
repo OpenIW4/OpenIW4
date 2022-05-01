@@ -9,14 +9,14 @@
 void Sys_ShowConsole()
 {
     HMODULE handle;
-    if (!*(HWND*)(0x064A3288))
+    if (!*(HWND*)0x064A3288)
     {
         handle = GetModuleHandleA(0);
         Sys_CreateConsole(handle);
     }
 
-    ShowWindow(*(HWND*)(0x064A3288) /*s_wcd.hWnd*/, 1);
-    SendMessageA(*(HWND*)(0x0064A328C) /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
+    ShowWindow(*(HWND*)0x064A3288 /*s_wcd.hWnd*/, 1);
+    SendMessageA(*(HWND*)0x0064A328C /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
 }
 
 //TODO : 0x004288A0
@@ -28,8 +28,8 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     int nHeight;
     int swidth, sheight;
 
-    // char text[16384];
-    // char target[16384];
+    char text[16384];
+    char target[16384];
 
     WndClass.style = 0;
     WndClass.lpfnWndProc = ConWndProc;
@@ -58,59 +58,50 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     sheight = GetDeviceCaps(hDC, 10);
     ReleaseDC(GetDesktopWindow(), hDC);
 
-    *(int*)(0x64A389C) = Rect.right - Rect.left + 1;
-    *(int*)(0x64A38A0) = Rect.bottom - Rect.top + 1;
+    *(int*)0x64A389C = Rect.right - Rect.left + 1;
+    *(int*)0x64A38A0 = Rect.bottom - Rect.top + 1;
 
-    *(HWND*)(0x64A3288) = CreateWindowExA( // hWndParent
+    *(HWND*)0x64A3288 = CreateWindowExA( // hWndParent
         0, "OpenIW4 WinConsole", "OpenIW4 Console", 0x80CA0000, (swidth - 600) / 2, (sheight - 450) / 2,
         Rect.right - Rect.left + 1, Rect.bottom - Rect.top + 1, 0, 0, hInstance, 0);
 
-    if (!*(HWND*)(0x64A3288))
+    if (!*(HWND*)0x64A3288)
     {
         return;
     }
 
     // create fonts
-    hDC = GetDC(*(HWND*)(0x64A3288));
+    hDC = GetDC(*(HWND*)0x64A3288);
     nHeight = MulDiv(8, GetDeviceCaps(hDC, 90), 72);
 
-    *(HFONT*)(0x64A3294) = CreateFontA( // hfBufferFont
+    *(HFONT*)0x64A3294 = CreateFontA( // hfBufferFont
         -nHeight, 0, 0, 0, 300, 0, 0, 0, 1u, 0, 0, 0, 0x31u, "Courier New");
 
-    ReleaseDC(*(HWND*)(0x64A3288), hDC);
+    ReleaseDC(*(HWND*)0x64A3288, hDC);
 
     auto logo = LoadImageA(0, "logo.bmp", 0, 0, 0, 0x10u);
-
     if (logo)
     {
-        *(HWND*)(0x64A3290) = CreateWindowExA(
-            0, "Static", 0, 0x5000000Eu, 5, 5, 0, 0, *(HWND*)(0x64A3288), (HMENU)1, hInstance, 0);
-        SendMessageA(*(HWND*)(0x64A3290), 0x172u, 0, (LPARAM)logo);
+        *(HWND*)0x64A3290 = CreateWindowExA(
+            0, "Static", 0, 0x5000000Eu, 5, 5, 0, 0, *(HWND*)0x64A3288, (HMENU)1, hInstance, 0);
+        SendMessageA(*(HWND*)0x64A3290, 0x172u, 0, (LPARAM)logo);
     }
 
     // create the input line
-    *(HWND*)(0x64A3298) = CreateWindowExA( // hwndInputLine
-        0, "edit", 0, 0x50800080u, 6, 400, 608, 20, *(HWND*)(0x64A3288), (HMENU)0x65, hInstance, 0);
-    *(HWND*)(0x64A328C) = CreateWindowExA( // hwndBuffer
-        0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, *(HWND*)(0x64A3288), (HMENU)0x64, hInstance, 0);
-    SendMessageA(*(HWND*)(0x64A328C), 0x30, *(WPARAM*)(0x64A3294), 0);
+    *(HWND*)0x64A3298 = CreateWindowExA( // hwndInputLine
+        0, "edit", 0, 0x50800080u, 6, 400, 608, 20, *(HWND*)0x64A3288, (HMENU)0x65, hInstance, 0);
+    *(HWND*)0x64A328C = CreateWindowExA( // hwndBuffer
+        0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, *(HWND*)0x64A3288, (HMENU)0x64, hInstance, 0);
+    SendMessageA(*(HWND*)0x64A328C, 0x30, *(WPARAM*)0x64A3294, 0);
 
-    *(WNDPROC*)(0x64A38A4) = (WNDPROC)SetWindowLongA(*(HWND*)(0x64A3298), -4, (long)InputLineWndProc);
-    SendMessageA(*(HWND*)(0x64A3298), 0x30, *(WPARAM*)(0x64A3294), 0);
+    *(WNDPROC*)0x64A38A4 = (WNDPROC)SetWindowLongA( // SysInputLineWndProc
+        *(HWND*)0x64A3298, -4, (long)InputLineWndProc);
+    SendMessageA(*(HWND*)0x64A3298, 0x30, *(WPARAM*)0x64A3294, 0);
 
-    SetFocus(*(HWND*)(0x64A3298));
-
-    // Quake code for showing console window (temporary)
-    ShowWindow(*(HWND*)(0x64A3288), 10);
-    UpdateWindow(*(HWND*)(0x64A3288));
-    SetForegroundWindow(*(HWND*)(0x64A3288));
-
-    // IW4 code for showing console window
-    /*
+    SetFocus(*(HWND*)0x64A3298);
     Con_GetTextCopy(text, 0x4000);
     Conbuf_CleanText(text, target, 0x4000);
-    SetWindowTextA(*(HWND*)(0x64A328C), target);
-    */
+    SetWindowTextA(*(HWND*)0x64A328C, target);
 }
 
 //DONE : 0x0064DC50
@@ -139,12 +130,12 @@ long __stdcall ConWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, lo
 }
 
 //DONE : 0x00470190
-long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
+long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t uMsg, std::uint32_t wParam, long lParam)
 {
     char displayBuffer[1024];
     char inputBuffer[1024];
 
-    if (msg == 8)
+    if (uMsg == 8) // WM_KILLFOCUS
     {
         if ((HWND)wParam == *(HWND*)0x64A3288)
         {
@@ -152,18 +143,19 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
             return 0;
         }
     }
-    else if (msg == 258 && wParam == 13)
+    else if (uMsg == 258 && wParam == 13) // WM_CHAR
     {
-        GetWindowTextA(*(HWND*)(0x64A3298), inputBuffer, 1024);
+        GetWindowTextA(*(HWND*)0x64A3298, inputBuffer, 1024);
         strncat((char*)0x64A349C, inputBuffer, 507 - strlen((char*)0x64A349C));
-        strcat((char*)(0x64A349C), "\n");
-        SetWindowTextA(*(HWND*)0x64A3298, inputBuffer);
+        strcat((char*)0x64A349C, "\n");
+        SetWindowTextA(*(HWND*)0x64A3298, "");
+
         Com_sprintf(displayBuffer, 1024, "]%s\n", inputBuffer);
         memory::call<void(char*)>(0x4914B0)(displayBuffer); // Sys_Print
         return 0;
     }
 
-    return CallWindowProcA(*(WNDPROC*)(0x64A38A4), hWnd, msg, wParam, lParam);
+    return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, uMsg, wParam, lParam);
 }
 
 //THUNK : 0x0042F0A0
@@ -252,8 +244,8 @@ void Sys_CreateSplashWindow()
     WndClass.cbWndExtra = 0;
     WndClass.lpszMenuName = 0;
     WndClass.lpfnWndProc = DefWindowProcA;
-    WndClass.hInstance = *(HINSTANCE*)(0x064A3AD4);
-    WndClass.hIcon = LoadIconA(*(HINSTANCE*)(0x064A3AD4), (LPCSTR)1);
+    WndClass.hInstance = *(HINSTANCE*)0x064A3AD4;
+    WndClass.hIcon = LoadIconA(*(HINSTANCE*)0x064A3AD4, (LPCSTR)1);
     WndClass.hCursor = LoadCursorA(0, (LPCSTR)0x7F00);
     WndClass.hbrBackground = (HBRUSH)6;
     WndClass.lpszClassName = "CoD Splash Screen";
@@ -276,12 +268,12 @@ void Sys_CreateSplashWindow()
                 100,
                 0,
                 0,
-                *(HINSTANCE*)(0x064A3AD4),
+                *(HINSTANCE*)0x064A3AD4,
                 0);
-            *(HWND*)(0x064A3050) /*g_splash_wv*/ = Window;
+            *(HWND*)0x064A3050 /*g_splash_wv*/ = Window;
             if (Window)
             {
-                v4 = CreateWindowExA(0, "Static", 0, 0x5000000Eu, 0, 0, 320, 100, Window, 0, *(HINSTANCE*)(0x064A3AD4), 0);
+                v4 = CreateWindowExA(0, "Static", 0, 0x5000000Eu, 0, 0, 320, 100, Window, 0, *(HINSTANCE*)0x064A3AD4, 0);
                 v5 = v4;
                 if (v4)
                 {
@@ -294,7 +286,7 @@ void Sys_CreateSplashWindow()
                     Rect.right = Rect.left + v6;
                     Rect.bottom = Rect.top + v7;
                     AdjustWindowRect(&Rect, 0x5000000Eu, 0);
-                    SetWindowPos(*(HWND*)(0x064A3050) /*g_splash_wv*/, 0, Rect.left, Rect.top, Rect.right - Rect.left, Rect.bottom - Rect.top, 4u);
+                    SetWindowPos(*(HWND*)0x064A3050 /*g_splash_wv*/, 0, Rect.left, Rect.top, Rect.right - Rect.left, Rect.bottom - Rect.top, 4u);
                 }
             }
         }
@@ -304,10 +296,10 @@ void Sys_CreateSplashWindow()
 //DONE : 0x004A7B10
 void Sys_ShowSplashWindow()
 {
-    if (*(HWND*)(0x064A3050)/*g_splash_wv*/)
+    if (*(HWND*)0x064A3050 /*g_splash_wv*/)
     {
-        ShowWindow(*(HWND*)(0x064A3050)/*g_splash_wv*/, 5);
-        UpdateWindow(*(HWND*)(0x064A3050)/*g_splash_wv*/);
+        ShowWindow(*(HWND*)0x064A3050 /*g_splash_wv*/, 5);
+        UpdateWindow(*(HWND*)0x064A3050 /*g_splash_wv*/);
     }
 }
 
@@ -320,12 +312,12 @@ void Sys_RegisterClass()
 //DONE : 0x0042A660
 int Sys_Milliseconds()
 {
-    if (!*(int*)(0x064A304C)/*Sys_Milliseconds(void)::initialized*/)
+    if (!*(int*)0x064A304C /*Sys_Milliseconds(void)::initialized*/)
     {
-        *(int*)(0x064A3034) /*sys_timeBase*/ = timeGetTime();
-        *(int*)(0x064A304C)/*Sys_Milliseconds(void)::initialized*/ = 1;
+        *(int*)0x064A3034 /*sys_timeBase*/ = timeGetTime();
+        *(int*)0x064A304C /*Sys_Milliseconds(void)::initialized*/ = 1;
     }
-    return timeGetTime() - *(int*)(0x064A3034) /*sys_timeBase*/;
+    return timeGetTime() - *(int*)0x064A3034 /*sys_timeBase*/;
 }
 
 //THUNK : 0x004EC730
@@ -390,7 +382,7 @@ void Sys_Error(char* error, ...)
 //DONE : 0x004F5250
 bool Sys_ReleaseThreadOwnership()
 {
-    return SetEvent(*(HANDLE*)(0x01CDE704) /*noThreadOwnershipEvent*/);
+    return SetEvent(*(HANDLE*)0x01CDE704 /*noThreadOwnershipEvent*/);
 }
 
 //DONE : 0x004C3650

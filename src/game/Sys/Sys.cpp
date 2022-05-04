@@ -32,7 +32,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     char target[16384];
 
     WndClass.style = 0;
-    WndClass.lpfnWndProc = ConWndProc;
+    WndClass.lpfnWndProc = ConsoleWndProc;
     WndClass.cbClsExtra = 0;
     WndClass.cbWndExtra = 0;
     WndClass.hInstance = hInstance;
@@ -79,7 +79,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
 
     ReleaseDC(*(HWND*)0x64A3288, hDC);
 
-    auto logo = LoadImageA(0, "logo.bmp", 0, 0, 0, 0x10u);
+    auto logo = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 0x10u);
     if (logo)
     {
         *(HWND*)0x64A3290 = CreateWindowExA(
@@ -105,7 +105,7 @@ void Sys_CreateConsole(HINSTANCE hInstance)
 }
 
 //DONE : 0x0064DC50
-long __stdcall ConWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
+long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam)
 {
     switch (msg)
     {

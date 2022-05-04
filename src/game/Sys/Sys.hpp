@@ -22,7 +22,6 @@ void Sys_LeaveCriticalSection(int a1);
 void Sys_EnumerateHw();
 bool Sys_IsDatabaseReady();
 bool Sys_IsDatabaseReady2();
-void Sys_Error(char* Format, ...);
 bool Sys_ReleaseThreadOwnership();
 bool Sys_DatabaseCompleted();
 long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);

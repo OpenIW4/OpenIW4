@@ -11,3 +11,6 @@ Refer to the [Premake5 docs](https://premake.github.io/docs/) for more informati
 
 # Contributing
 We really don't care, just send us stuff.
+
+# Join us!
+Join our Discord [here](https://discord.gg/hSfBBR4Urs)!

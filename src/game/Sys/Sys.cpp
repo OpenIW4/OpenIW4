@@ -2,6 +2,8 @@
 #include "../Com/Com.hpp"
 #include "../Cbuf/Cbuf.hpp"
 #include "../CL/CL.hpp"
+#include "../Render/Render.hpp"
+#include "../main.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -401,4 +403,74 @@ bool Sys_DatabaseCompleted()
 
     HANDLE event = *(HANDLE*)0x1CDE7F8; //dword_1CDE7F8
     return SetEvent(event);
+}
+
+void Sys_Error(char* Format, ...)
+{
+    tagMSG msg;
+    char buffer[4096];
+    va_list args;
+
+    va_start(args, Format);
+    Com_EnterError();
+    _vsnprintf(buffer, 4096, Format, args);
+    FixWindowsDesktop();
+
+    if (Sys_IsMainThread())
+    {
+        Sys_ShowConsole();
+        Conbuf_AppendText("\n\n");
+        Conbuf_AppendText(buffer);
+        Conbuf_AppendText(*(const char**)0x72CA28);
+    }
+    Sys_SetErrorText(buffer);
+    if (Sys_IsMainThread() && GetMessageA(&msg, 0, 0, 0))
+    {
+        do
+        {
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
+        } 
+        while (GetMessageA(&msg, 0, 0, 0));
+    }
+
+    memory::call<std::int32_t>(0x48A4E0); //Steam_EmergencyShutdown?
+    exit(0);
+
+}
+
+//DONE : 0x00433940
+std::int32_t Sys_SetErrorText(const char* text)
+{
+    HWND activeWindow = GetActiveWindow();
+    I_strncpyz(*(char**)0x64A329C, (char*)text, 512);
+    DestroyWindow(*(HWND*)0x64A3298);
+    *(HWND*)0x64A3298 = 0;
+    return MessageBoxA(activeWindow, text, "Error", 0x10);
+}
+
+//TODO : 0x0045A190
+unsigned long Sys_SuspendOtherThreads()
+{
+    Sys_EnterCriticalSection(34);
+    memory::call<int>(0x51CA20); //R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
+    unsigned long result = GetCurrentThreadId();
+    unsigned long v1 = result;
+
+    for (std::uint32_t i = 0; i < 36; i++)
+    {
+        if (*(HANDLE*)(*(char**)0x1CDE828 + i))
+        {
+            result = *(unsigned long*)(*(char**)0x1CDE7FC + i);
+            if (result)
+            {
+                if (result != v1)
+                {
+                    result = SuspendThread(*(HANDLE*)(*(char**)0x1CDE828 + i));
+                }
+            }
+        }
+    }
+
+    return result;
 }

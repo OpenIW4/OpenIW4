@@ -27,3 +27,6 @@ bool Sys_ReleaseThreadOwnership();
 bool Sys_DatabaseCompleted();
 long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
 long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
+void Sys_Error(char* Format, ...);
+unsigned long Sys_SuspendOtherThreads();
+std::int32_t Sys_SetErrorText(const char* text);

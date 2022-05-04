@@ -78,7 +78,7 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
     if (Win_InitLocalization(0))
     {
 #ifdef MATCHING
-        if (!sub_426080(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (sub_64D200(), sub_411350()))
+        if (!I_strnicmp(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (sub_64D200(), sub_411350()))
         {
 #endif
             if (!hPrevInstance)
@@ -158,9 +158,6 @@ void replace_funcs()
 
     memory::replace(0x413DE0, Com_sprintf);
 
-    memory::replace(0x64DC50, ConsoleWndProc);
-    //memory::replace(0x470190, InputLineWndProc); //still makes garbage text, just got lucky on last commit
-
     memory::replace(0x48A9D0, LSP_Init);
     memory::replace(0x4EC640, LSP_Connected);
 }
@@ -173,8 +170,6 @@ void patches()
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    ::AllocConsole();
-
     loader::load("iw4mp.exe"); //177
     commands();
     patches();

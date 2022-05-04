@@ -430,13 +430,13 @@ void Sys_Error(char* Format, ...)
 }
 
 //DONE : 0x00433940
-std::int32_t Sys_SetErrorText(const char* text)
+void Sys_SetErrorText(const char* text)
 {
     HWND activeWindow = GetActiveWindow();
     I_strncpyz(*(char**)0x64A329C, (char*)text, 512);
     DestroyWindow(*(HWND*)0x64A3298);
     *(HWND*)0x64A3298 = 0;
-    return MessageBoxA(activeWindow, text, "Error", 0x10);
+    MessageBoxA(activeWindow, text, "Error", 0x10);
 }
 
 //TODO : 0x0045A190

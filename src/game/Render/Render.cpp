@@ -79,7 +79,7 @@ bool R_PushRemoteScreenUpdate(std::int32_t a1)
 }
 
 //DONE : 0x004CFA00
-std::int32_t FixWindowsDesktop()
+void FixWindowsDesktop()
 {
     unsigned long currentThreadId = GetCurrentThreadId();
     HWND desktopWindow = GetDesktopWindow();
@@ -103,5 +103,5 @@ std::int32_t FixWindowsDesktop()
     } 
     while (v5);
     SetDeviceGammaRamp(DC, ramp);
-    return ReleaseDC(desktopWindow, DC);
+    ReleaseDC(desktopWindow, DC);
 }

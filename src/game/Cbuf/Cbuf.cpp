@@ -56,7 +56,7 @@ int Conbuf_CleanText(const char* source, char* target, int sizeofTarget)
 }
 
 //THUNK : 0x004F5770
-long Conbuf_AppendText(const char* a1)
+void Conbuf_AppendText(const char* a1)
 {
 	char* v1;
 	std::int32_t v2;
@@ -86,5 +86,5 @@ long Conbuf_AppendText(const char* a1)
 
 	SendMessageA(*(HWND*)0x64A328C, 0xB6, 0, 0xFFFF);
 	SendMessageA(*(HWND*)0x64A328C, 0xB7, 0, 0);
-	return SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)lParam);
+	SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)lParam);
 }

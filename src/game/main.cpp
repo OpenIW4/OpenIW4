@@ -155,14 +155,7 @@ void replace_funcs()
     //Sorted by priority, our end goal is to ONLY have main.
     //The even further goal is to have nothing but thats ways off
     memory::replace(0x4513D0, main);
-
-    memory::replace(0x413DE0, Com_sprintf);
     memory::replace(0x4288A0, Sys_CreateConsole);
-    memory::replace(0x4305E0, Sys_ShowConsole);
-    memory::replace(0x64DC50, ConsoleWndProc);
-    memory::replace(0x470190, InputLineWndProc);
-    memory::replace(0x48A9D0, LSP_Init);
-    memory::replace(0x4EC640, LSP_Connected);
 }
 
 void patches()

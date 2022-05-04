@@ -370,17 +370,6 @@ bool Sys_IsDatabaseReady2()
     return WaitForSingleObject(*(HANDLE*)(0x01CDE858)/*databaseCompletedEvent2*/, 0) == 0;
 }
 
-//THUNK : 0x0043D570
-void Sys_Error(char* error, ...)
-{
-    va_list args;
-    va_start(args, error);
-    vprintf(error, args);
-    va_end(args);
-
-    memory::call<void(char*, va_list)>(0x0043D570)(error, args);
-}
-
 //DONE : 0x004F5250
 bool Sys_ReleaseThreadOwnership()
 {
@@ -435,7 +424,7 @@ void Sys_Error(char* Format, ...)
         while (GetMessageA(&msg, 0, 0, 0));
     }
     va_end(args);
-    memory::call<std::int32_t>(0x48A4E0); //Steam_EmergencyShutdown?
+    memory::call<std::int32_t(void)>(0x48A4E0)(); //Steam_EmergencyShutdown?
     exit(0);
 
 }
@@ -454,7 +443,7 @@ std::int32_t Sys_SetErrorText(const char* text)
 unsigned long Sys_SuspendOtherThreads()
 {
     Sys_EnterCriticalSection(34);
-    memory::call<int>(0x51CA20); //R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
+    memory::call<int(void)>(0x51CA20)(); //R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
     unsigned long result = GetCurrentThreadId();
     unsigned long v1 = result;
 

@@ -155,7 +155,7 @@ void replace_funcs()
     //Sorted by priority, our end goal is to ONLY have main.
     //The even further goal is to have nothing but thats ways off
     memory::replace(0x4513D0, main);
-    memory::replace(0x4288A0, Sys_CreateConsole);
+    memory::replace(0x4305E0, Sys_ShowConsole);
 }
 
 void patches()

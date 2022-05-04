@@ -433,7 +433,7 @@ void Sys_Error(char* Format, ...)
         } 
         while (GetMessageA(&msg, 0, 0, 0));
     }
-
+    va_end(args);
     memory::call<std::int32_t>(0x48A4E0); //Steam_EmergencyShutdown?
     exit(0);
 

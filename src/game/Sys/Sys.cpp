@@ -405,6 +405,7 @@ bool Sys_DatabaseCompleted()
     return SetEvent(event);
 }
 
+//TODO : 0x0043D570
 void Sys_Error(char* Format, ...)
 {
     tagMSG msg;

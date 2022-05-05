@@ -78,30 +78,58 @@ bool R_PushRemoteScreenUpdate(std::int32_t a1)
     return IsMainThread;
 }
 
-//DONE : 0x004CFA00
+//THUNK : 0x6417F0
+int __stdcall HideWindowCallback(HWND hWnd, long lParam)
+{
+    int style;
+    int styleEx;
+    // int hiddenCount;
+    char caption[1024];
+
+    if (!GetWindowTextA(hWnd, caption, 1024) || !strcmp(caption, "Modern Warfare 2 Multiplayer")) // the build display name is a returned string from a function
+    {
+        style = GetWindowLongA(hWnd, -16);
+        styleEx = GetWindowLongA(hWnd, -20);
+
+        if (style & 0x10000000)
+        {
+            SetWindowLongA(hWnd, -16, style & 0xEFFFFFFF);
+            SetWindowLongA(hWnd, -20, styleEx & 0xFFFFFFF7);
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
+
+//DONE : 0x4CFA00
 void FixWindowsDesktop()
 {
+    unsigned __int16* v4;
+    unsigned __int16 ramp[3][256];
+
+    ChangeDisplaySettingsA(0, 0);
     unsigned long currentThreadId = GetCurrentThreadId();
+    EnumThreadWindows(currentThreadId, HideWindowCallback, 0);
     HWND desktopWindow = GetDesktopWindow();
     HDC DC = GetDC(desktopWindow);
-    std::int32_t v3 = 0;
-    std::int8_t* v4;
-    std::int32_t v5 = 256;
-    void* ramp; //char[512]..? never used according to ida
-    std::int8_t v8;
 
-    v4 = &v8;
+    std::int32_t v3 = 0;
+    v4 = ramp[1];
+    std::int32_t v5 = 256;
 
     do
     {
-        *((std::uint16_t*)v4 - 256) = v3;
-        *(std::uint16_t*)v4 = v3;
-        *((std::uint16_t*)v4 + 256) = v3;
+        *(v4 - 256) = v3;
+        *v4 = v3;
+        v4[256] = v3;
         v3 += 257;
-        v4 += 2;
-        v5--;
+        ++v4;
+        --v5;
     } 
     while (v5);
+
     SetDeviceGammaRamp(DC, ramp);
     ReleaseDC(desktopWindow, DC);
 }

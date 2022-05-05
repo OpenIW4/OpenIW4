@@ -25,10 +25,10 @@ void InitTiming()
 	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = inlined_2() * 1000.0;
 }
 
-//THUNK : 0x004D6F80
-char* __cdecl I_strncpyz(char* Destination, char* Source, int a3)
+//THUNK : 0x4D6F80
+void I_strncpyz(char* dest, const char* src, int destsize)
 {
-    return memory::call<char* (char*, char*, int)>(0x004D6F80)(Destination, Source, a3);
+    memory::call<char* (char*, const char*, int)>(0x4D6F80)(dest, src, destsize);
 }
 
 //THUNK : 0x000x437EB0
@@ -155,7 +155,9 @@ void replace_funcs()
     //Sorted by priority, our end goal is to ONLY have main.
     //The even further goal is to have nothing but thats ways off
     memory::replace(0x4513D0, main);
+
     memory::replace(0x4305E0, Sys_ShowConsole);
+    memory::replace(0x43D570, Sys_Error);
 }
 
 void patches()

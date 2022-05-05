@@ -1,5 +1,7 @@
 #include "Cbuf.hpp"
 
+#include "../Sys/Sys.hpp"
+
 #include <utils/memory/memory.hpp>
 
 //THUNK : 0x00404B20
@@ -56,35 +58,31 @@ int Conbuf_CleanText(const char* source, char* target, int sizeofTarget)
 }
 
 //THUNK : 0x004F5770
-void Conbuf_AppendText(const char* a1)
+void Conbuf_AppendText(const char* pMsg)
 {
-	char* v1;
+	const char* v1 = pMsg;
 	std::int32_t v2;
-	char lParam[32768];
+	char target[32768];
 
-	if (strlen(a1) <= 16383)
+	if (strlen(pMsg) > 16383)
 	{
-		v1 = (char*)a1;
-	}
-	else
-	{
-		v1 = (char*)&a1[strlen(a1) - 16383];
+		v1 = &pMsg[strlen(pMsg) - 16383];
 	}
 
-	v2 = (std::int32_t)memory::call<unsigned char*(char*, int, char*)>(0x64DD30)(lParam, 0x8000, v1);
-	*(std::int32_t*)0x64A38B8 += v2;
+	v2 = Conbuf_CleanText(v1, target, sizeof(target));
+	*(std::uint32_t*)0x64A38B8 /*s_totalChars*/ += v2;
 	
 	if (*(std::uint32_t*)0x64A38B8 <= 0x4000)
 	{
-		SendMessageA(*(HWND*)0x64A328C, 0xB1, 0xFFFF, 0xFFFF);
+		SendMessageA(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, 0xB1, 0xFFFF, 0xFFFF);
 	}
 	else
 	{
 		SendMessageA(*(HWND*)0x64A328C, 0xB1, 0, -1);
-		*(std::int32_t*)0x64A38B8 = v2;
+		*(std::uint32_t*)0x64A38B8 = v2;
 	}
 
 	SendMessageA(*(HWND*)0x64A328C, 0xB6, 0, 0xFFFF);
 	SendMessageA(*(HWND*)0x64A328C, 0xB7, 0, 0);
-	SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)lParam);
+	SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)target);
 }

@@ -29,3 +29,5 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
 void Sys_Error(const char* error, ...);
 unsigned long Sys_SuspendOtherThreads();
 void Sys_SetErrorText(const char* text);
+int __stdcall HideWindowCallback(HWND hWnd, long lParam);
+void FixWindowsDesktop();

@@ -54,3 +54,37 @@ int Conbuf_CleanText(const char* source, char* target, int sizeofTarget)
 	*target = 0;
 	return target - start;
 }
+
+//THUNK : 0x004F5770
+void Conbuf_AppendText(const char* a1)
+{
+	char* v1;
+	std::int32_t v2;
+	char lParam[32768];
+
+	if (strlen(a1) <= 16383)
+	{
+		v1 = (char*)a1;
+	}
+	else
+	{
+		v1 = (char*)&a1[strlen(a1) - 16383];
+	}
+
+	v2 = (std::int32_t)memory::call<unsigned char*(char*, int, char*)>(0x64DD30)(lParam, 0x8000, v1);
+	*(std::int32_t*)0x64A38B8 += v2;
+	
+	if (*(std::uint32_t*)0x64A38B8 <= 0x4000)
+	{
+		SendMessageA(*(HWND*)0x64A328C, 0xB1, 0xFFFF, 0xFFFF);
+	}
+	else
+	{
+		SendMessageA(*(HWND*)0x64A328C, 0xB1, 0, -1);
+		*(std::int32_t*)0x64A38B8 = v2;
+	}
+
+	SendMessageA(*(HWND*)0x64A328C, 0xB6, 0, 0xFFFF);
+	SendMessageA(*(HWND*)0x64A328C, 0xB7, 0, 0);
+	SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)lParam);
+}

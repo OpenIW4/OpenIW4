@@ -77,3 +77,31 @@ bool R_PushRemoteScreenUpdate(std::int32_t a1)
     }
     return IsMainThread;
 }
+
+//DONE : 0x004CFA00
+void FixWindowsDesktop()
+{
+    unsigned long currentThreadId = GetCurrentThreadId();
+    HWND desktopWindow = GetDesktopWindow();
+    HDC DC = GetDC(desktopWindow);
+    std::int32_t v3 = 0;
+    std::int8_t* v4;
+    std::int32_t v5 = 256;
+    void* ramp; //char[512]..? never used according to ida
+    std::int8_t v8;
+
+    v4 = &v8;
+
+    do
+    {
+        *((std::uint16_t*)v4 - 256) = v3;
+        *(std::uint16_t*)v4 = v3;
+        *((std::uint16_t*)v4 + 256) = v3;
+        v3 += 257;
+        v4 += 2;
+        v5--;
+    } 
+    while (v5);
+    SetDeviceGammaRamp(DC, ramp);
+    ReleaseDC(desktopWindow, DC);
+}

@@ -2,5 +2,5 @@
 
 #include "stdafx.hpp"
 
-char* __cdecl I_strncpyz(char* Destination, char* Source, int a3);
+void I_strncpyz(char* dest, const char* src, int destsize);
 char* va(char* Format, ...);

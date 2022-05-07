@@ -21,6 +21,28 @@ unsigned long* MSG_WriteByte(unsigned long* a1, std::int8_t a2)
 	return result;
 }
 
+//DONE : 0x44E1F0
+unsigned long* MSG_WriteBit0(unsigned long* a1)
+{
+	unsigned long* result = a1;
+	std::int32_t v2;
+
+	if ((a1[8] & 7) == 0)
+	{
+		v2 = a1[5];
+		if (v2 >= a1[4])
+		{
+			*a1 = 1;
+			return result;
+		}
+		a1[8] = 8 * v2;
+		*(unsigned char*)(v2 + a1[2]) = 0;
+		a1[5]++;
+	}
+	a1[8]++;
+	return result;
+}
+
 //DONE : 0x0045A600
 unsigned long* MSG_WriteBit1(unsigned long* a1)
 {

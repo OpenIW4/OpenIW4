@@ -3,7 +3,7 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x0048C520
-DWORD* MSG_WriteByte(DWORD* a1, std::int8_t a2)
+unsigned long* MSG_WriteByte(unsigned long* a1, std::int8_t a2)
 {
 	DWORD* result = a1;
 	std::int32_t v3 = a1[5];
@@ -22,7 +22,7 @@ DWORD* MSG_WriteByte(DWORD* a1, std::int8_t a2)
 }
 
 //DONE : 0x0045A600
-DWORD* MSG_WriteBit1(DWORD* a1)
+unsigned long* MSG_WriteBit1(unsigned long* a1)
 {
 	DWORD* result = a1;
 	std::int32_t v2 = a1[8] & 7;

@@ -2,7 +2,7 @@
 
 #include <utils/memory/memory.hpp>
 
-//DONE : 0x0048C520
+//DONE : 0x48C520
 void MSG_WriteByte(unsigned long* a1, std::int8_t a2)
 {
 	std::int32_t v1 = a1[5];
@@ -38,7 +38,7 @@ void MSG_WriteBit0(unsigned long* a1)
 	a1[8]++;
 }
 
-//DONE : 0x0045A600
+//DONE : 0x45A600
 void MSG_WriteBit1(unsigned long* a1)
 {
 	std::int32_t v2 = a1[8] & 7;
@@ -65,7 +65,7 @@ void MSG_WriteBit1(unsigned long* a1)
 	a1[8]++;
 }
 
-//TODO : 0x00441230
+//TODO : 0x441230
 void MSG_WriteInt64(unsigned long* a1, std::int32_t a2, std::int32_t a3)
 {
 	std::int32_t v3 = a1[5] + 8;
@@ -84,8 +84,8 @@ void MSG_WriteInt64(unsigned long* a1, std::int32_t a2, std::int32_t a3)
 		v4 = memory::call<std::int32_t(std::int32_t, std::int32_t)>(0x004A94F0)(a2, a3);
 		v5 = a1[5];
 		v6 = a1[2];
-		*(DWORD*)(v6 + v5) = v4;
-		*(DWORD*)(v6 + v5 + 4) = v7; //most likely unused
+		*(unsigned long*)(v6 + v5) = v4;
+		*(unsigned long*)(v6 + v5 + 4) = v7; //most likely unused
 		a1[5] = v3;
 	}
 }
@@ -103,5 +103,21 @@ void MSG_WriteShort(unsigned long* a1, std::int16_t a2)
 	{
 		*(std::uint16_t*)(v1 + a1[2]) = a2;
 		a1[5] = v1 + 2;
+	}
+}
+
+//DONE : 0x41CA20
+void MSG_WriteLong(unsigned long* a1, std::int32_t a2)
+{
+	std::int32_t v1 = a1[5];
+
+	if (v1 + 4 > a1[4])
+	{
+		*a1 = 1;
+	}
+	else
+	{
+		*(unsigned long*)(v1 + a1[2]) = a2;
+		a1[5] = v1 + 4;
 	}
 }

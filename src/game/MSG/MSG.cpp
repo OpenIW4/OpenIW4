@@ -3,50 +3,44 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x0048C520
-unsigned long* MSG_WriteByte(unsigned long* a1, std::int8_t a2)
+void MSG_WriteByte(unsigned long* a1, std::int8_t a2)
 {
-	DWORD* result = a1;
-	std::int32_t v3 = a1[5];
+	std::int32_t v1 = a1[5];
 
-	if (v3 >= a1[4])
+	if (v1 >= a1[4])
 	{
 		*a1 = 1;
 	}
 	else
 	{
-		*(std::uint8_t*)(v3 + a1[2]) = a2;
+		*(std::uint8_t*)(v1 + a1[2]) = a2;
 		a1[5]++;
 	}
 
-	return result;
 }
 
 //DONE : 0x44E1F0
-unsigned long* MSG_WriteBit0(unsigned long* a1)
+void MSG_WriteBit0(unsigned long* a1)
 {
-	unsigned long* result = a1;
-	std::int32_t v2;
+	std::int32_t v1;
 
 	if ((a1[8] & 7) == 0)
 	{
-		v2 = a1[5];
-		if (v2 >= a1[4])
+		v1 = a1[5];
+		if (v1 >= a1[4])
 		{
 			*a1 = 1;
-			return result;
 		}
-		a1[8] = 8 * v2;
-		*(unsigned char*)(v2 + a1[2]) = 0;
+		a1[8] = 8 * v1;
+		*(unsigned char*)(v1 + a1[2]) = 0;
 		a1[5]++;
 	}
 	a1[8]++;
-	return result;
 }
 
 //DONE : 0x0045A600
-unsigned long* MSG_WriteBit1(unsigned long* a1)
+void MSG_WriteBit1(unsigned long* a1)
 {
-	DWORD* result = a1;
 	std::int32_t v2 = a1[8] & 7;
 
 	std::int32_t v3;
@@ -58,7 +52,7 @@ unsigned long* MSG_WriteBit1(unsigned long* a1)
 		if (v3 >= a1[4])
 		{
 			*a1 = 1;
-			return result;
+			return;
 		}
 
 		a1[8] = 8 * v3;
@@ -69,11 +63,10 @@ unsigned long* MSG_WriteBit1(unsigned long* a1)
 	v4 = (std::int8_t*)(((std::int32_t)a1[8] >> 3) + a1[2]);
 	*v4 |= 1 << v2;
 	a1[8]++;
-	return result;
 }
 
-//THUNK : 0x00441230
-void MSG_WriteInt64(DWORD* a1, std::int32_t a2, std::int32_t a3)
+//TODO : 0x00441230
+void MSG_WriteInt64(unsigned long* a1, std::int32_t a2, std::int32_t a3)
 {
 	std::int32_t v3 = a1[5] + 8;
 
@@ -94,5 +87,21 @@ void MSG_WriteInt64(DWORD* a1, std::int32_t a2, std::int32_t a3)
 		*(DWORD*)(v6 + v5) = v4;
 		*(DWORD*)(v6 + v5 + 4) = v7; //most likely unused
 		a1[5] = v3;
+	}
+}
+
+//DONE : 0x503B90
+void MSG_WriteShort(unsigned long* a1, std::int16_t a2)
+{
+	std::int32_t v1 = a1[5];
+
+	if (v1 + 2 > a1[4])
+	{
+		*a1 = 1;
+	}
+	else
+	{
+		*(std::uint16_t*)(v1 + a1[2]) = a2;
+		a1[5] = v1 + 2;
 	}
 }

@@ -92,3 +92,14 @@ struct msg_t
 	std::int32_t bit; //depending on use, size could be smaller than an int as we may not need all fields
 	std::int32_t lastEntityRef;
 };
+
+struct language_t
+{
+	char* loc_string;
+};
+
+struct localization_t
+{
+	char* language;
+	char* strings;
+};

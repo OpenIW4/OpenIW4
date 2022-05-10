@@ -3,6 +3,26 @@
 
 #include <utils/memory/memory.hpp>
 
+//TODO : 0x45FCA0
+void MSG_Init(msg_t* buffer, char* data, size_t size)
+{
+	if (!*(bool*)0x1CB9EB8 /*msgInit*/)
+	{
+		memory::call<void()>(0x48B180)(); //MSG_InitHuffman
+	}
+
+	buffer->overflowed = false;
+	buffer->curSize = 0;
+	buffer->readCount = 0;
+	buffer->bit = 0;
+	buffer->lastEntityRef = 0;
+	buffer->data = data;
+	buffer->maxSize = size;
+	buffer->readOnly = false;
+	buffer->splitData = 0;
+	buffer->splitSize = 0;
+}
+
 //DONE : 0x48C520
 void MSG_WriteByte(msg_t* msg, std::int8_t c)
 {

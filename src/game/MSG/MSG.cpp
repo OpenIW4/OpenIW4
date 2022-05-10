@@ -4,113 +4,113 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x48C520
-void MSG_WriteByte(msg_t* a1, std::int8_t a2)
+void MSG_WriteByte(msg_t* msg, std::int8_t c)
 {
-	if (a1->curSize >= a1->maxSize)
+	if (msg->curSize >= msg->maxSize)
 	{
-		a1->overflowed = true;
+		msg->overflowed = true;
 	}
 	else
 	{
-		a1->data[a1->curSize] = a2;
-		a1->curSize++;
+		msg->data[msg->curSize] = c;
+		++msg->curSize;
 	}
 }
 
 //DONE : 0x44E1F0
-void MSG_WriteBit0(msg_t* a1)
+void MSG_WriteBit0(msg_t* msg)
 {
-	if ((a1->bit & 7) == 0)
+	if ((msg->bit & 7) == 0)
 	{
-		if (a1->curSize >= a1->maxSize)
+		if (msg->curSize >= msg->maxSize)
 		{
-			a1->overflowed = true;
+			msg->overflowed = true;
 			return;
 		}
 
-		a1->bit = 8 * a1->curSize;
-		a1->data[a1->curSize] = 0;
-		a1->curSize++;
+		msg->bit = 8 * msg->curSize;
+		msg->data[msg->curSize] = 0;
+		++msg->curSize;
 	}
 
-	a1->bit++;
+	++msg->bit;
 }
 
 //DONE : 0x45A600
-void MSG_WriteBit1(msg_t* a1)
+void MSG_WriteBit1(msg_t* msg)
 {
-	if (a1->bit & 7)
+	if (msg->bit & 7)
 	{
-		if (a1->curSize >= a1->maxSize)
+		if (msg->curSize >= msg->maxSize)
 		{
-			a1->overflowed = true;
+			msg->overflowed = true;
 			return;
 		}
 
-		a1->bit = 8 * a1->curSize;
-		a1->data[a1->curSize] = 0;
-		a1->curSize++;
+		msg->bit = 8 * msg->curSize;
+		msg->data[msg->curSize] = 0;
+		++msg->curSize;
 	}
 
-	char* v3 = &a1->data[a1->bit >> 3];
-	*v3 |= 1 << a1->bit & 7;
-	a1->bit++;
+	char* v3 = &msg->data[msg->bit >> 3];
+	*v3 |= 1 << msg->bit & 7;
+	++msg->bit;
 }
 
 //TODO : 0x441230
-void MSG_WriteInt64(msg_t* a1, std::int32_t a2, std::int32_t a3)
+void MSG_WriteInt64(msg_t* msg, std::int32_t a2, std::int32_t a3)
 {
-	if (a1->curSize + 8 > a1->maxSize)
+	if (msg->curSize + 8 > msg->maxSize)
 	{
-		a1->overflowed = true;
+		msg->overflowed = true;
 	}
 	else
 	{
-		*(std::uint64_t*)&a1->data[a1->curSize] = memory::call<std::int32_t(std::int32_t, std::int32_t)>(0x4A94F0)(a2, a3); //this might be LittleLong64
-		a1->curSize += 8;
+		*(std::uint64_t*)&msg->data[msg->curSize] = memory::call<std::int32_t(std::int32_t, std::int32_t)>(0x4A94F0)(a2, a3); //this might be LittleLong64
+		msg->curSize += 8;
 	}
 }
 
 //DONE : 0x503B90
-void MSG_WriteShort(msg_t* a1, std::uint16_t a2)
+void MSG_WriteShort(msg_t* msg, std::int32_t c)
 {
-	if (a1->curSize + 2 > a1->maxSize)
+	if (msg->curSize + 2 > msg->maxSize)
 	{
-		a1->overflowed = true;
+		msg->overflowed = true;
 	}
 	else
 	{
-		*(std::uint16_t*)&a1->data[a1->curSize] = a2;
-		a1->curSize += 2;
+		*(std::uint16_t*)&msg->data[msg->curSize] = c;
+		msg->curSize += 2;
 	}
 }
 
 //DONE : 0x41CA20
-void MSG_WriteLong(msg_t* a1, std::int32_t a2)
+void MSG_WriteLong(msg_t* msg, std::int32_t c)
 {
-	if (a1->curSize + 4 > a1->maxSize)
+	if (msg->curSize + 4 > msg->maxSize)
 	{
-		a1->overflowed = true;
+		msg->overflowed = true;
 	}
 	else
 	{
-		*(unsigned long*)&a1->data[a1->curSize] = a2;
-		a1->curSize += 4;
+		*(unsigned long*)&msg->data[msg->curSize] = c;
+		msg->curSize += 4;
 	}
 }
 
 //DONE : 0x4F4120
-void MSG_WriteData(msg_t* a1, std::int32_t* a2, std::int32_t a3)
+void MSG_WriteData(msg_t* msg, std::int32_t* a2, std::int32_t a3)
 {
-	std::int32_t v1 = a1->curSize + a3;
+	std::int32_t v1 = msg->curSize + a3;
 
-	if (v1 > a1->maxSize)
+	if (v1 > msg->maxSize)
 	{
-		a1->overflowed = true;
+		msg->overflowed = true;
 	}
 	else
 	{
-		Com_Memcpy((void*)&a1->data[a1->curSize], a2, a3);
-		a1->curSize = v1;
+		Com_Memcpy((void*)&msg->data[msg->curSize], a2, a3);
+		msg->curSize = v1;
 	}
 }

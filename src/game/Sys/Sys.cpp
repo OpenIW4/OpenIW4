@@ -498,29 +498,22 @@ int __stdcall HideWindowCallback(HWND hWnd, long lParam)
 //DONE : 0x4CFA00
 void FixWindowsDesktop()
 {
-    unsigned __int16* v4;
-    unsigned __int16 ramp[3][256];
+    std::uint64_t currentThreadId = GetCurrentThreadId();
+    HWND hwndDesktop = GetDesktopWindow();
+    HDC hdc = GetDC(hwndDesktop);
+
+    std::uint16_t ramp[3][256];
 
     ChangeDisplaySettingsA(0, 0);
-    unsigned long currentThreadId = GetCurrentThreadId();
     EnumThreadWindows(currentThreadId, HideWindowCallback, 0);
-    HWND desktopWindow = GetDesktopWindow();
-    HDC DC = GetDC(desktopWindow);
 
-    std::int32_t v3 = 0;
-    v4 = ramp[1];
-    std::int32_t v5 = 256;
-
-    do
+    for (std::uint16_t i = 0; i < 256; i++)
     {
-        *(v4 - 256) = v3;
-        *v4 = v3;
-        v4[256] = v3;
-        v3 += 257;
-        ++v4;
-        --v5;
-    } while (v5);
+        ramp[0][i] = 257 * i;
+        ramp[1][i] = 257 * i;
+        ramp[2][i] = 257 * i;
+    }
 
-    SetDeviceGammaRamp(DC, ramp);
-    ReleaseDC(desktopWindow, DC);
+    SetDeviceGammaRamp(hdc, ramp);
+    ReleaseDC(hwndDesktop, hdc);
 }

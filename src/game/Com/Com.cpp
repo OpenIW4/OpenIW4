@@ -185,3 +185,10 @@ int Com_sprintf(char* buf, size_t bufCount, char* fmt, ...)
 
     return result;
 }
+
+
+//DONE : 0x416E40
+void* Com_Memcpy(void* dest, const void* src, size_t size)
+{
+    memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
+}

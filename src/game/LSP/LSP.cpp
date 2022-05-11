@@ -1,10 +1,12 @@
 #include "LSP.hpp"
 #include "../Dvar/Dvar.hpp"
 #include "../IWNet/IWNet.hpp"
+#include "../Live/Live.hpp"
+#include "../Sys/Sys.hpp"
 
 #include <utils/memory/memory.hpp>
 
-//DONE : 0x0048A9D0
+//DONE : 0x48A9D0
 void LSP_Init()
 {
 	*(bool*)0x66C6C1E = 1; //s_logStrings
@@ -18,13 +20,13 @@ void LSP_Init()
 
 }
 
-//DONE : 0x004EC640
+//DONE : 0x4EC640
 bool LSP_Connected()
 {
 	return *(bool*)0x66C7638; //lsp_connected
 }
 
-//DONE : 0x004664A0
+//DONE : 0x4664A0
 bool LSP_FindTitleServers()
 {
 	bool result = IWNet_DNSResolved();
@@ -32,8 +34,50 @@ bool LSP_FindTitleServers()
 	return result;
 }
 
-//DONE : 0x005A95F0
+//DONE : 0x5A95F0
 bool LSP_FindTitleServers_f()
 {
 	return LSP_FindTitleServers();
+}
+
+//TODO: 0x682360
+void /*__usercall*/ InitLog(std::int32_t a1)
+{
+	std::int64_t v3;
+	memory::call<unsigned long* (unsigned long*, std::int32_t, std::int32_t)>(0x45FCA0/*MSG_Init*/)(*(unsigned long**)0x66C7160, *(std::int32_t*)0x66C7188, 1200);
+	Live_GetLSPXuid(a1, &v3);
+
+	std::int32_t* currentSession = Live_GetCurrentSession();
+	const char* localClientName = Live_GetLocalClientName();
+	//fucking LSP_WritePacketHeader is TODO
+}
+
+//TODO : 0x682400
+void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
+{
+	std::int32_t* currentSession = Live_GetCurrentSession();
+
+	if (!*(bool*)0x66C639A /*logMsgInittialized*/)
+	{
+		Sys_EnterCriticalSection(26);
+
+		if (!*(bool*)0x66C639A)
+		{
+			if (!Live_IsSignedIn())
+			{
+				Sys_LeaveCriticalSection(26);
+				return;
+			}
+			InitLog(a1);
+			*(bool*)0x66C639A = true;
+		}
+		Sys_LeaveCriticalSection(26);
+	}
+
+	if(a2 + *(std::int32_t*)0x66C7174 >= *(std::int32_t*)0x66C7170
+		|| *(std::int32_t*)0x66C6C14 /*s_currentControllerIndex*/ != a1
+		|| *((unsigned char**)currentSession + 8) && memcmp(currentSession + 118, *(std::int32_t**)0x66C7118, 8))
+	{
+		//fucking LSP_SendLogRequest is TODO
+	}
 }

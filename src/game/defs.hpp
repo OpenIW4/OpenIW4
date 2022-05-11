@@ -78,3 +78,28 @@ enum errorParm_t
 	ERR_LOCALIZATION = 0x6,
 	ERR_MAPLOADERRORSUMMARY = 0x7,
 };
+
+struct msg_t
+{
+	bool overflowed;
+	bool readOnly;
+	char* data;
+	char* splitData;
+	std::int32_t maxSize;
+	std::int32_t curSize;
+	std::int32_t splitSize;
+	std::int32_t readCount;
+	std::int32_t bit; //depending on use, size could be smaller than an int as we may not need all fields
+	std::int32_t lastEntityRef;
+};
+
+struct language_t
+{
+	char* loc_string;
+};
+
+struct localization_t
+{
+	char* language;
+	char* strings;
+};

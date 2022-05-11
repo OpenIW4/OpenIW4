@@ -1,11 +1,7 @@
 #pragma once
 
 #include "../stdafx.hpp"
-
-struct language_t
-{
-	char* loc_string;
-};
+#include "../defs.hpp"
 
 bool Win_InitLocalization(language_t* language);
 void Win_ShutdownLocalization();

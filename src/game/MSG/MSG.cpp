@@ -1,76 +1,136 @@
 #include "MSG.hpp"
+#include "../Com/Com.hpp"
 
 #include <utils/memory/memory.hpp>
 
-//DONE : 0x0048C520
-DWORD* MSG_WriteByte(DWORD* a1, std::int8_t a2)
+//TODO : 0x45FCA0
+void MSG_Init(msg_t* buffer, char* data, size_t size)
 {
-	DWORD* result = a1;
-	std::int32_t v3 = a1[5];
-
-	if (v3 >= a1[4])
+	if (!*(bool*)0x1CB9EB8 /*msgInit*/)
 	{
-		*a1 = 1;
+		memory::call<void()>(0x48B180)(); //MSG_InitHuffman
+	}
+
+	buffer->overflowed = false;
+	buffer->curSize = 0;
+	buffer->readCount = 0;
+	buffer->bit = 0;
+	buffer->lastEntityRef = 0;
+	buffer->data = data;
+	buffer->maxSize = size;
+	buffer->readOnly = false;
+	buffer->splitData = 0;
+	buffer->splitSize = 0;
+}
+
+//DONE : 0x48C520
+void MSG_WriteByte(msg_t* msg, std::int8_t c)
+{
+	if (msg->curSize >= msg->maxSize)
+	{
+		msg->overflowed = true;
 	}
 	else
 	{
-		*(std::uint8_t*)(v3 + a1[2]) = a2;
-		a1[5]++;
+		msg->data[msg->curSize] = c;
+		++msg->curSize;
 	}
-
-	return result;
 }
 
-//DONE : 0x0045A600
-DWORD* MSG_WriteBit1(DWORD* a1)
+//DONE : 0x44E1F0
+void MSG_WriteBit0(msg_t* msg)
 {
-	DWORD* result = a1;
-	std::int32_t v2 = a1[8] & 7;
-
-	std::int32_t v3;
-	std::int8_t* v4;
-
-	if (!v2)
+	if ((msg->bit & 7) == 0)
 	{
-		v3 = a1[5];
-		if (v3 >= a1[4])
+		if (msg->curSize >= msg->maxSize)
 		{
-			*a1 = 1;
-			return result;
+			msg->overflowed = true;
+			return;
 		}
 
-		a1[8] = 8 * v3;
-		*(std::int8_t*)(v3 + a1[2]) = 0;
-		a1[5]++;
+		msg->bit = 8 * msg->curSize;
+		msg->data[msg->curSize] = 0;
+		++msg->curSize;
 	}
 
-	v4 = (std::int8_t*)(((std::int32_t)a1[8] >> 3) + a1[2]);
-	*v4 |= 1 << v2;
-	a1[8]++;
-	return result;
+	++msg->bit;
 }
 
-//THUNK : 0x00441230
-void MSG_WriteInt64(DWORD* a1, std::int32_t a2, std::int32_t a3)
+//DONE : 0x45A600
+void MSG_WriteBit1(msg_t* msg)
 {
-	std::int32_t v3 = a1[5] + 8;
-
-	std::int32_t v4;
-	std::int32_t v5;
-	std::int32_t v6;
-	std::int32_t v7 = 0;
-
-	if (v3 > a1[4])
+	if (msg->bit & 7)
 	{
-		*a1 = 1;
+		if (msg->curSize >= msg->maxSize)
+		{
+			msg->overflowed = true;
+			return;
+		}
+
+		msg->bit = 8 * msg->curSize;
+		msg->data[msg->curSize] = 0;
+		++msg->curSize;
+	}
+
+	char* v3 = &msg->data[msg->bit >> 3];
+	*v3 |= 1 << msg->bit & 7;
+	++msg->bit;
+}
+
+//TODO : 0x441230
+void MSG_WriteInt64(msg_t* msg, std::int32_t a2, std::int32_t a3)
+{
+	if (msg->curSize + 8 > msg->maxSize)
+	{
+		msg->overflowed = true;
 	}
 	else
 	{
-		v4 = memory::call<std::int32_t(std::int32_t, std::int32_t)>(0x004A94F0)(a2, a3);
-		v5 = a1[5];
-		v6 = a1[2];
-		*(DWORD*)(v6 + v5) = v4;
-		*(DWORD*)(v6 + v5 + 4) = v7; //most likely unused
-		a1[5] = v3;
+		*(std::uint64_t*)&msg->data[msg->curSize] = memory::call<std::int32_t(std::int32_t, std::int32_t)>(0x4A94F0)(a2, a3); //this might be LittleLong64
+		msg->curSize += 8;
+	}
+}
+
+//DONE : 0x503B90
+void MSG_WriteShort(msg_t* msg, std::int32_t c)
+{
+	if (msg->curSize + 2 > msg->maxSize)
+	{
+		msg->overflowed = true;
+	}
+	else
+	{
+		*(std::uint16_t*)&msg->data[msg->curSize] = c;
+		msg->curSize += 2;
+	}
+}
+
+//DONE : 0x41CA20
+void MSG_WriteLong(msg_t* msg, std::int32_t c)
+{
+	if (msg->curSize + 4 > msg->maxSize)
+	{
+		msg->overflowed = true;
+	}
+	else
+	{
+		*(unsigned long*)&msg->data[msg->curSize] = c;
+		msg->curSize += 4;
+	}
+}
+
+//DONE : 0x4F4120
+void MSG_WriteData(msg_t* msg, std::int32_t* a2, std::int32_t a3)
+{
+	std::int32_t v1 = msg->curSize + a3;
+
+	if (v1 > msg->maxSize)
+	{
+		msg->overflowed = true;
+	}
+	else
+	{
+		Com_Memcpy((void*)&msg->data[msg->curSize], a2, a3);
+		msg->curSize = v1;
 	}
 }

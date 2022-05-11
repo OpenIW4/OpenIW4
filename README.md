@@ -13,4 +13,6 @@ Refer to the [Premake5 docs](https://premake.github.io/docs/) for more informati
 We really don't care, just send us stuff.
 
 # Join us!
-Join our Discord [here](https://discord.gg/hSfBBR4Urs)!
+Join our Discord [here](https://discord.gg/f6H9Dh8kht)! And if you're wondering as to why the repo disappeared or why it is no longer stared for you, join and read the about.
+
+Thank you for sticking with us!

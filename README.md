@@ -4,7 +4,7 @@
 
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
-#Zynamics branch
+# Zynamics branch
 This branch will be dedicated to porting the orginal loader to Zynamic, made by [wroyca](https://github.com/wroyca/zynamic). Check it out!
 
 # Compiling

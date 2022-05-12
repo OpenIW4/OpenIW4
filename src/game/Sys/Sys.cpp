@@ -4,7 +4,7 @@
 #include "../CL/CL.hpp"
 #include "../main.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //DONE : 0x004305E0
 void Sys_ShowConsole()

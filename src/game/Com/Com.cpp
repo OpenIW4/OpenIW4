@@ -4,7 +4,7 @@
 #include "../Render/Render.hpp"
 #include "../DB/DB.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 // None of these do anything to my knowledge
 // but for sake of completion they are here
@@ -190,5 +190,5 @@ int Com_sprintf(char* buf, size_t bufCount, char* fmt, ...)
 //DONE : 0x416E40
 void* Com_Memcpy(void* dest, const void* src, size_t size)
 {
-    memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
+    return memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
 }

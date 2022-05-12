@@ -1,7 +1,7 @@
 #include "Live.hpp"
 #include "../Party/Party.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //DONE : 0x5027D0
 std::int32_t* __stdcall Live_GetCurrentSession()

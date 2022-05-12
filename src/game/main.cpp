@@ -1,5 +1,3 @@
-#include "loader/loader.hpp"
-
 #include "Sys/Sys.hpp"
 #include "Com/Com.hpp"
 #include "Win/Win.hpp"
@@ -11,7 +9,7 @@
 
 #include "defs.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //THUNK : 0x0064AE50
 double inlined_2()
@@ -67,9 +65,33 @@ void Session_InitDvars()
     
 }
 
-//DONE : 0x004513D0
-int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+//Temp fix until further reimp
+
+void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
 {
+    auto DB_XAssetPool = (void**)0x007998A8;
+    auto g_poolSize = (std::uint32_t*)0x007995E8;
+
+    auto size = DB_GetXAssetTypeSize(type);
+    auto poolEntry = malloc(newSize * size);
+    DB_XAssetPool[type] = poolEntry;
+    g_poolSize[type] = newSize;
+
+    return poolEntry;
+}
+
+void patches()
+{
+    Sys_ShowConsole();
+    ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);
+    *(std::float_t*)(0x9FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+}
+
+//DONE : 0x004513D0
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+    patches();
+
     const char* LocalizationFilename; // eax
     char* error_msg; // eax
 
@@ -128,50 +150,4 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
         MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
-}
-
-//Temp fix until further reimp
-
-void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
-{
-    auto DB_XAssetPool = (void**)0x007998A8;
-    auto g_poolSize = (std::uint32_t*)0x007995E8;
-
-    auto size = DB_GetXAssetTypeSize(type);
-    auto poolEntry = malloc(newSize * size);
-    DB_XAssetPool[type] = poolEntry;
-    g_poolSize[type] = newSize;
-
-    return poolEntry;
-}
-
-void commands()
-{
-    *(int*)(0x009FBE24) /*cg_fov*/ = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
-}
-
-void replace_funcs()
-{
-    //Sorted by priority, our end goal is to ONLY have main.
-    //The even further goal is to have nothing but thats ways off
-    memory::replace(0x4513D0, main);
-
-    memory::replace(0x4305E0, Sys_ShowConsole);
-    memory::replace(0x43D570, Sys_Error);
-}
-
-void patches()
-{
-    Sys_ShowConsole();
-    ReallocateAssetPool(ASSET_TYPE_WEAPON, 3000);
-}
-
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
-    AllocConsole();
-    loader::load("iw4mp.exe"); //177
-    commands();
-    patches();
-    replace_funcs();
-    return memory::call<int()>(0x006BAC0F)();
 }

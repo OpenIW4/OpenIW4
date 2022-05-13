@@ -1,5 +1,3 @@
-#include "loader/loader.hpp"
-
 #include "Sys/Sys.hpp"
 #include "Com/Com.hpp"
 #include "Win/Win.hpp"
@@ -169,7 +167,6 @@ void patches()
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     AllocConsole();
-    loader::load("iw4mp.exe"); //177
     commands();
     patches();
     replace_funcs();

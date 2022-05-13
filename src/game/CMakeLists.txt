@@ -8,6 +8,7 @@ add_executable(OpenIW4
 
 target_link_libraries(OpenIW4
 	Zynamic
+	Winmm
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -52,9 +53,5 @@ PRIVATE
   "_CRT_SECURE_NO_WARNINGS"
   "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
 )
-
-#users may have to edit this as this is the default install dir
-set(ZYNAMIC_OUT "C:/Program Files (x86)/Steam/steamapps/common/Call of Duty Modern Warfare 2" CACHE PATH "Call of Duty: Modern Warfare 2 directory.")
-set(ZYNAMIC_BIN "iw4mp" CACHE STRING "Call of Duty: Modern Warfare 2 bin")
 
 target_vcxproj_filters(OpenIW4)

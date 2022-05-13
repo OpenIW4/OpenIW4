@@ -14,5 +14,9 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
+#users may have to edit this as this is the default install dir
+set(ZYNAMIC_OUT "C:/Program Files (x86)/Steam/steamapps/common/Call of Duty Modern Warfare 2" CACHE PATH "Call of Duty: Modern Warfare 2 directory.")
+set(ZYNAMIC_BIN "iw4mp" CACHE STRING "Call of Duty: Modern Warfare 2 bin")
+
 add_subdirectory(deps)
 add_subdirectory(src)

@@ -66,8 +66,9 @@ void Session_InitDvars()
 }
 
 //DONE : 0x004513D0
-int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+#ifdef DONE
     const char* LocalizationFilename; // eax
     char* error_msg; // eax
 
@@ -126,6 +127,9 @@ int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nSho
         MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
+#endif
+    //dont want to erase everything just yet, still testing
+    MessageBoxA(nullptr, "hello from custom main via zynamic", "hi", MB_OK);
 }
 
 //Temp fix until further reimp
@@ -142,20 +146,10 @@ void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
 
     return poolEntry;
 }
-
+/*
 void commands()
 {
-    *(int*)(0x009FBE24) /*cg_fov*/ = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
-}
-
-void replace_funcs()
-{
-    //Sorted by priority, our end goal is to ONLY have main.
-    //The even further goal is to have nothing but thats ways off
-    memory::replace(0x4513D0, main);
-
-    memory::replace(0x4305E0, Sys_ShowConsole);
-    memory::replace(0x43D570, Sys_Error);
+    *(int*)(0x009FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
 }
 
 void patches()
@@ -167,8 +161,7 @@ void patches()
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     AllocConsole();
-    commands();
     patches();
-    replace_funcs();
+    commands();
     return memory::call<int()>(0x006BAC0F)();
-}
+}*/

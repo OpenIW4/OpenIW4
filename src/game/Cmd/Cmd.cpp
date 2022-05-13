@@ -1,6 +1,6 @@
 #include "Cmd.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //THUNK : 0x00470090
 int Cmd_AddCommandInternal(const char* s1, void(* callback)(), void* allocation, bool key)

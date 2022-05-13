@@ -35,6 +35,15 @@ PRIVATE
 	/bigobj
 )
 
+set_target_properties(OpenIW4
+PROPERTIES
+  PDB_OUTPUT_DIRECTORY          "${ZYNAMIC_OUT}$<0:>"
+  ARCHIVE_OUTPUT_DIRECTORY      "${ZYNAMIC_OUT}$<0:>"
+  LIBRARY_OUTPUT_DIRECTORY      "${ZYNAMIC_OUT}$<0:>"
+  RUNTIME_OUTPUT_DIRECTORY      "${ZYNAMIC_OUT}$<0:>"
+  VS_DEBUGGER_WORKING_DIRECTORY "${ZYNAMIC_OUT}"
+)
+
 target_compile_definitions(OpenIW4
 PRIVATE
   -DFAKE_PDB
@@ -43,5 +52,9 @@ PRIVATE
   "_CRT_SECURE_NO_WARNINGS"
   "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
 )
+
+#users may have to edit this as this is the default install dir
+set(ZYNAMIC_OUT "C:/Program Files (x86)/Steam/steamapps/common/Call of Duty Modern Warfare 2" CACHE PATH "Call of Duty: Modern Warfare 2 directory.")
+set(ZYNAMIC_BIN "iw4mp" CACHE STRING "Call of Duty: Modern Warfare 2 bin")
 
 target_vcxproj_filters(OpenIW4)

@@ -1,7 +1,7 @@
 #include "Render.hpp"
 #include "../Sys/Sys.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //DONE : 0x0050B0D0
 int R_PopRemoteScreenUpdate()

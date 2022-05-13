@@ -1,4 +1,5 @@
-#based off of OpenIW scriptscmake_minimum_required(VERSION 3.23.1 FATAL_ERROR)
+#based off of OpenIW scripts
+cmake_minimum_required(VERSION 3.23.1 FATAL_ERROR)
 project(OpenIW4 LANGUAGES CXX)
 
 option(SUBMODULES "Init repo deps" ON)

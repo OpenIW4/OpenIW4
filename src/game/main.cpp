@@ -150,24 +150,4 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
-
-    //dont want to erase everything just yet, still testing
-    MessageBoxA(nullptr, "hello from custom main via zynamic", "hi", MB_OK);
 }
-
-
-/*
-void commands()
-{
-   
-}
-
-
-
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
-    AllocConsole();
-    patches();
-    commands();
-    return memory::call<int()>(0x006BAC0F)();
-}*/

@@ -1,6 +1,0 @@
-[submodule "deps/imgui"]
-	path = deps/imgui
-	url = https://github.com/ocornut/imgui
-[submodule "zynamic"]
-	path = zynamic
-	url = https://github.com/wroyca/zynamic

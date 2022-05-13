@@ -66,7 +66,7 @@ void Session_InitDvars()
 }
 
 //DONE : 0x004513D0
-std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 #ifdef DONE
     const char* LocalizationFilename; // eax

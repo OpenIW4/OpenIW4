@@ -10,6 +10,12 @@ target_link_libraries(OpenIW4
 	Zynamic
 )
 
+target_include_directories(${PROJECT_NAME}
+PRIVATE
+	$<INSTALL_INTERFACE:utils>
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/utils>
+)
+
 target_link_options(OpenIW4
 PRIVATE
 	/IGNORE:4254 /DYNAMICBASE:NO /NXCOMPAT:NO /SAFESEH:NO /INCREMENTAL:NO /LARGEADDRESSAWARE /LAST:.main
@@ -27,6 +33,15 @@ PRIVATE
 	/utf-8
 	/std:c++17
 	/bigobj
+)
+
+target_compile_definitions(OpenIW4
+PRIVATE
+  -DFAKE_PDB
+  "NOMINMAX"
+  "WIN32_LEAN_AND_MEAN"
+  "_CRT_SECURE_NO_WARNINGS"
+  "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
 )
 
 target_vcxproj_filters(OpenIW4)

@@ -65,10 +65,33 @@ void Session_InitDvars()
     
 }
 
+//Temp fix until further reimp
+
+void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
+{
+    auto DB_XAssetPool = (void**)0x007998A8;
+    auto g_poolSize = (std::uint32_t*)0x007995E8;
+
+    auto size = DB_GetXAssetTypeSize(type);
+    auto poolEntry = malloc(newSize * size);
+    DB_XAssetPool[type] = poolEntry;
+    g_poolSize[type] = newSize;
+
+    return poolEntry;
+}
+
+void patches()
+{
+    Sys_ShowConsole();
+    ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);
+    *(std::float_t*)(0x9FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+}
+
 //DONE : 0x004513D0
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-#ifdef DONE
+    patches();
+
     const char* LocalizationFilename; // eax
     char* error_msg; // eax
 
@@ -127,36 +150,19 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
-#endif
+
     //dont want to erase everything just yet, still testing
     MessageBoxA(nullptr, "hello from custom main via zynamic", "hi", MB_OK);
 }
 
-//Temp fix until further reimp
 
-void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
-{
-    auto DB_XAssetPool = (void**)0x007998A8;
-    auto g_poolSize = (std::uint32_t*)0x007995E8;
-
-    auto size = DB_GetXAssetTypeSize(type);
-    auto poolEntry = malloc(newSize * size);
-    DB_XAssetPool[type] = poolEntry;
-    g_poolSize[type] = newSize;
-
-    return poolEntry;
-}
 /*
 void commands()
 {
-    *(int*)(0x009FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+   
 }
 
-void patches()
-{
-    Sys_ShowConsole();
-    ReallocateAssetPool(ASSET_TYPE_WEAPON, 3000);
-}
+
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {

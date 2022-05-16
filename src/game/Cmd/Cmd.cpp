@@ -1,6 +1,8 @@
 #include "Cmd.hpp"
 #include "../Com/Com.hpp"
 
+
+//DONE : 0x4A5510
 cmd_function_s* Cmd_FindCommand(const char* cmdName)
 {
 	cmd_function_s* result = *(cmd_function_s**)0x1AAC658; //cmd_functions
@@ -22,6 +24,7 @@ cmd_function_s* Cmd_FindCommand(const char* cmdName)
 	return result;
 }
 
+//DONE : 0x470090
 void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_function_s* allocedCmd, std::int32_t flags)
 {
 	if (Cmd_FindCommand(cmdName))

@@ -12,6 +12,6 @@ int Com_ErrorCleanup();
 int Com_StartHunkUsers();
 void Com_AddStartupCommands();
 //int Com_Error(errorParm_t code, char* format, ...);
-void Com_Printf(std::uint32_t channel, char* Format, ...);
-int Com_sprintf(char* buf, size_t bufCount, char* fmt, ...);
+void Com_Printf(std::uint32_t channel, const char* Format, ...);
+int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...);
 void* Com_Memcpy(void* dest, const void* src, int size);

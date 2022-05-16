@@ -36,6 +36,8 @@ PRIVATE
 	/bigobj
 )
 
+target_vcxproj_filters(OpenIW4)
+
 set_target_properties(OpenIW4
 PROPERTIES
   PDB_OUTPUT_DIRECTORY          "${ZYNAMIC_OUT}$<0:>"
@@ -53,5 +55,3 @@ PRIVATE
   "_CRT_SECURE_NO_WARNINGS"
   "_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS"
 )
-
-target_vcxproj_filters(OpenIW4)

@@ -427,7 +427,7 @@ void Sys_Error(const char* error, ...)
         while (GetMessageA(&msg, 0, 0, 0));
     }
 
-    memory::call<void(void)>(0x48A4E0)(); // Steam_EmergencyShutdown? idk if thats the name but it's something related to steam though
+    memory::call<void()>(0x48A4E0)(); // Steam_EmergencyShutdown? idk if thats the name but it's something related to steam though
     exit(0);
 }
 
@@ -442,6 +442,12 @@ void Sys_SetErrorText(const char* text)
 
     auto activeWindow = GetActiveWindow();
     MessageBoxA(activeWindow, text, "Error", 0x10u);
+}
+
+//TODO : 0x4B2E60
+void Sys_OutOfMemErrorInternal(const char* filename, int line)
+{
+    memory::call<void(const char*, int)>(0x4B2E60)(filename, line);
 }
 
 //TODO : 0x45A190

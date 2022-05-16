@@ -36,8 +36,6 @@ PRIVATE
 	/bigobj
 )
 
-target_vcxproj_filters(OpenIW4)
-
 set_target_properties(OpenIW4
 PROPERTIES
   PDB_OUTPUT_DIRECTORY          "${ZYNAMIC_OUT}$<0:>"

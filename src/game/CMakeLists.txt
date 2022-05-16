@@ -47,7 +47,6 @@ PROPERTIES
 
 target_compile_definitions(OpenIW4
 PRIVATE
-  -DFAKE_PDB
   "NOMINMAX"
   "WIN32_LEAN_AND_MEAN"
   "_CRT_SECURE_NO_WARNINGS"

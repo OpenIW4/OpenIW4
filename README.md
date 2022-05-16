@@ -4,6 +4,9 @@
 
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
+# Zynamics branch
+This branch will be dedicated to porting the orginal loader to Zynamic, made by [wroyca](https://github.com/wroyca/zynamic). Check it out!
+
 # Compiling
 Run `generate.bat` if on Windows platform for Visual Studio 2022
 

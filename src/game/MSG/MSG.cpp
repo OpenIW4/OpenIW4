@@ -1,7 +1,7 @@
 #include "MSG.hpp"
 #include "../Com/Com.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //TODO : 0x45FCA0
 void MSG_Init(msg_t* buffer, char* data, size_t size)

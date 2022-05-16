@@ -4,7 +4,7 @@
 #include "../Live/Live.hpp"
 #include "../Sys/Sys.hpp"
 
-#include <utils/memory/memory.hpp>
+#include <memory/memory.hpp>
 
 //DONE : 0x48A9D0
 void LSP_Init()

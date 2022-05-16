@@ -65,7 +65,7 @@ typedef struct cmd_function_s
 	const char* autoCompleteExt;
 	void(__cdecl* function)();
 	int flags;
-} cmd_function_t;
+};
 
 enum errorParm_t
 {

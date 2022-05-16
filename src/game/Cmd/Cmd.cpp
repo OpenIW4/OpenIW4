@@ -1,9 +1,42 @@
 #include "Cmd.hpp"
+#include "../Com/Com.hpp"
 
-#include <memory/memory.hpp>
-
-//THUNK : 0x00470090
-int Cmd_AddCommandInternal(const char* s1, void(* callback)(), void* allocation, bool key)
+cmd_function_s* Cmd_FindCommand(const char* cmdName)
 {
-	return memory::call<int(const char*, void(*)(), void*, bool)>(0x00470090)(s1, callback, allocation, key);
+	cmd_function_s* result = *(cmd_function_s**)0x1AAC658; //cmd_functions
+
+	if (!result)
+	{
+		return 0;
+	}
+
+	while (strcmp(cmdName, result->name))
+	{
+		result = result->next;
+		if (!result)
+		{
+			return 0;
+		}
+	}
+
+	return result;
+}
+
+void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_function_s* allocedCmd, std::int32_t flags)
+{
+	if (Cmd_FindCommand(cmdName))
+	{
+		if (function)
+		{
+			Com_Printf(16, "Cmd_AddCommand: %s already defined\n", cmdName);
+		}
+	}
+	else
+	{
+		allocedCmd->name = cmdName;
+		allocedCmd->function = function;
+		allocedCmd->flags = flags;
+		allocedCmd->next = *(cmd_function_s**)0x1AAC658;
+		*(cmd_function_s**)0x1AAC658 = allocedCmd;
+	}
 }

@@ -12,6 +12,8 @@ target_link_libraries(OpenIW4
 )
 
 target_include_directories(${PROJECT_NAME}
+PUBLIC
+	../
 PRIVATE
 	$<INSTALL_INTERFACE:utils>
 	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/utils>

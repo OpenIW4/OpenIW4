@@ -174,7 +174,7 @@ void Com_Printf(std::uint32_t channel, const char* Format, ...)
 }
 
 //DONE : 0x00413DE0
-int Com_sprintf(char* buf, size_t bufCount, char* fmt, ...)
+int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...)
 {
     va_list va;
 

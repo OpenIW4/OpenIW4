@@ -57,7 +57,7 @@ typedef struct XZoneInfo
 	std::uint32_t unloadFlags;
 } XZoneInfo;
 
-typedef struct cmd_function_s
+struct cmd_function_s
 {
 	cmd_function_s* next;
 	const char* name;

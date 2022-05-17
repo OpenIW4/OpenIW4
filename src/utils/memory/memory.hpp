@@ -11,8 +11,16 @@ namespace memory
 
     inline auto replace(std::uint32_t address, void* function) -> void
     {
-        *reinterpret_cast<std::uint8_t*>(address) = 0xE9;
-        *reinterpret_cast<std::uint32_t*>(address + 1) = ((std::uint32_t)function - address - 5);
+        auto page_protection = 0ul;
+        auto opcode = reinterpret_cast<unsigned char*>(address);
+
+        if (*opcode != 0xE8)
+            return;
+
+        VirtualProtect(reinterpret_cast<void*>(address), 5, PAGE_EXECUTE_READWRITE, &page_protection);
+        reinterpret_cast<unsigned long*>(opcode + 1)[0] = reinterpret_cast<unsigned long>(function) - reinterpret_cast<unsigned long>(opcode + 5);
+        VirtualProtect(reinterpret_cast<void*>(address), 5, page_protection, &page_protection);
+        FlushInstructionCache(GetCurrentProcess(), reinterpret_cast<void*>(address), 5);
     }
 
     template <typename T> inline void xor(std::uint32_t place, T value)

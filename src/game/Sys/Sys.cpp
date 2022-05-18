@@ -625,3 +625,18 @@ void FixWindowsDesktop()
     SetDeviceGammaRamp(hdc, ramp);
     ReleaseDC(hwndDesktop, hdc);
 }
+
+bool Sys_IsRenderThread()
+{
+    return GetCurrentThreadId() == *(unsigned long*)0x1CDE800;
+}
+
+bool Sys_IsServerThread()
+{
+    return GetCurrentThreadId() == *(unsigned long*)0x1CDE80C;
+}
+
+bool Sys_IsDatabaseThread()
+{
+    return GetCurrentThreadId() == *(unsigned long*)0x1CDE814;
+}

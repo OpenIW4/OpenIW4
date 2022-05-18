@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../stdafx.hpp"
-#include "game/defs.hpp"
+#include "../defs.hpp"
 
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
@@ -44,3 +44,6 @@ void Sys_LockRead(FastCriticalSection* section);
 void Sys_UnlockRead(FastCriticalSection* section);
 int __stdcall HideWindowCallback(HWND hWnd, long lParam);
 void FixWindowsDesktop();
+bool Sys_IsRenderThread();
+bool Sys_IsServerThread();
+bool Sys_IsDatabaseThread();

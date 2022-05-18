@@ -35,27 +35,28 @@ void* Field_Clear(std::uint32_t* a1)
     return memory::call<void*(std::uint32_t*)>(0x00437EB0)(a1);
 }
 
-//DONE : 0x004785B0
-char* va(char* Format, ...)
+//DONE : 0x4785B0
+char* va(char* format, ...)
 {
-    int Value; // eax
-    int v2; // ecx
-    char* v3; // esi
-    int v4; // eax
-    va_list ArgList; // [esp+Ch] [ebp+8h] BYREF
+    va_list ap;
 
-    va_start(ArgList, Format);
-    Value = *Sys_GetValue(1);
-    v2 = *(DWORD*)(Value + 2048);
-    *(DWORD*)(Value + 2048) = (v2 + 1) % 2;
-    v3 = (char*)(Value + (v2 << 10));
-    v4 = _vsnprintf(v3, 0x400u, Format, ArgList);
-    v3[1023] = 0;
-    if (v4 < 0 || v4 >= 1024)
+    va_info_t* info = (va_info_t*)Sys_GetValue(THREAD_VALUE_VA);
+    int index = info->index;
+
+    info->index = (info->index + 1) % 2;
+    char* buf = info->va_string[index];
+
+    va_start(ap, format);
+    int len = vsnprintf(buf, 1024, format, ap);
+    va_end(ap);
+
+    buf[1023] = '\0';
+    if (len < 0 || len >= 1024)
     {
         //Com_Error(ERR_DROP, (char*)&byte_70924C);
     }
-    return v3;
+
+    return buf;
 }
 
 //This function is blank in 177

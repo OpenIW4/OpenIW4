@@ -4,13 +4,8 @@
 
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
-# Zynamics branch
-This branch will be dedicated to porting the orginal loader to Zynamic, made by [wroyca](https://github.com/wroyca/zynamic). Check it out!
-
 # Compiling
-Run `generate.bat` if on Windows platform for Visual Studio 2022
-
-Refer to the [Premake5 docs](https://premake.github.io/docs/) for more information on how to compile for different platforms and IDEs
+Currently we use CMake to compile. Select the latest toolset when building and set the architecture to Win32. If you have any question, join our Discord server below.
 
 # Contributing
 We really don't care, just send us stuff.

@@ -103,3 +103,16 @@ struct localization_t
 	char* language;
 	char* strings;
 };
+
+struct TempPriority
+{
+	void* threadHandle;
+	int oldPriority;
+};
+
+struct FastCriticalSection
+{
+	volatile long readCount;
+	volatile long writeCount;
+	TempPriority tempPriority;
+};

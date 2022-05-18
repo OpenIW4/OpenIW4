@@ -1,4 +1,6 @@
 #include "Sys.hpp"
+#include "game/defs.hpp"
+
 #include "../Com/Com.hpp"
 #include "../Cbuf/Cbuf.hpp"
 #include "../CL/CL.hpp"
@@ -474,6 +476,77 @@ unsigned long Sys_SuspendOtherThreads()
     }
 
     return result;
+}
+
+//DONE : 0x478680
+void Sys_TempPriorityAtLeastNormalBegin(TempPriority* tempPriority)
+{
+	const auto hThread = GetCurrentThread();
+    tempPriority->threadHandle = hThread;
+
+    const auto priority = GetThreadPriority(hThread);
+    tempPriority->oldPriority = priority;
+
+    if (priority < 0)
+    {
+        SetThreadPriority(hThread, 0);
+    }
+}
+
+//DONE : 0x4DCF00
+void Sys_TempPriorityEnd(TempPriority* tempPriority)
+{
+    if (tempPriority->oldPriority < 0)
+    {
+        SetThreadPriority(tempPriority->threadHandle, tempPriority->oldPriority);
+    }
+}
+
+//DONE : 0x435880
+void Sys_LockWrite(FastCriticalSection* section)
+{
+    TempPriority temp;
+    Sys_TempPriorityAtLeastNormalBegin(&temp);
+
+    while (true)
+    {
+        if (section->readCount == 0)
+        {
+            if ((InterlockedIncrement(&section->writeCount) == 1) && (section->readCount == 0))
+            {
+                section->tempPriority.threadHandle = temp.threadHandle;
+                section->tempPriority.oldPriority = temp.oldPriority;
+                return;
+            }
+
+            InterlockedDecrement(&section->writeCount);
+        }
+
+        Sys_Sleep(1);
+    }
+}
+
+//DONE : Inlined
+void Sys_UnlockWrite(FastCriticalSection* section)
+{
+    InterlockedDecrement(&section->writeCount);
+    Sys_TempPriorityEnd(&section->tempPriority);
+}
+
+//DONE : Inlined
+void Sys_LockRead(FastCriticalSection* section)
+{
+    InterlockedIncrement(&section->readCount);
+    while (section->writeCount)
+    {
+        Sys_Sleep(1);
+    }
+}
+
+//DONE : Inlined
+void Sys_UnlockRead(FastCriticalSection* section)
+{
+    InterlockedDecrement(&section->readCount);
 }
 
 //THUNK : 0x6417F0

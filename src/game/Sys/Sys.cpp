@@ -481,7 +481,7 @@ unsigned long Sys_SuspendOtherThreads()
 //DONE : 0x478680
 void Sys_TempPriorityAtLeastNormalBegin(TempPriority* tempPriority)
 {
-	const auto hThread = GetCurrentThread();
+    const auto hThread = GetCurrentThread();
     tempPriority->threadHandle = hThread;
 
     const auto priority = GetThreadPriority(hThread);

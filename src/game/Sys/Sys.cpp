@@ -1,5 +1,3 @@
-#include "game/defs.hpp"
-
 #include "Sys.hpp"
 
 #include "../Com/Com.hpp"
@@ -324,10 +322,16 @@ int Sys_Milliseconds()
     return timeGetTime() - *(int*)0x064A3034 /*sys_timeBase*/;
 }
 
-//THUNK : 0x004EC730
+//THUNK : 0x4EC730
 int* Sys_GetValue(int a1)
 {
     return memory::call<int*(int)>(0x004EC730)(a1);
+}
+
+//THUNK : 0x4B2F50
+void Sys_SetValue(int valueIndex, void* data)
+{
+    memory::call<void*(int, void*)>(0x4B2F50)(valueIndex, data);
 }
 
 //THUNK : 0x0064D300

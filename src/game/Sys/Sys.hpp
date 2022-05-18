@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../stdafx.hpp"
+#include "game/defs.hpp"
 
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
@@ -15,6 +16,7 @@ void Sys_ShowSplashWindow();
 void Sys_RegisterClass();
 int Sys_Milliseconds();
 int* Sys_GetValue(int a1);
+void Sys_SetValue(int valueIndex, void* data);
 void Sys_getcwd();
 bool Sys_IsMainThread();
 void Sys_EnterCriticalSection(int a1);

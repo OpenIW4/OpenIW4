@@ -1,5 +1,6 @@
-#include "Sys.hpp"
 #include "game/defs.hpp"
+
+#include "Sys.hpp"
 
 #include "../Com/Com.hpp"
 #include "../Cbuf/Cbuf.hpp"
@@ -478,6 +479,30 @@ unsigned long Sys_SuspendOtherThreads()
     return result;
 }
 
+//DONE : Inlined
+long Sys_InterlockedDecrement(volatile long* target)
+{
+    return InterlockedDecrement(target);
+}
+
+//DONE : Inlined
+long Sys_InterlockedIncrement(volatile long* target)
+{
+    return InterlockedIncrement(target);
+}
+
+//DONE : Inlined
+long Sys_InterlockedCompareExchange(volatile long* target, long exChange, long comperand)
+{
+    return InterlockedCompareExchange(target, exChange, comperand);
+}
+
+//DONE : Inlined
+long Sys_InterlockedExchange(volatile long* target, long value)
+{
+    return InterlockedExchange(target, value);
+}
+
 //DONE : 0x478680
 void Sys_TempPriorityAtLeastNormalBegin(TempPriority* tempPriority)
 {
@@ -512,14 +537,14 @@ void Sys_LockWrite(FastCriticalSection* section)
     {
         if (section->readCount == 0)
         {
-            if ((InterlockedIncrement(&section->writeCount) == 1) && (section->readCount == 0))
+            if ((Sys_InterlockedIncrement(&section->writeCount) == 1) && (section->readCount == 0))
             {
                 section->tempPriority.threadHandle = temp.threadHandle;
                 section->tempPriority.oldPriority = temp.oldPriority;
                 return;
             }
 
-            InterlockedDecrement(&section->writeCount);
+            Sys_InterlockedDecrement(&section->writeCount);
         }
 
         Sys_Sleep(1);
@@ -529,14 +554,14 @@ void Sys_LockWrite(FastCriticalSection* section)
 //DONE : Inlined
 void Sys_UnlockWrite(FastCriticalSection* section)
 {
-    InterlockedDecrement(&section->writeCount);
+    Sys_InterlockedDecrement(&section->writeCount);
     Sys_TempPriorityEnd(&section->tempPriority);
 }
 
 //DONE : Inlined
 void Sys_LockRead(FastCriticalSection* section)
 {
-    InterlockedIncrement(&section->readCount);
+    Sys_InterlockedIncrement(&section->readCount);
     while (section->writeCount)
     {
         Sys_Sleep(1);
@@ -546,7 +571,7 @@ void Sys_LockRead(FastCriticalSection* section)
 //DONE : Inlined
 void Sys_UnlockRead(FastCriticalSection* section)
 {
-    InterlockedDecrement(&section->readCount);
+    Sys_InterlockedDecrement(&section->readCount);
 }
 
 //THUNK : 0x6417F0

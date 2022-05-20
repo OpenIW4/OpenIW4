@@ -15,3 +15,4 @@ void Com_AddStartupCommands();
 void Com_Printf(std::uint32_t channel, const char* Format, ...);
 int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...);
 void* Com_Memcpy(void* dest, const void* src, int size);
+void* Com_Memset(void* dest, std::int32_t value, std::size_t size);

@@ -192,3 +192,9 @@ void* Com_Memcpy(void* dest, const void* src, int size)
 {
     return memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
 }
+
+//DONE : 0x4C9aD0
+void* Com_Memset(void* dest, std::int32_t value, std::size_t size)
+{
+    return memset(dest, value, size); //also seems like a wrapper for memset kinda like above
+}

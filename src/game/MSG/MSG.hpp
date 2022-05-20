@@ -3,7 +3,7 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
-void MSG_Init(msg_t* buffer, const char* data, size_t size);
+void MSG_Init(msg_t* buffer, const char* data, std::size_t size);
 void MSG_WriteByte(msg_t* msg, std::int8_t c);
 void MSG_WriteBit0(msg_t* msg);
 void MSG_WriteBit1(msg_t* msg);

@@ -131,3 +131,28 @@ struct va_info_t
     char va_string[2][1024];
     int index;
 };
+
+struct nodetype
+{
+    nodetype* left;
+    nodetype* right;
+    nodetype* parent;
+    std::int32_t weight;
+    std::int32_t symbol;
+};
+
+struct huff_t
+{
+    std::int32_t blocNode;
+    std::int32_t blocPtrs;
+    nodetype* tree;
+    nodetype* loc[257];
+    nodetype** freelist;
+    nodetype nodeList[768];
+    nodetype* nodePtrs[768];
+};
+
+struct huffman_t
+{
+    huff_t compressDecompress;
+};

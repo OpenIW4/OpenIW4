@@ -1,14 +1,27 @@
 #include "MSG.hpp"
 #include "../Com/Com.hpp"
+#include "../Sys/Sys.hpp"
+#include "../Huffman/Huffman.hpp"
 
 #include <memory/memory.hpp>
 
-//TODO : 0x45FCA0
-void MSG_Init(msg_t* buffer, char* data, size_t size)
+//DONE : 0x48B180
+void MSG_InitHuffman()
+{
+    *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
+    Huff_Init(*(huffman_t**)0x1CB9EC0); //huff
+    std::int32_t time = Sys_Milliseconds();
+    Huff_BuildFromData(&(*(huffman_t**)0x1CB9EC0)->compressDecompress, *(std::int32_t**)0x1CB9EB8);
+    std::int32_t time2 = Sys_Milliseconds();
+    Com_Printf(25, "Huffman took %d milliseconds\n", time2 - time);
+}
+
+//DONE : 0x45FCA0
+void MSG_Init(msg_t* buffer, char* data, std::size_t size)
 {
 	if (!*(bool*)0x1CB9EB8 /*msgInit*/)
 	{
-		memory::call<void()>(0x48B180)(); //MSG_InitHuffman
+		MSG_InitHuffman();
 	}
 
 	buffer->overflowed = false;

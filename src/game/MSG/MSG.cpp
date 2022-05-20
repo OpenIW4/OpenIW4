@@ -1,7 +1,20 @@
 #include "MSG.hpp"
 #include "../Com/Com.hpp"
+#include "../Sys/Sys.hpp"
 
 #include <memory/memory.hpp>
+
+//TODO : 0x48B180
+void MSG_InitHuffman()
+{
+    //new project for when im awake
+    *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
+    //Huff_Init(blah); //todo
+    std::int32_t time = Sys_Milliseconds();
+    //Huff_BuildFromData(cat, dog); //todo part 2
+    std::int32_t time2 = Sys_Milliseconds();
+    Com_Printf(25, "Huffman took %d milliseconds\n", time2 - time);
+}
 
 //TODO : 0x45FCA0
 void MSG_Init(msg_t* buffer, char* data, size_t size)

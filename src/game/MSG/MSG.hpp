@@ -11,3 +11,4 @@ void MSG_WriteInt64(msg_t* msg, std::int32_t a2, std::int32_t a3);
 void MSG_WriteShort(msg_t* msg, std::int32_t c);
 void MSG_WriteLong(msg_t* msg, std::int32_t c);
 void MSG_WriteData(msg_t* msg, std::int32_t* a2, std::int32_t a3);
+void MSG_InitHuffman();

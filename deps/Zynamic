@@ -12,7 +12,7 @@ add_definitions(-DZYNAMIC_PATCH)
 
 FetchContent_Declare(Zynamic
   GIT_REPOSITORY https://github.com/wroyca/zynamic.git
-  GIT_TAG main
+  GIT_TAG 1.0.0
 )
 
 FetchContent_MakeAvailable(Zynamic)

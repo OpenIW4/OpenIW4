@@ -11,7 +11,7 @@ void MSG_InitHuffman()
     *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
     Huff_Init(*(huffman_t**)0x1CB9EC0); //huff
     std::int32_t time = Sys_Milliseconds();
-    //Huff_BuildFromData(cat, dog); //todo part 2
+    Huff_BuildFromData(&(*(huffman_t**)0x1CB9EC0)->compressDecompress, *(std::int32_t**)0x1CB9EB8);
     std::int32_t time2 = Sys_Milliseconds();
     Com_Printf(25, "Huffman took %d milliseconds\n", time2 - time);
 }

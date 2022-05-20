@@ -5,7 +5,7 @@
 
 #include <memory/memory.hpp>
 
-//TODO : 0x48B180
+//DONE : 0x48B180
 void MSG_InitHuffman()
 {
     *(std::int32_t*)0x1CB9EB8 = 1; //msgInit

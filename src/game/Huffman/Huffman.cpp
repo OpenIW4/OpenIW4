@@ -36,6 +36,7 @@ std::int32_t nodeCmp(const void* left, const void* right)
     return *(unsigned long*)(*(unsigned long*)left + 12) - *(unsigned long*)(*(unsigned long*)right + 12);
 }
 
+//DONE : 0x4365D0
 void Huff_BuildFromData(huff_t* huff, std::int32_t* msg)
 {
     nodetype* inited;

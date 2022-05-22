@@ -27,4 +27,14 @@ namespace memory
     {
         *reinterpret_cast<T*>(place) ^= value;
     }
+
+    template<typename T> inline void set(std::int32_t address, T value)
+    {
+        *reinterpret_cast<T*>(address) = value;
+    }
+
+    template<typename T> inline void kill(T address)
+    {
+        set<std::int8_t>(address, 0xC3);
+    }
 }

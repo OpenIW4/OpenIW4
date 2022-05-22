@@ -13,7 +13,6 @@ static int g_minLargeLocalRightPos;
 //DONE : 0x4A62A0
 void LargeLocalInit()
 {
-	memory::call<void()>(0x471B20)(); // Unk
 	g_largeLocalBuf = (std::uint8_t*)VirtualAlloc(nullptr, 0x180000, MEM_RESERVE, PAGE_READWRITE);
 
 	g_maxLargeLocalPos = 0;

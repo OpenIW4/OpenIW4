@@ -147,3 +147,10 @@ void MSG_WriteData(msg_t* msg, std::int32_t* a2, std::int32_t a3)
 		msg->curSize = v1;
 	}
 }
+
+void MSG_Discard(msg_t* msg)
+{
+    msg->overflowed = true;
+    msg->curSize = msg->readCount;
+    msg->splitSize = 0;
+}

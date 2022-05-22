@@ -186,15 +186,189 @@ int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...)
     return result;
 }
 
-
 //DONE : 0x416E40
 void* Com_Memcpy(void* dest, const void* src, int size)
 {
     return memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
 }
 
-//DONE : 0x4C9aD0
+//DONE : 0x4C9AD0
 void* Com_Memset(void* dest, std::int32_t value, std::size_t size)
 {
     return memset(dest, value, size); //also seems like a wrapper for memset kinda like above
+}
+
+// DONE : Inlined
+int I_strlen(const char* s)
+{
+    const char *str;
+
+    for (str = s; *str; ++str)
+        ;
+    return (s - str);
+}
+
+//DONE : 0x4EF820
+char I_CleanChar(char c)
+{
+    if (c == 0x92)
+    {
+        c = '\'';
+    }
+
+    return c;
+}
+
+//DONE : 0x4E71E0
+bool I_isdigit(int c)
+{
+    return (c >= 0x30 && c <= 0x39);
+}
+
+//DONE : 0x437C80
+bool I_islower(int c)
+{
+    return (c >= 0x61 && c <= 0x7A);
+}
+
+//DONE : 0x4D6F80
+void I_strncpyz(char* dest, const char* src, int destsize)
+{
+    strncpy(dest, src, destsize - 1);
+    dest[destsize - 1] = '\0';
+}
+
+// DONE : 0x42F2A0
+int I_strncmp(const char* s0, const char* s1, int n)
+{
+    int c1, c2;
+
+    do
+    {
+        c1 = *s0++;
+        c2 = *s1++;
+
+        if (!n--)
+        {
+            return 0;
+        }
+
+        if (c1 != c2)
+        {
+            return c1 < c2 ? -1 : 1;
+        }
+
+    } while (c1 != 0);
+
+    return 0;
+}
+
+// DONE : 0x4B0100
+int I_strcmp(const char* s0, const char* s1)
+{
+    return I_strncmp(s0, s1, INT_MAX);
+}
+
+// DONE : 0x426080
+int I_strnicmp(const char* s0, const char* s1, int n)
+{
+    return memory::call<int(const char*, const char*, int)>(0x426080)(s0, s1, n);
+}
+
+//DONE : 0x4DCF20
+int I_stricmp(const char* s0, const char* s1)
+{
+    return I_strnicmp(s0, s1, INT_MAX);
+}
+
+//DONE : 0x466BE0
+void I_strncat(char* dest, int size, const char* src)
+{
+    int l1;
+
+    l1 = I_strlen(dest);
+    if (l1 >= size)
+    {
+        //Com_Error(ERR_FATAL, "\x15I_strncat: already overflowed");
+    }
+
+    I_strncpyz(&dest[l1], src, size - l1);
+}
+
+//DONE : 0x409F60
+char* I_strlwr(char* s)
+{
+    char value;
+
+    for (char* i = s; *i; ++i)
+    {
+        value = *i;
+
+        // If char is upper convert to lower
+        if (value >= 0x41 && value <= 0x5A)
+        {
+            *i = value + 0x20;
+        }
+    }
+
+    return s;
+}
+
+#define I_COLOR_ESCAPE '^'
+#define I_IsColorString(p) (p && *(p) == I_COLOR_ESCAPE && *((p)+1) && *((p)+1) != I_COLOR_ESCAPE)
+
+//DONE : 0x4AD470
+char* I_CleanStr(char* string)
+{
+    char* d;
+    char* s;
+    int c;
+
+    s = string;
+    d = string;
+
+    while ((c = *s) != 0)
+    {
+        if (I_IsColorString(s))
+        {
+            s++;
+        }
+        else if (c >= 0x20 && c <= 0x7E)
+        {
+            *d++ = c;
+        }
+
+        s++;
+    }
+
+    *d = '\0';
+    return string;
+}
+
+//DONE : 0x49A580
+int I_DrawStrlen(const char* str)
+{
+    const char* s;
+    const char* d;
+    int c;
+
+    s = str;
+    d = str;
+
+    int len = 0;
+    while ((c = *s) != 0)
+    {
+        if (I_IsColorString(s))
+        {
+            s++;
+        }
+        else
+        {
+            len++;
+        }
+
+        s++;
+    }
+    
+    return len;
 }

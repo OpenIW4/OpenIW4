@@ -75,7 +75,7 @@ void Com_Frame()
             *(int*)(0x001AD8F2C) = R_PopRemoteScreenUpdate();
         }
 
-        Sys_EnterCriticalSection(2);
+        Sys_EnterCriticalSection(CRITSECT_COM_ERROR);
 
         if (Sys_IsMainThread())
         {
@@ -83,7 +83,7 @@ void Com_Frame()
         }
 
         v1 = *(int*)(0x01AD8F1C)/*com_errorEnteredCount*/;
-        Sys_LeaveCriticalSection(2);
+        Sys_LeaveCriticalSection(CRITSECT_COM_ERROR);
 
         if (Sys_IsMainThread())
         {

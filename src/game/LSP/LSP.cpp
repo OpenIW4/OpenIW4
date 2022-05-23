@@ -59,19 +59,19 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 
 	if (!*(bool*)0x66C639A /*logMsgInittialized*/)
 	{
-		Sys_EnterCriticalSection(26);
+		Sys_EnterCriticalSection(CRITSECT_LIVE);
 
 		if (!*(bool*)0x66C639A)
 		{
 			if (!Live_IsSignedIn())
 			{
-				Sys_LeaveCriticalSection(26);
+				Sys_LeaveCriticalSection(CRITSECT_LIVE);
 				return;
 			}
 			InitLog(a1);
 			*(bool*)0x66C639A = true;
 		}
-		Sys_LeaveCriticalSection(26);
+		Sys_LeaveCriticalSection(CRITSECT_LIVE);
 	}
 
 	if(a2 + *(std::int32_t*)0x66C7174 >= *(std::int32_t*)0x66C7170

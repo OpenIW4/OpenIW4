@@ -353,13 +353,13 @@ bool Sys_IsMainThread()
 }
 
 //DONE : 0x4FC200
-void Sys_EnterCriticalSection(int critSect)
+void Sys_EnterCriticalSection(CriticalSection critSect)
 {
     EnterCriticalSection(s_criticalSection[critSect]);
 }
 
 //DONE : 0x4FC200
-void Sys_LeaveCriticalSection(int critSect)
+void Sys_LeaveCriticalSection(CriticalSection critSect)
 {
     LeaveCriticalSection(s_criticalSection[critSect]);
 }
@@ -391,9 +391,9 @@ bool Sys_ReleaseThreadOwnership()
 //DONE : 0x004C3650
 bool Sys_DatabaseCompleted()
 {
-    Sys_EnterCriticalSection(12);
+    Sys_EnterCriticalSection(CRITSECT_START_SERVER);
     *(DWORD*)0x1CDE84C = 1; //dword_1CDE84C
-    Sys_LeaveCriticalSection(12);
+    Sys_LeaveCriticalSection(CRITSECT_START_SERVER);
 
     HANDLE result = *(HANDLE*)0x1CDE85C; //dword_1CDE85C
 
@@ -466,7 +466,7 @@ void Sys_OutOfMemErrorInternal(const char* filename, int line)
 //TODO : 0x45A190
 unsigned long Sys_SuspendOtherThreads()
 {
-    Sys_EnterCriticalSection(34);
+    Sys_EnterCriticalSection(CRITSECT_FX_ALLOC);
     memory::call<int(void)>(0x51CA20)(); // R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
     unsigned long result = GetCurrentThreadId();
     unsigned long v1 = result;

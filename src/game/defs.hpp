@@ -156,3 +156,97 @@ struct huffman_t
 {
     huff_t compressDecompress;
 };
+
+enum PMem_Source
+{
+    PMEM_SOURCE_EXTERNAL,
+    PMEM_SOURCE_DATABASE,
+    PMEM_SOURCE_MOVIE,
+};
+
+struct PhysicalMemoryAllocation
+{
+    const char* name;
+    unsigned int pos;
+};
+
+struct PhysicalMemoryPrim
+{
+    const char* allocName;
+    unsigned int allocListCount;
+    unsigned int pos;
+    PhysicalMemoryAllocation allocList[32];
+};
+
+struct PhysicalMemory
+{
+    char* buf;
+    PhysicalMemoryPrim prim[2];
+};
+
+union DvarValue
+{
+    bool enabled;
+    int integer;
+    unsigned int unsignedInt;
+    float value;
+    float vector[4];
+    const char* string;
+    unsigned char color[4];
+};
+
+struct $BFBB53559BEAC4289F32B924847E59CB
+{
+    int stringCount;
+    const char** strings;
+};
+
+struct $9CA192F9DB66A3CB7E01DE78A0DEA53D
+{
+    int min;
+    int max;
+};
+
+struct $251C2428A496074035CACA7AAF3D55BD
+{
+    float min;
+    float max;
+};
+
+union DvarLimits
+{
+    $BFBB53559BEAC4289F32B924847E59CB enumeration;
+    $9CA192F9DB66A3CB7E01DE78A0DEA53D integer;
+    $251C2428A496074035CACA7AAF3D55BD value;
+    $251C2428A496074035CACA7AAF3D55BD vector;
+};
+
+enum dvar_type : char
+{
+    DVAR_TYPE_BOOL = 0x0,
+    DVAR_TYPE_FLOAT = 0x1,
+    DVAR_TYPE_FLOAT_2 = 0x2,
+    DVAR_TYPE_FLOAT_3 = 0x3,
+    DVAR_TYPE_FLOAT_4 = 0x4,
+    DVAR_TYPE_INT = 0x5,
+    DVAR_TYPE_ENUM = 0x6,
+    DVAR_TYPE_STRING = 0x7,
+    DVAR_TYPE_COLOR = 0x8,
+    DVAR_TYPE_FLOAT_3_COLOR = 0x9,
+    DVAR_TYPE_COUNT = 0xA,
+};
+
+struct dvar_t
+{
+    const char* name;
+    const char* description;
+    unsigned int flags;
+    dvar_type type;
+    bool modified;
+    DvarValue current;
+    DvarValue latched;
+    DvarValue reset;
+    DvarLimits domain;
+    bool(__cdecl* domainFunc)(dvar_t*, DvarValue);
+    dvar_t* hashNext;
+};

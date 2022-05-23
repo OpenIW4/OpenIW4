@@ -23,12 +23,6 @@ void InitTiming()
 	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = inlined_2() * 1000.0;
 }
 
-//THUNK : 0x4D6F80
-void I_strncpyz(char* dest, const char* src, int destsize)
-{
-    memory::call<char* (char*, const char*, int)>(0x4D6F80)(dest, src, destsize);
-}
-
 //THUNK : 0x000x437EB0
 void* Field_Clear(std::uint32_t* a1)
 {

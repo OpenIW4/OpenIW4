@@ -160,19 +160,25 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t uMsg, std::uint32_t wPa
     return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, uMsg, wParam, lParam);
 }
 
-//THUNK : 0x0042F0A0
+static _RTL_CRITICAL_SECTION** s_criticalSection = reinterpret_cast<_RTL_CRITICAL_SECTION**>(0x6499BC8);
+static int* marker_win_configure = reinterpret_cast<int*>(0x6499F88);
+
+//DONE : 0x42F0A0
 void Sys_InitializeCriticalSections()
 {
-    memory::call<void()>(0x0042F0A0)();
+    _RTL_CRITICAL_SECTION* section = *s_criticalSection;
+    do
+        InitializeCriticalSection(section++);
+    while ((int)section < (int)marker_win_configure);
 }
 
-//THUNK : 0x004301B0
+//THUNK : 0x4301B0
 void Sys_InitMainThread()
 {
     memory::call<void()>(0x004301B0)();
 }
 
-//DONE : 0x004169C0
+//DONE : 0x4169C0
 void Sys_Sleep(DWORD dwMilliseconds)
 {
     Sleep(dwMilliseconds);
@@ -182,7 +188,7 @@ void Sys_Sleep(DWORD dwMilliseconds)
 //TODO : 0x0064C620
 bool IsServerRunning()
 {
-    return memory::call<bool()>(0x0064C620)();
+    return memory::call<bool()>(0x64C620)();
 }
 
 //DONE : 0x0043EBB0
@@ -334,37 +340,37 @@ void Sys_SetValue(int valueIndex, void* data)
     memory::call<void*(int, void*)>(0x4B2F50)(valueIndex, data);
 }
 
-//THUNK : 0x0064D300
+//THUNK : 0x64D300
 void Sys_getcwd()
 {
     memory::call<void()>(0x0064D300)();
 }
 
-//THUNK : 0x004C37D0
+//THUNK : 0x4C37D0
 bool Sys_IsMainThread()
 {
     return memory::call<bool()>(0x004C37D0)();
 }
 
-//DONE : 0x004FC200
-void Sys_EnterCriticalSection(int a1)
+//DONE : 0x4FC200
+void Sys_EnterCriticalSection(int critSect)
 {
-    EnterCriticalSection((LPCRITICAL_SECTION)(24 * a1 + 0x6499BC8));
+    EnterCriticalSection(s_criticalSection[critSect]);
 }
 
-//DONE : 0x004FC200
-void Sys_LeaveCriticalSection(int a1)
+//DONE : 0x4FC200
+void Sys_LeaveCriticalSection(int critSect)
 {
-    LeaveCriticalSection((LPCRITICAL_SECTION)(24 * a1 + 105487304));
+    LeaveCriticalSection(s_criticalSection[critSect]);
 }
 
-//THUNK : 0x0064CF10
+//THUNK : 0x64CF10
 void Sys_EnumerateHw()
 {
     memory::call<void()>(0x0064CF10)();
 }
 
-//DONE : 0x004CA4A0
+//DONE : 0x4CA4A0
 bool Sys_IsDatabaseReady()
 {
     return WaitForSingleObject(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/, 0) == 0;
@@ -442,7 +448,7 @@ void Sys_Error(const char* error, ...)
 void Sys_SetErrorText(const char* text)
 {
     // s_wcd.errorString seems to be leftover from Quake for setting an old error prompt
-    //I_strncpyz(*(char**)0x64A329C, text, 512);
+    I_strncpyz(*(char**)0x64A329C, text, 512);
 
     DestroyWindow(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
     *(HWND*)0x64A3298 = 0;

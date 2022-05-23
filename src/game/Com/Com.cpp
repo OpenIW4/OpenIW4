@@ -152,13 +152,13 @@ int Com_ErrorCleanup()
 //THUNK : 0x0060BF40
 int Com_StartHunkUsers()
 {
-    return memory::call<int()>(0x0060BF40)();
+    return memory::call<int()>(0x60BF40)();
 }
 
 //THUNK : 0x0060C3D0
 void Com_AddStartupCommands()
 {
-    memory::call<void()>(0x0060C3D0)();
+    memory::call<void()>(0x60C3D0)();
 }
 
 //THUNK : 0x402500

@@ -81,3 +81,13 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 		//fucking LSP_SendLogRequest is TODO
 	}
 }
+
+void LSP_LogStringEvenIfControllerIsInactive(const char* string)
+{
+    memory::call<void(const char*)>(0x4B62C0)(string);
+}
+
+void LSP_ForceSendPacket()
+{
+    memory::call<void()>(0x682520)();
+}

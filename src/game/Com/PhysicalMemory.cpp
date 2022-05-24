@@ -76,6 +76,11 @@ uint8_t* PMem_AllocFromSource(size_t size, uint32_t alignment, uint32_t type, PM
     return (uint8_t*)buf;
 }
 
+uint8_t* PMem_Alloc(size_t size, uint32_t alignment, uint32_t type)
+{
+    return PMem_AllocFromSource(size, alignment, type, PMEM_SOURCE_EXTERNAL);
+}
+
 //DONE : 0x4FEE10
 void PMem_DumpMemStat()
 {

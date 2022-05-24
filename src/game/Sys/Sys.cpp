@@ -3,7 +3,6 @@
 #include "../Com/Com.hpp"
 #include "../Cbuf/Cbuf.hpp"
 #include "../CL/CL.hpp"
-#include "../main.hpp"
 
 #include <memory/memory.hpp>
 

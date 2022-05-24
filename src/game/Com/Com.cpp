@@ -1,5 +1,4 @@
 #include "Com.hpp"
-#include "../main.hpp"
 #include "../Sys/Sys.hpp"
 #include "../Render/Render.hpp"
 #include "../DB/DB.hpp"
@@ -419,4 +418,28 @@ int I_DrawStrlen(const char* str)
 const char* I_stristr(const char* s0, const char* substr)
 {
     return memory::call<const char*(const char*, const char*)>(0x4A9DB0)(s0, substr);
+}
+
+//DONE : 0x4785B0
+char* va(const char* format, ...)
+{
+    va_list ap;
+
+    va_info_t* info = (va_info_t*)Sys_GetValue(THREAD_VALUE_VA);
+    int index = info->index;
+
+    info->index = (info->index + 1) % 2;
+    char* buf = info->va_string[index];
+
+    va_start(ap, format);
+    int len = vsnprintf(buf, 1024, format, ap);
+    va_end(ap);
+
+    buf[1023] = '\0';
+    if (len < 0 || len >= 1024)
+    {
+        //Com_Error(ERR_DROP, (char*)&byte_70924C);
+    }
+
+    return buf;
 }

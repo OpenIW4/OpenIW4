@@ -33,3 +33,5 @@ void I_strncpyz(char* dest, const char* src, int destsize);
 char* I_CleanStr(char* string);
 int I_DrawStrlen(const char* str);
 const char* I_stristr(const char* s0, const char* substr);
+
+char* va(const char* format, ...);

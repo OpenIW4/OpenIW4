@@ -319,3 +319,27 @@ struct HunkUser
     int type;
     char buf[1];
 };
+
+struct $119B815E6C15BED54461C272BD343858
+{
+    unsigned __int32 refCount : 16;
+    unsigned __int32 user : 8;
+    unsigned __int32 byteLen : 8;
+};
+
+union $156C516D3E6908D9990BD5CCD794911D
+{
+    $119B815E6C15BED54461C272BD343858 __s0;
+    volatile long data;
+};
+
+struct RefString
+{
+    $156C516D3E6908D9990BD5CCD794911D ___u0;
+    char str[1];
+};
+
+struct scrMemTreePub_t
+{
+    char* mt_buffer;
+};

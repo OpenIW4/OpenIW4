@@ -342,7 +342,7 @@ void* Hunk_UserAlloc(HunkUser* user, int size, int alignment)
 char* Hunk_CopyString(HunkUser* user, const char* in)
 {
     int len = I_strlen(in);
-    char* result = (char*)Hunk_UserAlloc(user, len, 1);
+    char* result = (char*)Hunk_UserAlloc(user, len + 1, 1);
     strcpy(result, in);
 
     return result;

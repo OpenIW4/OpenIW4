@@ -300,3 +300,22 @@ enum CriticalSection
     CRITSECT_RESET_MODEL_LIGHTING = 0x2C,
     CRITSECT_COUNT = 0x2D,
 };
+
+struct hunkUsed_t
+{
+    int permanent;
+    int temp;
+};
+
+struct HunkUser
+{
+    HunkUser* current;
+    HunkUser* next;
+    int maxSize;
+    int end;
+    int pos;
+    const char* name;
+    bool fixed;
+    int type;
+    char buf[1];
+};

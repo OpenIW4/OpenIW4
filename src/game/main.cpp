@@ -29,32 +29,8 @@ void* Field_Clear(std::uint32_t* a1)
     return memory::call<void*(std::uint32_t*)>(0x00437EB0)(a1);
 }
 
-//DONE : 0x4785B0
-char* va(char* format, ...)
-{
-    va_list ap;
-
-    va_info_t* info = (va_info_t*)Sys_GetValue(THREAD_VALUE_VA);
-    int index = info->index;
-
-    info->index = (info->index + 1) % 2;
-    char* buf = info->va_string[index];
-
-    va_start(ap, format);
-    int len = vsnprintf(buf, 1024, format, ap);
-    va_end(ap);
-
-    buf[1023] = '\0';
-    if (len < 0 || len >= 1024)
-    {
-        //Com_Error(ERR_DROP, (char*)&byte_70924C);
-    }
-
-    return buf;
-}
-
-//This function is blank in 177
-//DONE : 0x004BB9B0
+//This function is blank in 159
+//DONE : 0x4BB9B0
 void Session_InitDvars()
 {
     

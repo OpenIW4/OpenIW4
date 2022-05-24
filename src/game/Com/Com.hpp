@@ -16,8 +16,8 @@ void Com_AddStartupCommands();
 void Com_Printf(std::uint32_t channel, const char* Format, ...);
 void Com_PrintError(int channel, const char* fmt, ...);
 int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...);
-void* Com_Memcpy(void* dest, const void* src, int size);
-void* Com_Memset(void* dest, std::int32_t value, std::size_t size);
+void Com_Memcpy(void* dest, const void* src, int size);
+void Com_Memset(void* dest, int val, int count);
 
 int I_strlen(const char* s);
 char I_CleanChar(char c);

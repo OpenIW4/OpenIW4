@@ -187,15 +187,17 @@ int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...)
 }
 
 //DONE : 0x416E40
-void* Com_Memcpy(void* dest, const void* src, int size)
+void Com_Memcpy(void* dest, const void* src, int size)
 {
-    return memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
+    // In Quake III this is all inline assembly
+    memcpy(dest, src, size);
 }
 
 //DONE : 0x4C9AD0
-void* Com_Memset(void* dest, std::int32_t value, std::size_t size)
+void Com_Memset(void* dest, const int val, int count)
 {
-    return memset(dest, value, size); //also seems like a wrapper for memset kinda like above
+    // In Quake III this is all inline assembly
+    memset(dest, val, count);
 }
 
 static int* com_errorPrintsCount = reinterpret_cast<int*>(0x1AD7910);
@@ -242,11 +244,11 @@ void Com_PrintError(int channel, const char* fmt, ...)
 // DONE : Inlined
 int I_strlen(const char* s)
 {
-    const char *str;
+    const char *end;
 
-    for (str = s; *str; ++str)
+    for (end = s; *end; ++end)
         ;
-    return (s - str);
+    return (s - end);
 }
 
 //DONE : 0x4EF820

@@ -187,15 +187,15 @@ int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...)
 }
 
 //DONE : 0x416E40
-void* Com_Memcpy(void* dest, const void* src, int size)
+void Com_Memcpy(void* dest, const void* src, int count)
 {
-    return memcpy(dest, src, size); //seems like Com_Memcpy appears to be a wrapper across a few engines
+    memory::call<void(void*, const void*, int)>(0x416E40)(dest, src, count);
 }
 
 //DONE : 0x4C9AD0
-void* Com_Memset(void* dest, std::int32_t value, std::size_t size)
+void Com_Memset(void* dest, const int val, int count)
 {
-    return memset(dest, value, size); //also seems like a wrapper for memset kinda like above
+    memory::call<void(void*, const int, int)>(0x4C9AD0)(dest, val, count);
 }
 
 // DONE : Inlined

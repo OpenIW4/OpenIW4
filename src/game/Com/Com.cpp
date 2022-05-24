@@ -254,7 +254,7 @@ int I_strlen(const char* s)
 //DONE : 0x4EF820
 char I_CleanChar(char c)
 {
-    if (c == 0x92)
+    if (static_cast<unsigned char>(c) == 0x92)
     {
         c = '\'';
     }

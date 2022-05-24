@@ -4,6 +4,7 @@
 #include "Com.hpp"
 
 #include "../Sys/Sys.hpp"
+#include "../Script/StringList.hpp"
 
 #include "utils/memory/memory.hpp"
 
@@ -343,7 +344,7 @@ char* Hunk_CopyString(HunkUser* user, const char* in)
 {
     int len = I_strlen(in);
     char* result = (char*)Hunk_UserAlloc(user, len + 1, 1);
-    strcpy(result, in);
+    memcpy(result, in, len + 1);
 
     return result;
 }
@@ -380,4 +381,10 @@ void Hunk_ShutdownDebugMemory()
 void Hunk_UserReset(HunkUser* user)
 {
     memory::call<void(HunkUser*)>(0x4D55D0)(user);
+}
+
+const char* CopyString(const char* in)
+{
+    uint32_t stringValue = SL_GetString_(in, 0, 0x16);
+    return SL_ConvertToString(stringValue);
 }

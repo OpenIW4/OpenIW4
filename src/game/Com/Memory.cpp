@@ -1,5 +1,7 @@
 #include "Memory.hpp"
-#include "game/Sys/Sys.hpp"
+#include "Com.hpp"
+
+#include "../Sys/Sys.hpp"
 
 #include "utils/memory/memory.hpp"
 
@@ -195,4 +197,61 @@ LargeLocal::~LargeLocal()
 	{
 		this->PopBuf();
 	}
+}
+
+// Z Section
+
+//DONE : Inlined
+void Z_VirtualFree(void* ptr, int type)
+{
+    VirtualFree(ptr, type, MEM_RESET);
+}
+
+//DONE : Inlined
+void* Z_VirtualReserve(int size)
+{
+    return VirtualAlloc(NULL, size, MEM_RESERVE, PAGE_READWRITE);
+}
+
+//DONE : 0x47AF50
+void* Z_TryVirtualAllocInternal(int size)
+{
+    void* reserved = Z_VirtualReserve(size);
+    void* result = VirtualAlloc(reserved, size, MEM_COMMIT, PAGE_READWRITE);
+
+    if (result == NULL)
+    {
+        Z_VirtualFree(reserved, 0);
+        return NULL;
+    }
+
+    return reserved;
+}
+
+//DONE : 0x48B560
+void Z_VirtualDecommitInternal(void* ptr, int size)
+{
+    VirtualFree(ptr, size, MEM_DECOMMIT);
+}
+
+//DONE : 0x496D60
+void Z_VirtualFreeInternal(void* ptr)
+{
+    VirtualFree(ptr, 0, MEM_RELEASE);
+}
+
+//DONE : 0x4F3680
+void* Z_MallocInternal(int size)
+{
+    void* buf = malloc(size);
+
+    if (buf == NULL)
+    {
+        Com_PrintError(0x10, "Failed to Z_Malloc %i bytes\n", size);
+        Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\com_memory.cpp", 0x3B5);
+        return NULL;
+    }
+
+    Com_Memset(buf, 0, size);
+    return buf;
 }

@@ -3,6 +3,7 @@
 #include "../Sys/Sys.hpp"
 #include "../Render/Render.hpp"
 #include "../DB/DB.hpp"
+#include "../LSP/LSP.hpp"
 
 #include <memory/memory.hpp>
 
@@ -198,6 +199,47 @@ void* Com_Memset(void* dest, std::int32_t value, std::size_t size)
     return memset(dest, value, size); //also seems like a wrapper for memset kinda like above
 }
 
+static int* com_errorPrintsCount = reinterpret_cast<int*>(0x1AD7910);
+static int* com_fixedConsolePosition = reinterpret_cast<int*>(0x1AD8EC8);
+
+//DONE : 0x4AA830
+void Com_PrintMessage_t(int channel, const char* msg, int error)
+{
+    memory::call<void(int, const char*, int)>(0x4AA830)(channel, msg, error);
+}
+
+//DONE : 0x4F8C70
+void Com_PrintError(int channel, const char* fmt, ...)
+{
+    char error[0x1000];
+
+    const char* foundError = I_stristr(fmt, "error");
+    const char* prefix = (foundError == NULL) ? "^1Error: " : "^1";
+
+    I_strncpyz(error, prefix, sizeof(error));
+    int len = I_strlen(error);
+    
+    va_list va;
+    va_start(va, fmt);
+    vsnprintf(&error[len], sizeof(error) - len, fmt, va);
+    error[sizeof(error) - 1] = '\0';
+    va_end(va);
+
+    ++(*com_errorPrintsCount);
+    LSP_LogStringEvenIfControllerIsInactive(error);
+    Com_PrintMessage_t(channel, error, 3);
+
+    int* cls_uiStarted = (int*)(0x0A7FFA0);
+    if (*cls_uiStarted)
+    {
+        if (!*com_fixedConsolePosition)
+        {
+            memory::call<void()>(0x44A430); // CL_ConsoleFixPosition
+        }
+    }
+
+}
+
 // DONE : Inlined
 int I_strlen(const char* s)
 {
@@ -371,4 +413,10 @@ int I_DrawStrlen(const char* str)
     }
     
     return len;
+}
+
+//DONE : 0x4A9DB0
+const char* I_stristr(const char* s0, const char* substr)
+{
+    return memory::call<const char*(const char*, const char*)>(0x4A9DB0)(s0, substr);
 }

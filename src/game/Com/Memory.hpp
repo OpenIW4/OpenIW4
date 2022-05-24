@@ -26,3 +26,6 @@ int LargeLocalBegin(int size);
 int LargeLocalBeginRight(int size);
 int LargeLocalGetMark();
 void LargeLocalClear();
+
+// Z (Name is from Quake III)
+void* Z_MallocInternal(size_t size);

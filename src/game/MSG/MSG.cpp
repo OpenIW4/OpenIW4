@@ -155,3 +155,9 @@ void MSG_Discard(msg_t* msg)
     msg->curSize = msg->readCount;
     msg->splitSize = 0;
 }
+
+//DONE : 0x4458E0
+void MSG_ClearLastReferencedEntity(msg_t* msg)
+{
+    msg->lastEntityRef = -1;
+}

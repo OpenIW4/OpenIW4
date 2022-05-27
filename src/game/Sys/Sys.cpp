@@ -645,3 +645,47 @@ bool Sys_IsDatabaseThread()
 {
     return GetCurrentThreadId() == *(unsigned long*)0x1CDE814;
 }
+
+
+//DONE : 0x4B4B40
+void NetadrToSockadr(netadr_t* a1, sockaddr* a2)
+{
+    netadrtype_t type = a1->type;
+    *(unsigned long*)&a2->sa_family = 0;
+    *(unsigned long*)&a2->sa_data[2] = 0;
+    *(unsigned long*)&a2->sa_data[6] = 0;
+    *(unsigned long*)&a2->sa_data[10] = 0;
+
+    if (type == NA_BROADCAST)
+    {
+        a2->sa_family = 2;
+        *(std::uint16_t*)a2->sa_data = a1->port;
+        *(unsigned long*)&a2->sa_data[2] = -1;
+    }
+    else
+    {
+        switch (type)
+        {
+            case NA_IP:
+                a2->sa_family = 2;
+                *(unsigned long*)&a2->sa_data[2] = *(unsigned long*)a1->ip;
+                *(std::uint16_t*)a2->sa_data = a1->port;
+                break;
+            case NA_IPX:
+                a2->sa_family = 6;
+                *(unsigned long*)&a2->sa_data = *(unsigned long*)a1->ipx;
+                *(unsigned long*)&a2->sa_data[4] = *(unsigned long*)&a1->ipx[4];
+                *(unsigned long*)&a2->sa_data[8] = *(std::uint16_t*)&a1->ipx[8];
+                *(std::uint16_t*)&a2->sa_data[10] = a1->port;
+                break;
+            case NA_BROADCAST_IPX:
+                a2->sa_family = 6;
+                *(unsigned long*)a2->sa_data = 0;
+                *(unsigned long*)&a2->sa_data[4] = -1;
+                *(std::uint16_t*)&a2->sa_data[8] = -1;
+                *(std::uint16_t*)&a2->sa_data[10] = a1->port;
+                break;
+        }
+    }
+}
+

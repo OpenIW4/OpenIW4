@@ -47,3 +47,5 @@ void FixWindowsDesktop();
 bool Sys_IsRenderThread();
 bool Sys_IsServerThread();
 bool Sys_IsDatabaseThread();
+char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to);
+void NetadrToSockadr(netadr_t* a1, sockaddr* a2);

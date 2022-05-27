@@ -87,6 +87,13 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
     memory::call<void(const char*)>(0x4B62C0)(string);
 }
 
+//TODO : 0x4B41E0
+//this function may need to be moved
+std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t a2, netadr_t* net)
+{
+
+}
+
 void LSP_ForceSendPacket()
 {
     memory::call<void()>(0x682520)();

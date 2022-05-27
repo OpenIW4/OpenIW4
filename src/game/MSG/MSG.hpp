@@ -14,3 +14,6 @@ void MSG_WriteData(msg_t* msg, std::int32_t* a2, std::int32_t a3);
 void MSG_InitHuffman();
 void MSG_Discard(msg_t* msg);
 void MSG_ClearLastReferencedEntity(msg_t* msg);
+char* MSG_ReadString(msg_t* msg, char* string, std::uint32_t maxChars);
+std::int32_t MSG_ReadByte(msg_t* msg);
+std::int32_t MSG_GetByte(msg_t* msg, std::int32_t where);

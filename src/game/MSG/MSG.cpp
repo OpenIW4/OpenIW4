@@ -161,3 +161,56 @@ void MSG_ClearLastReferencedEntity(msg_t* msg)
 {
     msg->lastEntityRef = -1;
 }
+
+//DONE : Possibly inlined
+std::int32_t MSG_GetByte(msg_t* msg, std::int32_t where)
+{
+    if (where < msg->curSize)
+    {
+        return msg->data[where];
+    }
+
+    return msg->splitData[where - msg->curSize];
+}
+
+//DONE : Possibly inlined
+std::int32_t MSG_ReadByte(msg_t* msg)
+{
+    if (msg->readCount >= msg->splitSize + msg->curSize)
+    {
+        msg->overflowed = true;
+        return -1;
+    }
+    else
+    {
+        std::int32_t c = MSG_GetByte(msg, msg->readCount);
+        ++msg->readCount;
+        return c;
+    }
+}
+
+//DONE : 0x47A530
+char* MSG_ReadString(msg_t* msg, char* string, std::uint32_t maxChars)
+{
+    for (std::uint32_t i = 0; ; ++i)
+    {
+        std::int32_t c = MSG_ReadByte(msg);
+        if (c == -1)
+        {
+            c = 0;
+        }
+
+        if (i < maxChars)
+        {
+            string[i] = I_CleanChar(c);
+        }
+
+        if (!c)
+        {
+            break;
+        }
+    }
+
+    string[maxChars - 1] = 0;
+    return string;
+}

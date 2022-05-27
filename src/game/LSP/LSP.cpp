@@ -3,6 +3,7 @@
 #include "../IWNet/IWNet.hpp"
 #include "../Live/Live.hpp"
 #include "../Sys/Sys.hpp"
+#include "../Com/Com.hpp"
 
 #include <memory/memory.hpp>
 
@@ -87,14 +88,61 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
     memory::call<void(const char*)>(0x4B62C0)(string);
 }
 
-//TODO : 0x4B41E0
+//DONE : 0x4B41E0
 //this function may need to be moved
 std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t a2, netadr_t* net)
 {
+    sockaddr to;
+    NetadrToSockadr(net, &to);
+    std::int32_t v3 = sendto(*(std::uint32_t*)0x64A1E04, (const char*)buf, a2, 0, &to, 16);
+    if (*(std::uint8_t*)0x66C639C + 16)
+    {
+        std::uint16_t v4 = ntohs(net->port);
+        Com_Printf(14,
+            "Sending %i byte LSP packet to %u.%u.%u.%u:%i",
+            a2,
+            net->ip[0],
+            net->ip[1],
+            net->ip[2],
+            net->ip[3],
+            v4);
+    }
 
+    if (v3 != a2)
+    {
+        std::uint16_t v5 = ntohs(net->port);
+        Com_Printf(14,
+            "Sending %i (actually send %i) byte LSP packet to %u.%u.%u.%u:%i\n",
+            a2,
+            v3,
+            net->ip[0],
+            net->ip[1],
+            net->ip[2],
+            net->ip[3],
+            v5);
+    }
+
+    return v3;
 }
 
+
+//DONE : 0x682520
 void LSP_ForceSendPacket()
 {
-    memory::call<void()>(0x682520)();
+    if (*(bool*)0x66C7638 /*lsp_connected*/)
+    {
+        Sys_EnterCriticalSection(CRITSECT_LIVE);
+
+        if (*(bool*)0x66C639A /*logMsgInitialized*/)
+        {
+            (*(netadr_t*)0x66C714C).port = htons(3005);
+
+            if (Xenon_SendLSPPacket((const std::uint8_t*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, *(netadr_t**)0x66C714C) < 0)
+            {
+                *(bool*)0x66C7638 = 0;
+            }
+        }
+        *(bool*)0x66C639A = 0;
+        Sys_LeaveCriticalSection(CRITSECT_LIVE);
+    }
 }

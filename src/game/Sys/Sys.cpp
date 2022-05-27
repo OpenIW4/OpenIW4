@@ -3,6 +3,7 @@
 #include "../Com/Com.hpp"
 #include "../Cbuf/Cbuf.hpp"
 #include "../CL/CL.hpp"
+#include "../NET/NET.hpp"
 
 #include <memory/memory.hpp>
 
@@ -648,6 +649,7 @@ bool Sys_IsDatabaseThread()
 
 
 //DONE : 0x4B4B40
+//may need to be moved
 void NetadrToSockadr(netadr_t* a1, sockaddr* a2)
 {
     netadrtype_t type = a1->type;
@@ -689,3 +691,63 @@ void NetadrToSockadr(netadr_t* a1, sockaddr* a2)
     }
 }
 
+char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to)
+{
+    std::uint32_t v3; //SOCKET
+    sockaddr toa;
+    std::int32_t v5;
+
+    switch (to.type)
+    {
+        case NA_BROADCAST:
+        case NA_IP:
+            v3 = *(unsigned long*)0x64A3008;
+            break;
+        case NA_BROADCAST_IPX:
+        case NA_IPX:
+            v3 = *(unsigned long*)0x64A1E1C;
+            break;
+        default:
+            memory::call<void(std::int32_t, char*, netadrtype_t)>(0x4B22D0)(0, *(char**)0x70909C, to.type); //com_error
+            return 1;
+    }
+
+    if (!v3)
+    {
+        return 1;
+    }
+
+    NetadrToSockadr(&to, &toa);
+
+    if (*(unsigned long*)0x64A3018 && to.type == NA_IP)
+    {
+        *(char*)0x64A1E70 = 0; //buf
+        *(char*)0x64A1E71 = 0;
+        *(char*)0x64A1E72 = 0;
+        *(char*)0x64A1E73 = 1;
+
+        *(unsigned long*)0x64A1E74 = *(unsigned long*)&toa.sa_data[2];
+        *(std::uint16_t*)0x64A1E78 = *(std::uint16_t*)toa.sa_data;
+        memcpy(*(void**)0x64A1E7A, data, len);
+        v5 = sendto(v3, *(const char**)0x64A1E70, len + 10, 0, *(sockaddr**)0x64A1E08, 16);
+    }
+    else
+    {
+        v5 = sendto(v3, (const char*)data, len, 0, &toa, 16);
+    }
+
+    if (v5 != -1)
+    {
+        return 1;
+    }
+
+    std::int32_t error = WSAGetLastError();
+
+    if (error == 10035 || error == 10049 && (to.type == NA_BROADCAST || to.type == NA_BROADCAST_IPX))
+    {
+        return 1;
+    }
+    const char* v7 = NET_ErrorString();
+    memory::call<std::int32_t(std::int32_t, char*, const char*)>(0x4F8C70)(16, "Sys_SendPacket: %s\n", v7); //com_error_0
+    return 0;
+}

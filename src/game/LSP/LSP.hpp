@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../stdafx.hpp"
+#include "../defs.hpp"
 
 void LSP_Init();
 bool LSP_Connected();

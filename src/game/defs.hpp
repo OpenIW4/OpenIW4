@@ -362,9 +362,3 @@ struct netadr_t
     unsigned __int16 port;
     char ipx[10];
 };
-
-struct sockaddr
-{
-    unsigned __int16 sa_family;
-    char sa_data[14];
-};

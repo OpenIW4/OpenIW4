@@ -6,6 +6,7 @@
 #include "../Com/Com.hpp"
 #include "../MSG/MSG.hpp"
 #include "../CL/CL.hpp"
+#include "../Unsorted/Unsortred.hpp"
 
 #include <memory/memory.hpp>
 
@@ -88,8 +89,6 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 //TODO : 0xB62C0
 void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 {
-    //memory::call<void(const char*)>(0x4B62C0)(string);
-
     char* i;
     std::int64_t v10 = 0;
 
@@ -118,13 +117,24 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 
                 if (CL_AllLocalClientsInactive() || (CL_GetFirstActiveControllerIndex(), !Live_IsSignedIn()))
                 {
-                    //LSP_WritePacketHeader goes here, todo
-                    //labled and done in IDA, just need to add to code base
+                    LSP_WritePacketHeader(*(std::int32_t*)0x66C6C14,
+                        *(msg_t**)0x66C7160,
+                        v10,
+                        v10, "Not signed in",
+                        (std::int32_t)Live_GetCurrentSession());
                 }
                 else
                 {
+                    const char* v7 = memory::call<const char* ()>(0x441FC0)(); //some steam call
                     Live_GetLSPXuid(CL_GetFirstActiveControllerIndex(), &v10);
-                    //LSP_WritePacketHeader stuff here, todo
+                    LSP_WritePacketHeader(
+                        CL_GetFirstActiveControllerIndex(),
+                        *(msg_t**)0x66C7160,
+                        v10,
+                        v10,
+                        (char*)v7,
+                        (std::int32_t)Live_GetCurrentSession()
+                    );
                 }
             }
             Sys_LeaveCriticalSection(CRITSECT_LIVE);
@@ -200,4 +210,41 @@ void LSP_ForceSendPacket()
         *(bool*)0x66C639A = 0;
         Sys_LeaveCriticalSection(CRITSECT_LIVE);
     }
+}
+
+void LSP_WritePacketHeader(std::int32_t a1, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, std::int32_t a6)
+{
+    const char* map;
+    MSG_WriteByte(msg, 14);
+    MSG_WriteBit1(msg);
+    MSG_WriteInt64(msg, a3, a4);
+    MSG_WriteString(msg, source);
+    MSG_WriteString(msg, va("%s %s build %s %s", "OpenIW4 MP", "inf-dev", getBuildNumber(), "win-x86"));
+
+    if (*(char**)0x2098DDC)
+    {
+        map = *(char**)(0x2098DDC + 16);
+    }
+    else
+    {
+        map = "no map yet";
+    }
+    MSG_WriteString(msg, map);
+    MSG_WriteBit1(msg);
+    std::int32_t v9 = *(unsigned long*)(a6 + 472);
+    *(unsigned long*)0x66C7118 = v9;
+    std::int32_t v10 = *(unsigned long*)(a6 + 476);
+    *(unsigned long*)0x66C711C = v10;
+
+    if (*(unsigned long*)0x66C7110)
+    {
+        MSG_WriteInt64(msg, *(unsigned long*)0x66C7110, (*(unsigned long*)0x66C7110 >> 31 | v9));
+    }
+    else
+    {
+        MSG_WriteInt64(msg, v9, v10);
+    }
+
+    *(unsigned long*)0x66C6C14 = a1;
+    *(std::int32_t*)0x66C7120 = 0; //s_firstLogWriteTime
 }

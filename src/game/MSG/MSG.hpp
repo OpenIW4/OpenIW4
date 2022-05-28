@@ -17,3 +17,4 @@ void MSG_ClearLastReferencedEntity(msg_t* msg);
 char* MSG_ReadString(msg_t* msg, char* string, std::uint32_t maxChars);
 std::int32_t MSG_ReadByte(msg_t* msg);
 std::int32_t MSG_GetByte(msg_t* msg, std::int32_t where);
+void MSG_WriteString(msg_t* msg, const char* source);

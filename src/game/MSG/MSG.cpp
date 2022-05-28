@@ -214,3 +214,47 @@ char* MSG_ReadString(msg_t* msg, char* string, std::uint32_t maxChars)
     string[maxChars - 1] = 0;
     return string;
 }
+
+void MSG_WriteString(msg_t* msg, const char* source)
+{
+    std::size_t v2 = strlen(source);
+
+    std::int32_t v3 = v2;
+    std::int32_t v7;
+    char destination[1024];
+
+    if (v2 < 1024)
+    {
+        v7 = 0;
+
+        if (v2 > 0)
+        {
+            do
+            {
+                destination[v7] = I_CleanChar(destination[source - destination + v7]);
+                ++v7;
+            }
+            while (v7 < v3);
+        }
+
+        destination[v7] = 0;
+
+        if (msg->curSize + v3 + 1 <= msg->maxSize)
+        {
+            msg->curSize += v3 + 1;
+            return;
+        }
+    }
+    else
+    {
+        I_strncpyz(destination, source, 896);
+
+        if (msg->curSize + 1 <= msg->maxSize)
+        {
+            Com_Memcpy(&msg->data[msg->curSize], *(char**)0x6FAC0D, 1);
+            msg->curSize += 1;
+            return;
+        }
+    }
+    msg->overflowed = true;
+}

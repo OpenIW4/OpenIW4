@@ -138,7 +138,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
         Sys_EnterCriticalSection(CRITSECT_LIVE);
         MSG_WriteByte(*(msg_t**)0x66C7160, 2);
         MSG_WriteLong(*(msg_t**)0x66C7160, Sys_Milliseconds());
-        //msg_writestring todo
+        MSG_WriteString(*(msg_t**)0x66C7160, i);
         Sys_LeaveCriticalSection(CRITSECT_LIVE);
     }
 }

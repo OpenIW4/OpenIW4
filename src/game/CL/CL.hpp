@@ -2,4 +2,6 @@
 
 #include "../stdafx.hpp"
 
-int CL_ControllerIndexFromClientNum();
+std::int32_t CL_ControllerIndexFromClientNum();
+bool CL_AllLocalClientsInactive();
+std::int32_t CL_GetFirstActiveControllerIndex();

@@ -4,6 +4,8 @@
 #include "../Live/Live.hpp"
 #include "../Sys/Sys.hpp"
 #include "../Com/Com.hpp"
+#include "../MSG/MSG.hpp"
+#include "../CL/CL.hpp"
 
 #include <memory/memory.hpp>
 
@@ -83,9 +85,62 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 	}
 }
 
+//TODO : 0xB62C0
 void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 {
-    memory::call<void(const char*)>(0x4B62C0)(string);
+    //memory::call<void(const char*)>(0x4B62C0)(string);
+
+    char* i;
+    std::int64_t v10 = 0;
+
+    if (*(bool*)0x66C6C1E /*s_logString*/)
+    {
+        for (i = (char*)string; *i == 10; ++i)
+        {
+            if (!i[1])
+            {
+                break;
+            }
+        }
+
+        if (strlen(i) + (*(msg_t*)0x66C7160).curSize + 6 > (*(msg_t*)0x66C7160).maxSize)
+        {
+            LSP_ForceSendPacket();
+        }
+
+        if (!*(bool*)0x66C639A /*logMsgInitialized*/)
+        {
+            Sys_EnterCriticalSection(CRITSECT_LIVE);
+            if (!*(bool*)0x66C639A)
+            {
+                *(bool*)0x66C639A = true;
+                MSG_Init(*(msg_t**)0x66C7160, *(const char**)0x66C7188, 1200);
+
+                if (CL_AllLocalClientsInactive() || (CL_GetFirstActiveControllerIndex(), !Live_IsSignedIn()))
+                {
+                    //LSP_WritePacketHeader goes here, todo
+                    //labled and done in IDA, just need to add to code base
+                }
+                else
+                {
+                    Live_GetLSPXuid(CL_GetFirstActiveControllerIndex(), &v10);
+                    //LSP_WritePacketHeader stuff here, todo
+                }
+            }
+            Sys_LeaveCriticalSection(CRITSECT_LIVE);
+        }
+
+        if (!*(std::int32_t*)0x66C7120/*s_firstLogWriteTime*/)
+        {
+            *(std::int32_t*)0x66C7120 = Sys_Milliseconds();
+        }
+
+        Sys_EnterCriticalSection(CRITSECT_LIVE);
+        MSG_WriteByte(*(msg_t**)0x66C7160, 2);
+        MSG_WriteLong(*(msg_t**)0x66C7160, Sys_Milliseconds());
+        //msg_writestring todo
+        Sys_LeaveCriticalSection(CRITSECT_LIVE);
+    }
 }
 
 //DONE : 0x4B41E0

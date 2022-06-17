@@ -86,7 +86,7 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 	}
 }
 
-//TODO : 0xB62C0
+//TODO : 0x4B62C0
 void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 {
     char* i;
@@ -113,12 +113,12 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
             if (!*(bool*)0x66C639A)
             {
                 *(bool*)0x66C639A = true;
-                MSG_Init(*(msg_t**)0x66C7160, *(const char**)0x66C7188, 1200);
+                MSG_Init((msg_t*)0x66C7160, *(const char**)0x66C7188, 1200);
 
                 if (CL_AllLocalClientsInactive() || (CL_GetFirstActiveControllerIndex(), !Live_IsSignedIn()))
                 {
                     LSP_WritePacketHeader(*(std::int32_t*)0x66C6C14,
-                        *(msg_t**)0x66C7160,
+                        (msg_t*)0x66C7160,
                         v10,
                         v10, "Not signed in",
                         (std::int32_t)Live_GetCurrentSession());
@@ -129,7 +129,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
                     Live_GetLSPXuid(CL_GetFirstActiveControllerIndex(), &v10);
                     LSP_WritePacketHeader(
                         CL_GetFirstActiveControllerIndex(),
-                        *(msg_t**)0x66C7160,
+                        (msg_t*)0x66C7160,
                         v10,
                         v10,
                         (char*)v7,
@@ -146,9 +146,9 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
         }
 
         Sys_EnterCriticalSection(CRITSECT_LIVE);
-        MSG_WriteByte(*(msg_t**)0x66C7160, 2);
-        MSG_WriteLong(*(msg_t**)0x66C7160, Sys_Milliseconds());
-        MSG_WriteString(*(msg_t**)0x66C7160, i);
+        MSG_WriteByte((msg_t*)0x66C7160, 2);
+        MSG_WriteLong((msg_t*)0x66C7160, Sys_Milliseconds());
+        MSG_WriteString((msg_t*)0x66C7160, i);
         Sys_LeaveCriticalSection(CRITSECT_LIVE);
     }
 }
@@ -212,6 +212,7 @@ void LSP_ForceSendPacket()
     }
 }
 
+//DONE : 0x4DA7F0
 void LSP_WritePacketHeader(std::int32_t a1, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, std::int32_t a6)
 {
     const char* map;

@@ -11,7 +11,7 @@ void MSG_InitHuffman()
     *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
     Huff_Init(*(huffman_t**)0x1CB9EC0); //huff
     std::int32_t time = Sys_Milliseconds();
-    Huff_BuildFromData(&(*(huffman_t**)0x1CB9EC0)->compressDecompress, *(std::int32_t**)0x1CB9EB8);
+    Huff_BuildFromData(&((huffman_t*)0x1CB9EC0)->compressDecompress, *(std::int32_t**)0x1CB9EB8);
     std::int32_t time2 = Sys_Milliseconds();
     Com_Printf(25, "Huffman took %d milliseconds\n", time2 - time);
 }
@@ -215,6 +215,7 @@ char* MSG_ReadString(msg_t* msg, char* string, std::uint32_t maxChars)
     return string;
 }
 
+//DONE : 0x463820
 void MSG_WriteString(msg_t* msg, const char* source)
 {
     std::size_t v2 = strlen(source);

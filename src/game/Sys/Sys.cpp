@@ -5,7 +5,7 @@
 #include "../CL/CL.hpp"
 #include "../NET/NET.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x004305E0
 void Sys_ShowConsole()

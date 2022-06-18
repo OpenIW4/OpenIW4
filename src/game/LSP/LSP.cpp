@@ -8,7 +8,7 @@
 #include "../CL/CL.hpp"
 #include "../Unsorted/Unsortred.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x48A9D0
 void LSP_Init()

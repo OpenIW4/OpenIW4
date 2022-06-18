@@ -3,7 +3,7 @@
 #include "../Sys/Sys.hpp"
 #include "../Huffman/Huffman.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x48B180
 void MSG_InitHuffman()

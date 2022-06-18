@@ -9,7 +9,7 @@
 
 #include "defs.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //THUNK : 0x0064AE50
 double inlined_2()

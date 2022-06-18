@@ -113,7 +113,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
             if (!*(bool*)0x66C639A)
             {
                 *(bool*)0x66C639A = true;
-                MSG_Init((msg_t*)0x66C7160, *(const char**)0x66C7188, 1200);
+                MSG_Init((msg_t*)0x66C7160, *(char**)0x66C7188, 1200);
 
                 if (CL_AllLocalClientsInactive() || (CL_GetFirstActiveControllerIndex(), !Live_IsSignedIn()))
                 {

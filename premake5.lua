@@ -80,6 +80,7 @@ workspace "OpenIW4"
 		
 		links {
 			"Winmm",
+			"WS2_32"
 		}
 
 		files {

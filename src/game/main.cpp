@@ -136,8 +136,3 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         return 0;
     }
 }
-
-void ZynamicPatch()
-{
-    memory::replace(0x06BABA1, WinMain);
-}

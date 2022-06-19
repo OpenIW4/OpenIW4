@@ -1,3 +1,5 @@
+#include "loader/loader.hpp"
+
 #include "Sys/Sys.hpp"
 #include "Com/Com.hpp"
 #include "Win/Win.hpp"
@@ -73,7 +75,7 @@ void patches()
 }
 
 //DONE : 0x004513D0
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     patches();
 
@@ -135,4 +137,20 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         MessageBoxA(0, error_msg, "Modern Warfare 2 - Fatal Error", MB_ICONHAND);
         return 0;
     }
+}
+
+void replace_funcs()
+{
+    memory::replace(0x4513D0, main);
+
+    memory::replace(0x4305E0, Sys_ShowConsole);
+    memory::replace(0x43D570, Sys_Error);
+}
+
+std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, std::int32_t nShowCmd)
+{
+    loader::load("iw4mp.exe");
+    patches();
+    replace_funcs();
+    return memory::call<std::int32_t()>(0x6BAC0F)();
 }

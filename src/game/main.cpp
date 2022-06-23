@@ -153,14 +153,14 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 SetErrorMode(1u);
                 Sys_Milliseconds();
                 Session_InitDvars();
-                Com_Init((char*)(0x0649F760) /*sys_cmdline*/);
+                Com_Init((char*)(0x649F760) /*sys_cmdline*/);
                 Cbuf_AddText(0, "readStats\n");
                 Sys_getcwd();
-                SetFocus(*(HWND*)(0x064A3AD0) /*g_wv*/);
+                SetFocus(*(HWND*)(0x64A3AD0) /*g_wv*/);
 
                 while (1)
                 {
-                    if (*(int*)(0x0064A3ADC))
+                    if (*(int*)(0x64A3ADC))
                     {
                         Sys_Sleep(5u);
                     }
@@ -192,12 +192,13 @@ void replace_funcs()
 
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x43D570, Sys_Error);
+    memory::replace(0x4CF7F0, DB_DirtyDiscError);
 }
 
 std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, std::int32_t nShowCmd)
 {
     loader::load("iw4mp.exe");
-    patches();
     replace_funcs();
+    patches();
     return memory::call<std::int32_t()>(0x6BAC0F)();
 }

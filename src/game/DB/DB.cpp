@@ -1,5 +1,6 @@
 #include "DB.hpp"
 #include "../Sys/Sys.hpp"
+#include "../Com/Com.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -90,4 +91,20 @@ int DB_GetXAssetTypeSize(XAssetType a1)
         result = 1688;
     }
     return result;
+}
+
+//DONE : 0x4CF7F0
+void DB_DirtyDiscError()
+{
+    if (!I_strcmp(*(const char**)0x112A680 + 4, "mp_playlists"))
+    {
+        //Com_Error is still todo
+        memory::call<void(std::int32_t, char* Format)>(0x4F8C70)(16, "Playlist fastfile is corrupt\n");
+        CloseHandle(*(HANDLE*)0x112A680);
+
+        const char* v0 = (const char*)memory::call<char* ()>(0x4F4EA0)();
+        remove(v0);
+    }
+    Com_Printf(16, "ERROR: Dirty disk: '%s'\n", *(const char**)0x112A680 + 4); //was channel 8, testing channel 16
+    Sys_Error("Disk read error, bitch."); //we should make this more informative
 }

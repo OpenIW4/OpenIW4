@@ -455,7 +455,7 @@ void Sys_Error(const char* error, ...)
 void Sys_SetErrorText(const char* text)
 {
     // s_wcd.errorString seems to be leftover from Quake for setting an old error prompt
-    I_strncpyz(*(char**)0x64A329C, text, 512);
+    I_strncpyz((char*)0x64A329C, text, 512);
 
     DestroyWindow(*(HWND*)0x64A3298 /*s_wcd.hwndInputLine*/);
     *(HWND*)0x64A3298 = 0;

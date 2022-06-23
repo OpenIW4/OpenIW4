@@ -13,6 +13,8 @@
 
 #include <utils/memory/memory.hpp>
 
+#define NOUPNP
+
 //TODO : 0x0064AE50
 double SecondsPerTick()
 {
@@ -115,6 +117,9 @@ void killCeg()
 
 void patches()
 {
+#if defined(NOUPNP) && defined(DEBUG)
+    memory::kill(0x4797F0);
+#endif
     killCeg();
     Sys_ShowConsole();
     ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);

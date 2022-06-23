@@ -105,6 +105,7 @@ void DB_DirtyDiscError()
         const char* v0 = (const char*)memory::call<char* ()>(0x4F4EA0)();
         remove(v0);
     }
-    Com_Printf(16, "ERROR: Dirty disk: '%s'\n", *(const char**)0x112A680 + 4); //was channel 8, testing channel 16
-    Sys_Error("Disk read error, bitch."); //we should make this more informative
+    Com_Printf(8, "ERROR: Dirty disk: '%s'\n", *(const char**)0x112A680 + 4);
+    Sys_Error("Disk read error.\n\n%s", *(const char**)0x112A680 + 4); //we should make this more informative
+                                                                   //just prints out the same thing as Com_Printf call above for now
 }

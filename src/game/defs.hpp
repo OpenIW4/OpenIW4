@@ -362,3 +362,14 @@ struct netadr_t
     unsigned __int16 port;
     char ipx[10];
 };
+
+struct field_t
+{
+    std::int32_t cursor;
+    std::int32_t scroll;
+    std::int32_t drawWidth;
+    std::int32_t widthInPixels;
+    std::float_t charHeight;
+    std::int32_t fixedSize;
+    char buffer[256];
+};

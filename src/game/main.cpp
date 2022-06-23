@@ -59,16 +59,22 @@ double SecondsPerTick()
     return *(std::double_t*)&v8;
 }
 
-//DONE : 0x0047ADF0
+//DONE : 0x47ADF0
 void InitTiming()
 {
-	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = SecondsPerTick() * 1000.0;
+	*(std::double_t*)(0x47ADF0) /*msecPerRawTimerTick*/ = SecondsPerTick() * 1000.0;
 }
 
-//THUNK : 0x000x437EB0
-void* Field_Clear(std::uint32_t* a1)
+//DONE : 0x437EB0
+void* Field_Clear(field_t* edit)
 {
-    return memory::call<void*(std::uint32_t*)>(0x00437EB0)(a1);
+    void* result = memset(edit->buffer, 0, sizeof(edit->buffer));
+
+    edit->cursor = 0;
+    edit->scroll = 0;
+    edit->drawWidth = 256;
+
+    return result;
 }
 
 //This function is blank in 159

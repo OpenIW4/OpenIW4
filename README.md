@@ -5,7 +5,7 @@
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
 # Compiling
-Currently we use CMake to compile. Select the latest toolset when building and set the architecture to Win32. If you have any question, join our Discord server below.
+We have decided to swith to premake. To compile, clone the repo and cd into it and run generate.bat and build with VS2022.
 
 # Contributing
 We really don't care, just send us stuff.

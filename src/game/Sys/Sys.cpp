@@ -5,7 +5,7 @@
 #include "../CL/CL.hpp"
 #include "../NET/NET.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x004305E0
 void Sys_ShowConsole()
@@ -160,7 +160,7 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t uMsg, std::uint32_t wPa
     return CallWindowProcA(*(WNDPROC*)0x64A38A4, hWnd, uMsg, wParam, lParam);
 }
 
-static _RTL_CRITICAL_SECTION** s_criticalSection = reinterpret_cast<_RTL_CRITICAL_SECTION**>(0x6499BC8);
+/*static _RTL_CRITICAL_SECTION** s_criticalSection = reinterpret_cast<_RTL_CRITICAL_SECTION**>(0x6499BC8);
 static int* marker_win_configure = reinterpret_cast<int*>(0x6499F88);
 
 //DONE : 0x42F0A0
@@ -170,6 +170,13 @@ void Sys_InitializeCriticalSections()
     do
         InitializeCriticalSection(section++);
     while ((int)section < (int)marker_win_configure);
+}*/
+
+//temp fix
+static _RTL_CRITICAL_SECTION** s_criticalSection = reinterpret_cast<_RTL_CRITICAL_SECTION**>(0x6499BC8);
+void Sys_InitializeCriticalSections()
+{
+    memory::call<void()>(0x42F0A0)();
 }
 
 //THUNK : 0x4301B0

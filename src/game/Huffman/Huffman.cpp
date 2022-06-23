@@ -1,7 +1,7 @@
 #include "Huffman.hpp"
 #include "../Com/Com.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x429270
 void Huff_Init(huffman_t* huff)

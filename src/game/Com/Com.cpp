@@ -4,7 +4,7 @@
 #include "../DB/DB.hpp"
 #include "../LSP/LSP.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 // None of these do anything to my knowledge
 // but for sake of completion they are here

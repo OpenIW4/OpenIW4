@@ -1,2 +1,0 @@
-include(FetchContent)
-include(Zynamic)

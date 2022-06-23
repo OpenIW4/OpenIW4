@@ -1,7 +1,7 @@
 #include "DB.hpp"
 #include "../Sys/Sys.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //DONE : 0x00440EC0
 void DB_Update()

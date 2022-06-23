@@ -1,6 +1,6 @@
 #include "Win.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //THUNK : 0x00406D10
 bool Win_InitLocalization(language_t* language)

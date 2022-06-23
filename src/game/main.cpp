@@ -1,3 +1,5 @@
+#include "loader/loader.hpp"
+
 #include "Sys/Sys.hpp"
 #include "Com/Com.hpp"
 #include "Win/Win.hpp"
@@ -9,18 +11,58 @@
 
 #include "defs.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
-//THUNK : 0x0064AE50
-double inlined_2()
+//TODO : 0x0064AE50
+double SecondsPerTick()
 {
-	return memory::call<double()>(0x0064AE50)();
+	//return memory::call<double()>(0x0064AE50)();
+
+    memory::call<void(std::int32_t)>(0x4A5E00)(2);
+
+    std::uint64_t time, time2;
+    long long v8;
+
+    HANDLE currentThread = GetCurrentThread();
+    std::int32_t nPriority = GetThreadPriority(currentThread);
+    SetThreadPriority(currentThread, nPriority);
+    Sleep(0); //why is this called, IW?
+
+    LARGE_INTEGER performanceCount;
+    performanceCount.QuadPart = 0;
+    LARGE_INTEGER v4;
+    v4.QuadPart = 0;
+    LARGE_INTEGER frequency;
+
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&performanceCount);
+
+    time = __rdtsc();
+
+    do
+    {
+        QueryPerformanceCounter(&v4);
+        v8 = v4.QuadPart - performanceCount.QuadPart;
+    } while ((std::double_t)(v4.QuadPart - performanceCount.QuadPart) / (std::double_t)frequency.QuadPart <= 0.25);
+
+    time2 = __rdtsc();
+
+    QueryPerformanceCounter(&v4);
+
+    *(std::double_t*)&v8 = (std::double_t)(v4.QuadPart - performanceCount.QuadPart)
+        /
+        (((std::double_t)(std::int64_t)time2 - time) * (std::double_t)frequency.QuadPart);
+    SetThreadPriority(currentThread, nPriority);
+
+    memory::call<void(std::int32_t)>(0x4A5E00)(0);
+
+    return *(std::double_t*)&v8;
 }
 
 //DONE : 0x0047ADF0
 void InitTiming()
 {
-	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = inlined_2() * 1000.0;
+	*(double*)(0x0047ADF0) /*msecPerRawTimerTick*/ = SecondsPerTick() * 1000.0;
 }
 
 //THUNK : 0x000x437EB0
@@ -67,13 +109,14 @@ void killCeg()
 
 void patches()
 {
+    killCeg();
     Sys_ShowConsole();
     ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);
     *(std::float_t*)(0x9FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
 }
 
 //DONE : 0x004513D0
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     patches();
 
@@ -137,7 +180,18 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
 }
 
-void ZynamicPatch()
+void replace_funcs()
 {
-    memory::replace(0x06BABA1, WinMain);
+    memory::replace(0x4513D0, main);
+
+    memory::replace(0x4305E0, Sys_ShowConsole);
+    memory::replace(0x43D570, Sys_Error);
+}
+
+std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, std::int32_t nShowCmd)
+{
+    loader::load("iw4mp.exe");
+    patches();
+    replace_funcs();
+    return memory::call<std::int32_t()>(0x6BAC0F)();
 }

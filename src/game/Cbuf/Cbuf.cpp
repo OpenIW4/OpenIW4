@@ -2,7 +2,7 @@
 
 #include "../Sys/Sys.hpp"
 
-#include <memory/memory.hpp>
+#include <utils/memory/memory.hpp>
 
 //THUNK : 0x00404B20
 void Cbuf_AddText(int a1, const char* a2)

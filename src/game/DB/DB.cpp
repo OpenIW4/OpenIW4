@@ -93,7 +93,7 @@ int DB_GetXAssetTypeSize(XAssetType a1)
     return result;
 }
 
-//DONE : 0x4CF7F0
+//TODO : 0x4CF7F0
 void DB_DirtyDiscError()
 {
     if (!I_strcmp(*(const char**)0x112A680 + 4, "mp_playlists"))

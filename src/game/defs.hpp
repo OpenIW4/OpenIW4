@@ -373,3 +373,28 @@ struct field_t
     std::int32_t fixedSize;
     char buffer[256];
 };
+
+struct parseInfo_t
+{
+    char token[1024];
+    int lines;
+    bool ungetToken;
+    bool spaceDelimited;
+    bool keepStringQuotes;
+    bool csv;
+    bool negativeNumbers;
+    const char* errorPrefix;
+    const char* warningPrefix;
+    int backup_lines;
+    const char* backup_text;
+    const char* parseFile;
+};
+
+struct ParseThreadInfo
+{
+    parseInfo_t parseInfo[16];
+    int parseInfoNum;
+    const char* tokenPos;
+    const char* prevTokenPos;
+    char line[1024];
+};

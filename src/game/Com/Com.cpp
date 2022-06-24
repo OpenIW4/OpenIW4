@@ -445,3 +445,488 @@ char* va(const char* format, ...)
 
     return buf;
 }
+
+//DONE : inlined
+static ParseThreadInfo* g_parse = reinterpret_cast<ParseThreadInfo*>(0x6466628);
+ParseThreadInfo* Com_GetParseThreadInfo()
+{
+    if (Sys_IsMainThread())
+    {
+        return g_parse;
+    }
+    else if (Sys_IsRenderThread())
+    {
+        return &g_parse[1];
+    }
+    else if (Sys_IsServerThread())
+    {
+        return &g_parse[2];
+    }
+    else if (Sys_IsDatabaseThread())
+    {
+        return &g_parse[3];
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+//DONE : inlined
+void Com_InitParseInfo(parseInfo_t* pi)
+{
+    pi->lines = 1;
+    pi->spaceDelimited = 1;
+    pi->ungetToken = 0;
+    pi->keepStringQuotes = 0;
+    pi->csv = 0;
+    pi->negativeNumbers = 0;
+    pi->backup_lines = 0;
+    pi->backup_text = 0;
+    pi->errorPrefix = *(const char**)0x6FAC0D;
+    pi->warningPrefix = *(const char**)0x6FAC0D;
+}
+
+//DONE : 0x4AAB80
+void Com_BeginParseSession(const char* filename)
+{
+    parseInfo_t* pi;
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+    std::int32_t v2 = 0;
+    const char** p_parseFile;
+
+    if (parse->parseInfoNum == 15)
+    {
+        Com_Printf(23, "Already parsing:\n");
+
+        if (parse->parseInfoNum > 0)
+        {
+            p_parseFile = &parse->parseInfo[0].parseFile;
+
+            do
+            {
+                Com_Printf(23, "%i. %s\n", v2++, *p_parseFile);
+                p_parseFile += 264;
+            }
+            while (v2 < parse->parseInfoNum);
+        }
+        //com_error
+        memory::call<void(std::int32_t, char* Format, const char*)>(0x4B22D0)(0, (char*)0x730450, filename);
+    }
+
+    pi = &parse->parseInfo[++parse->parseInfoNum];
+    Com_InitParseInfo(pi);
+    pi->parseFile = filename;
+}
+
+//DONE : 0x4B80B0
+void Com_EndParseSession()
+{
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+
+    if (!parse->parseInfoNum)
+    {
+        //com_error
+        memory::call<void(std::int32_t, char* Format)>(0x4B22D0)(0, (char*)0x72C7C0);
+    }
+
+    --parse->parseInfoNum;
+}
+
+//DONE 0x64A190
+parseInfo_t* Com_ParseCSV(const char** data_p, std::int32_t allowLineBreaks)
+{
+    //T5 code, used for readability, *should* act the same as IW4
+    //keyword: should
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+    parseInfo_t* pi = &parse->parseInfo[parse->parseInfoNum];
+    const char* data = *data_p;
+    std::uint32_t len = 0;
+    pi->token[0] = 0;
+
+    const char* v3;
+
+    const char* dataa; //lol 3arc
+
+    if (allowLineBreaks)
+    {
+        while (*data == 13 || *data == 10)
+        {
+            ++data;
+        }
+    }
+    else if (*data == 13 || *data == 10)
+    {
+        return pi;
+    }
+
+    parse->prevTokenPos = parse->tokenPos;
+    parse->tokenPos = data;
+
+    while (*data && *data != 44 && *data != 10)
+    {
+        if (!data == 13)
+        {
+            ++data;
+        }
+        else if (*data == 34)
+        {
+            for (dataa = data + 1; ; dataa += 2)
+            {
+                while (*dataa != 34)
+                {
+                    if (len < 1023)
+                    {
+                        pi->token[len++] = *dataa;
+                    }
+                    ++dataa;
+                }
+
+                if (dataa[1] != 34)
+                {
+                    break;
+                }
+
+                if (len < 1023)
+                {
+                    pi->token[len++] = 34;
+                }
+            }
+            data = dataa + 1;
+        }
+        else
+        {
+            if (len < 1023)
+            {
+                pi->token[len++] = *data;
+            }
+            ++data;
+        }
+    }
+
+    if (*data && *data != 10)
+    {
+        ++data;
+    }
+
+    if (!data || len)
+    {
+        v3 = data;
+    }
+    else
+    {
+        v3 = 0;
+    }
+
+    *data_p = v3;
+    pi->token[len] = 0;
+    return pi;
+}
+
+//DONE 0x64A100
+const char* SkipWhitespace(const char* data, std::int32_t* newLines)
+{
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+    parseInfo_t* pi = &parse->parseInfo[parse->parseInfoNum];
+
+    std::int32_t v5 = *data;
+
+    if (v5 > 32)
+    {
+        return data;
+    }
+
+    while (v5)
+    {
+        if (v5 == 10)
+        {
+            ++pi->lines;
+            *newLines = 1;
+        }
+        v5 = *++data;
+
+        if (v5 > 32)
+        {
+            return data;
+        }
+    }
+
+    return 0;
+}
+
+//DONE : 0x64A2D0
+static const char** puncuation = reinterpret_cast<const char**>(0x79D208);
+parseInfo_t* Com_ParseExt(const char** data_p, std::int32_t allowLineBreaks)
+{
+    //T5 code, used for readability, *should* act the same as IW4
+    //keyword: should
+
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+    parseInfo_t* pi = &parse->parseInfo[parse->parseInfoNum];
+
+    const char* data = *data_p;
+    std::int32_t len = 0;
+    std::int32_t newLines, j;
+
+    char c, ca, cb, cc;
+
+    pi->token[0] = 0;
+    if (!data)
+    {
+        *data_p = 0;
+        return pi;
+    }
+
+    pi->backup_lines = pi->lines;
+    pi->backup_text = *data_p;
+
+    if (pi->csv)
+    {
+        return Com_ParseCSV(data_p, allowLineBreaks);
+    }
+
+    while (1)
+    {
+        while (1)
+        {
+            data = SkipWhitespace(data, &newLines);
+
+            if (!data)
+            {
+                *data_p = 0;
+                return pi;
+            }
+
+            if (newLines > 0 && !allowLineBreaks)
+            {
+                return pi;
+            }
+            pi->lines += newLines;
+            c = *data;
+
+            if (*data != 47 || data[1] != 47)
+            {
+                break;
+            }
+            while (*data && *data != 10)
+            {
+                ++data;
+            }
+        }
+
+        if (c != 47 || data[1] != 42)
+        {
+            break;
+        }
+
+        while (*data && (*data != 42 || data[1] != 47))
+        {
+            if (*data == 10)
+            {
+                ++pi->lines;
+            }
+            ++data;
+        }
+
+        if (*data)
+        {
+            data += 2;
+        }
+    }
+
+    parse->prevTokenPos = parse->tokenPos;
+    parse->tokenPos = data;
+
+    if (c == 34)
+    {
+        if (pi->keepStringQuotes)
+        {
+            pi->token[len++] = 34;
+        }
+        ++data;
+
+        while (1)
+        {
+            ca = *data++;
+            if (ca == 92 && (*data == 34 || *data == 92))
+            {
+                ca = *data++;
+            }
+            else
+            {
+                if (ca == 34 || !ca)
+                {
+                    if (pi->keepStringQuotes)
+                    {
+                        pi->token[len++] = 34;
+                    }
+                    pi->token[len] = 0;
+                    *data_p = data;
+                    return pi;
+                }
+                if (*data == 10)
+                {
+                    ++pi->lines;
+                }
+            }
+
+            if (len < 1023)
+            {
+                pi->token[len++] = ca;
+            }
+        }
+    }
+
+    if (c == -1)
+    {
+        ++data;
+        while (1)
+        {
+            cb = *data++;
+            if (cb == -1 || !cb)
+            {
+                break;
+            }
+
+            if (len < 1023)
+            {
+                pi->token[len++] = cb;
+            }
+        }
+
+        pi->token[len] = 0;
+        *data_p = data;
+        return pi;
+    }
+    else if (pi->spaceDelimited)
+    {
+        do
+        {
+            if (len < 1023)
+            {
+                pi->token[len++] = c;
+            }
+            c = *++data;
+        }
+        while (*data > 32);
+
+        if (len == 1024)
+        {
+            len = 0;
+        }
+        pi->token[len] = 0;
+        *data_p = data;
+        return pi;
+    }
+    else if (c >= 48 && c <= 57 || pi->negativeNumbers && c == 45 && data[1] >= 48 && data[1] <= 57 || c == 46 && data[1] >= 48 && data[1] <= 57)
+    {
+        do
+        {
+            if (len < 1023)
+            {
+                pi->token[len++] = c;
+            }
+            c = *++data;
+        } while (*data >= 48 && c <= 57 || c == 46);
+
+        if (c == 101 || c == 69)
+        {
+            if (len < 1023)
+            {
+                pi->token[len++] = c;
+            }
+            cc = *++data;
+
+            if (*data == 45 || cc == 43)
+            {
+                if (len < 1023)
+                {
+                    pi->token[len++] = cc;
+                }
+                cc = *++data;
+            }
+
+            do
+            {
+                if (len < 1023)
+                {
+                    pi->token[len++] = cc;
+                }
+                cc = *++data;
+            }
+            while (*data >= 48 && cc <= 57);
+        }
+
+        if (len == 1024)
+        {
+            len = 0;
+        }
+        pi->token[len] = 0;
+        *data_p = data;
+        return pi;
+    }
+    else if (c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 95 || c == 47 || c == 92)
+    {
+        do
+        {
+            if (len < 1023)
+            {
+                pi->token[len++] = c;
+            }
+            c = *++data;
+        }
+        while (*data >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 95 || c >= 48 && c <= 57);
+
+        if (len == 1024)
+        {
+            len = 0;
+        }
+        pi->token[len] = 0;
+        *data_p = data;
+        return pi;
+    }
+    else
+    {
+        //this might be wrong
+        for (const char** punc = puncuation; *punc; ++punc)
+        {
+            std::size_t l = strlen(*punc);
+            for (j = 0; j < l && data[j] == (*punc)[j]; ++j)
+            {
+                ;
+            }
+
+            if (j == l)
+            {
+                memcpy((std::uint8_t*)pi, (std::uint8_t*)*punc, l);
+                pi->token[l] = 0;
+                data += l;
+                *data_p = data;
+                return pi;
+            }
+        }
+
+        pi->token[0] = *data;
+        pi->token[1] = 0;
+        return pi;
+    }
+    
+}
+
+//DONE : 0x474D60
+char* Com_Parse(const char** data_p)
+{
+    ParseThreadInfo* parse = Com_GetParseThreadInfo();
+    const char* backupText;
+    parseInfo_t* pi = &parse->parseInfo[parse->parseInfoNum];
+
+    if (pi->ungetToken)
+    {
+        backupText = pi->backup_text;
+        pi->ungetToken = 0;
+        *data_p = backupText;
+        pi->lines = pi->backup_lines;
+    }
+    //dont be surprised if this breaks
+    return (char*)Com_ParseExt(data_p, 1);
+}

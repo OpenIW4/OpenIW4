@@ -4,6 +4,7 @@
 #include "../Cbuf/Cbuf.hpp"
 #include "../CL/CL.hpp"
 #include "../NET/NET.hpp"
+#include "../Win/Win.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -371,10 +372,90 @@ void Sys_LeaveCriticalSection(CriticalSection critSect)
     LeaveCriticalSection(s_criticalSection[critSect]);
 }
 
-//THUNK : 0x64CF10
+//TODO : 0x64CF10
 void Sys_EnumerateHw()
 {
-    memory::call<void()>(0x0064CF10)();
+    //memory::call<void()>(0x0064CF10)();
+    //there is still a lot here to do
+    //DX9 SDK will be needed quite soon
+    *(std::int32_t*)0x64A17B0 = Sys_GetCPUCount();
+
+    *(std::double_t*)0x64A17A0 = 1.0 / (((std::double_t)1i64 - (double)0i64) * *(std::double_t*)0x6499BA8 * 1000000.0);
+
+    *(std::int64_t*)0x64A17B8 = Sys_SystemMemoryMB();
+}
+
+//DONE : 0x4C9540
+void Sys_NormalExit()
+{
+    DeleteFileA((const char*)0x649FF74); //sys_processSemaphoreFile
+}
+
+//DONE : 0x4B14B0
+std::int32_t Sys_SystemMemoryMB()
+{
+    HWND ActiveWindow;
+    HWND v2;
+    const char* v3;
+    const char* v4;
+    const char* v5;
+    const char* v6;
+    std::float_t v7, v8;
+    std::int32_t sysMB, sysMBa;
+    HINSTANCE__* hm;
+    _MEMORYSTATUS status;
+    int(__stdcall * MemStatEx)(_MEMORYSTATUSEX*);
+    _MEMORYSTATUSEX statusEx;
+
+    hm = GetModuleHandleA("kernel32.dll");
+    if (hm && (MemStatEx = (int(__stdcall*)(_MEMORYSTATUSEX*))GetProcAddress(hm, "GlobalMemoryStatusEx")) != 0)
+    {
+        statusEx.dwLength = 64;
+        MemStatEx(&statusEx);
+        if (statusEx.ullAvailVirtual < 0x8000000)
+        {
+            v5 = Win_LocalizeRef("WIN_LOW_MEMORY_TITLE");
+            v3 = Win_LocalizeRef("WIN_LOW_MEMORY_BODY");
+            ActiveWindow = GetActiveWindow();
+            if (MessageBoxA(ActiveWindow, v3, v5, 0x34u) != 6)
+            {
+                Sys_NormalExit();
+                exit(0);
+            }
+        }
+        v8 = (std::double_t)statusEx.ullTotalPhys * 0.00000095367432;
+        sysMB = (std::int32_t)(v8 + 0.4999999990686774);
+        if ((std::double_t)statusEx.ullTotalPhys > (std::double_t)sysMB * 1048576.0 || sysMB > 2048)
+            return 2048;
+        return sysMB;
+    }
+    else
+    {
+        status.dwLength = 32;
+        GlobalMemoryStatus(&status);
+        if (status.dwAvailVirtual < 0x8000000)
+        {
+            v6 = Win_LocalizeRef("WIN_LOW_MEMORY_TITLE");
+            v4 = Win_LocalizeRef("WIN_LOW_MEMORY_BODY");
+            v2 = GetActiveWindow();
+            if (MessageBoxA(v2, v4, v6, 0x34u) != 6)
+            {
+                Sys_NormalExit();
+                exit(0);
+            }
+        }
+        v7 = (std::double_t)status.dwTotalPhys * 0.00000095367432;
+        sysMBa = (std::int32_t)(v7 + 0.4999999990686774);
+        if ((std::double_t)status.dwTotalPhys > (std::double_t)sysMBa * 1048576.0 || sysMBa > 2048)
+            return 2048;
+        return sysMBa;
+    }
+}
+
+//TODO: 0x4C6610
+std::int32_t Sys_GetCPUCount()
+{
+    return *(std::int32_t*)0x1CDE7F0; //s_cpuCount
 }
 
 //DONE : 0x4CA4A0

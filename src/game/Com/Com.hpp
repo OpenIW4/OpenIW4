@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../stdafx.hpp"
-#include "game/defs.hpp"
+#include "../defs.hpp"
 
 void Com_InitParse();
 void Com_Frame();
@@ -18,6 +18,14 @@ void Com_PrintError(int channel, const char* fmt, ...);
 int Com_sprintf(char* buf, size_t bufCount, const char* fmt, ...);
 void Com_Memcpy(void* dest, const void* src, int size);
 void Com_Memset(void* dest, int val, int count);
+ParseThreadInfo* Com_GetParseThreadInfo();
+void Com_BeginParseSession(const char* filename);
+void Com_InitParseInfo(parseInfo_t* pi);
+void Com_EndParseSession();
+char* Com_Parse(const char** data_p);
+parseInfo_t* Com_ParseExt(const char** data_p, std::int32_t allowLineBreaks);
+parseInfo_t* Com_ParseCSV(const char** data_p, std::int32_t allowLineBreaks);
+const char* SkipWhitespace(const char* data, std::int32_t* newLines); //IDA is weird with this one
 
 int I_strlen(const char* s);
 char I_CleanChar(char c);

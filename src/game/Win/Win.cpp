@@ -1,4 +1,5 @@
 #include "Win.hpp"
+#include "../Com/Com.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -19,4 +20,33 @@ void Win_ShutdownLocalization()
 const char* Win_GetLocalizationFilename()
 {
 	return "localization.txt";
+}
+
+//DONE : 0x44AB20
+static localization_t* localization = reinterpret_cast<localization_t*>(0x649E744);
+const char* Win_LocalizeRef(const char* ref)
+{
+	Com_BeginParseSession("localization");
+
+	const char* strings = localization->language;
+
+	for (char* i = Com_Parse(&strings); *i; i = Com_Parse(&strings))
+	{
+        std::int32_t v2 = strcmp(i, ref);
+        char* v3 = Com_Parse(&strings);
+
+        if (!*v3)
+        {
+            break;
+        }
+
+        if (!v2)
+        {
+            Com_EndParseSession();
+            return va("%s", v3);
+        }
+	}
+
+    Com_EndParseSession();
+    return va("%s", ref);
 }

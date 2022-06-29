@@ -935,7 +935,7 @@ char* Com_Parse(const char** data_p)
 static hunkUsed_t* hunk_low = reinterpret_cast<hunkUsed_t*>(0x63D97AC);
 static hunkUsed_t* hunk_high = reinterpret_cast<hunkUsed_t*>(0x63D97A4);
 static unsigned char* s_hunkData = reinterpret_cast<unsigned char*>(0x63E2638);
-static size_t s_hunkTotal = *reinterpret_cast<std::size_t*>(0x63D978C);
+static std::size_t s_hunkTotal = *reinterpret_cast<std::size_t*>(0x63D978C);
 void Com_TouchMemory()
 {
     std::int32_t start = Sys_Milliseconds();

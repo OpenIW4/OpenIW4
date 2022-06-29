@@ -303,8 +303,8 @@ enum CriticalSection
 
 struct hunkUsed_t
 {
-    int permanent;
-    int temp;
+    std::int32_t permanent;
+    std::int32_t temp;
 };
 
 struct HunkUser

@@ -930,3 +930,27 @@ char* Com_Parse(const char** data_p)
     //dont be surprised if this breaks
     return (char*)Com_ParseExt(data_p, 1);
 }
+
+//DONE : 0x48C550
+static hunkUsed_t* hunk_low = reinterpret_cast<hunkUsed_t*>(0x63D97AC);
+static hunkUsed_t* hunk_high = reinterpret_cast<hunkUsed_t*>(0x63D97A4);
+static unsigned char* s_hunkData = reinterpret_cast<unsigned char*>(0x63E2638);
+static size_t s_hunkTotal = *reinterpret_cast<std::size_t*>(0x63D978C);
+void Com_TouchMemory()
+{
+    std::int32_t start = Sys_Milliseconds();
+    std::int32_t sum = 0;
+
+    for (std::int32_t i = 0; i < hunk_low->permanent >> 2; i += 64)
+    {
+        sum += *(long*)&s_hunkData[4 * i];
+    }
+
+    for (std::int32_t j = (std::int32_t)(s_hunkTotal - hunk_high->permanent) >> 2; j < hunk_high->permanent >> 2; j += 64)
+    {
+        sum += *(long*)&s_hunkData[4 * j];
+    }
+
+    std::int32_t end = Sys_Milliseconds();
+    Com_Printf(16, "Com_TouchMemory: %i msec. Using sum: %d\n", end - start, sum);
+}

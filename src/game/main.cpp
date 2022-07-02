@@ -1,3 +1,4 @@
+#include "main.hpp"
 #include "loader/loader.hpp"
 
 #include "Sys/Sys.hpp"
@@ -8,6 +9,9 @@
 #include "Cbuf/Cbuf.hpp"
 #include "DB/DB.hpp"
 #include "LSP/LSP.hpp"
+
+#include "MSG/MSG.hpp"
+#include "Huffman/Huffman.hpp"
 
 #include "defs.hpp"
 
@@ -90,8 +94,8 @@ void Session_InitDvars()
 
 void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
 {
-    auto DB_XAssetPool = (void**)0x007998A8;
-    auto g_poolSize = (std::uint32_t*)0x007995E8;
+    auto DB_XAssetPool = (void**)0x7998A8;
+    auto g_poolSize = (std::uint32_t*)0x7995E8;
 
     auto size = DB_GetXAssetTypeSize(type);
     auto poolEntry = malloc(newSize * size);
@@ -103,13 +107,13 @@ void* ReallocateAssetPool(XAssetType type, std::size_t newSize)
 
 void killCeg()
 {
-    auto ceg = {0x402FD0, 0x4044E0,
+    std::initializer_list<std::int32_t> ceg = {0x402FD0, 0x4044E0,
     0x42BEB0, 0x438620,
     0x446740, 0x4A81D0,
     0x4CA590, 0x4CC180,
     0x4F3BF0, 0x4FAC40, 0x471B20, 0x4A76F0 };
 
-    for (const auto& address : ceg)
+    for (const std::int32_t& address : ceg)
     {
         memory::kill(address);
     }
@@ -198,6 +202,8 @@ void replace_funcs()
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x43D570, Sys_Error);
     memory::replace(0x4CF7F0, DB_DirtyDiscError);
+
+    memory::replace(0x45FCA0, MSG_Init); //bug fixing/testing, remove when done
 }
 
 std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, std::int32_t nShowCmd)

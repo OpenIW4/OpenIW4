@@ -33,7 +33,7 @@ nodetype* Huff_initNode(huff_t* huff, std::int32_t ch, std::int32_t weight)
 //DONE : 0x429170
 std::int32_t nodeCmp(const void* left, const void* right)
 {
-    return *(unsigned long*)(*(unsigned long*)left + 12) - *(unsigned long*)(*(unsigned long*)right + 12);
+    return (*(std::int32_t*)left + 12) - (*(std::int32_t*)right + 12);
 }
 
 //DONE : 0x4365D0

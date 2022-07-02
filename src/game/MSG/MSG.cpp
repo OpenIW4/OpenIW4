@@ -6,12 +6,14 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x48B180
+static huffman_t* huff = reinterpret_cast<huffman_t*>(0x1CB9EC0);
+static std::int32_t* msg = reinterpret_cast<std::int32_t*>(0x1CB9EB8);
 void MSG_InitHuffman()
 {
     *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
-    Huff_Init(*(huffman_t**)0x1CB9EC0); //huff
+    Huff_Init(huff);
     std::int32_t time = Sys_Milliseconds();
-    Huff_BuildFromData(&((huffman_t*)0x1CB9EC0)->compressDecompress, *(std::int32_t**)0x1CB9EB8);
+    Huff_BuildFromData(&huff->compressDecompress, msg);
     std::int32_t time2 = Sys_Milliseconds();
     Com_Printf(25, "Huffman took %d milliseconds\n", time2 - time);
 }

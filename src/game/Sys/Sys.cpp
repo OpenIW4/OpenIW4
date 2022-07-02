@@ -348,10 +348,13 @@ void Sys_SetValue(int valueIndex, void* data)
     memory::call<void*(int, void*)>(0x4B2F50)(valueIndex, data);
 }
 
-//THUNK : 0x64D300
+//DONE : 0x64D300
 void Sys_getcwd()
 {
-    memory::call<void()>(0x0064D300)();
+    char destBuf[256];
+
+    _getcwd(destBuf, 256);
+    Com_Printf(16, "Working directory: %s\n", destBuf);
 }
 
 //THUNK : 0x4C37D0
@@ -494,7 +497,7 @@ bool Sys_DatabaseCompleted()
     return SetEvent(event);
 }
 
-//DONE : 0x43D570
+//TODO : 0x43D570
 void Sys_Error(const char* error, ...)
 {
     tagMSG msg;

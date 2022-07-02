@@ -58,7 +58,7 @@ void Huff_BuildFromData(huff_t* huff, std::int32_t* msg)
     v3->left->parent = v3;
     v3->right->parent = v3;
     v3->weight = v3->right->weight + v3->left->weight;
-    heap[0] = 0;
+    heap[0] = v3;
 
     while (numNodes > 1)
     {

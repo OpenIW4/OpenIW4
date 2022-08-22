@@ -7,21 +7,23 @@
 
 #include "utils/memory/memory.hpp"
 
+#define MAX_PHYSICAL_MEMORY 0x12C00000
+
 static PhysicalMemory* g_mem = reinterpret_cast<PhysicalMemory*>(0x64663F8);
 
 //DONE : Inlined
 void PMem_InitPhysicalMemory(PhysicalMemory* pmem, void* memory, unsigned int memorySize)
 {
     memset(pmem, 0, sizeof(PhysicalMemory));
-    pmem->buf = (char*)memory;
+    pmem->buf = static_cast<char*>(memory);
     pmem->prim[1].pos = memorySize;
 }
 
 //DONE : 0x64A020
 void PMem_Init()
 {
-    void* result = VirtualAlloc(nullptr, 0x12C00000, MEM_RESERVE, PAGE_READWRITE);
-    PMem_InitPhysicalMemory(g_mem, result, 0x12C00000);
+    void* result = VirtualAlloc(nullptr, MAX_PHYSICAL_MEMORY, MEM_RESERVE, PAGE_READWRITE);
+    PMem_InitPhysicalMemory(g_mem, result, MAX_PHYSICAL_MEMORY);
 }
 
 //DONE : 0x47A6D0
@@ -51,7 +53,7 @@ uint8_t* PMem_AllocFromSource(size_t size, uint32_t alignment, uint32_t type, PM
         if (0 < (int)(unk1 - g_mem->prim[1].pos))
         {
             Com_PrintError(0x10, "Need %i more bytes of ram for alloc to succeed\n", unk1 - g_mem->prim[1].pos);
-            Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\physicalmemory.cpp", 0x28A);
+            Sys_OutOfMemError();
         }
 
         buf = g_mem->buf + pos;
@@ -64,7 +66,7 @@ uint8_t* PMem_AllocFromSource(size_t size, uint32_t alignment, uint32_t type, PM
         if (0 < (int)(g_mem->prim[0].pos - pos))
         {
             Com_PrintError(0x10, "Need %i more bytes of ram for alloc to succeed\n", g_mem->prim[0].pos - pos);
-            Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\physicalmemory.cpp", 0x28A);
+            Sys_OutOfMemError();
         }
 
         unk1 = size + pos;

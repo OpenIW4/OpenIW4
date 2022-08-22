@@ -211,6 +211,26 @@ LargeLocal::~LargeLocal()
 
 // Z Section
 
+//DONE: Inlined
+int Z_TryVirtualCommitInternal(void* ptr, int size)
+{
+    if (VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE))
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+//DONE: Inlined
+void Z_VirtualCommit(void* ptr, int size)
+{
+    if (!Z_TryVirtualCommitInternal(ptr, size))
+    {
+        Sys_OutOfMemError();
+    }
+}
+
 //DONE : Inlined
 void Z_VirtualFree(void* ptr, int type)
 {
@@ -394,4 +414,20 @@ const char* CopyString(const char* in)
 {
     uint32_t stringValue = SL_GetString_(in, 0, 0x16);
     return SL_ConvertToString(stringValue);
+}
+
+//DONE : 0x430E90
+HunkUser* Hunk_UserCreate(int maxSize, const char* name, bool fixed, int type)
+{
+    HunkUser* buffer = static_cast<HunkUser*>(Z_VirtualReserve(maxSize));
+    Z_VirtualCommit(buffer, 0x20);
+
+    buffer->end = (buffer->buf[0] + maxSize + -0x20);
+    buffer->pos = buffer->buf[0];
+    buffer->maxSize = maxSize;
+    buffer->name = name;
+    buffer->current = buffer;
+    buffer->fixed = fixed;
+    buffer->type = type;
+    return buffer;
 }

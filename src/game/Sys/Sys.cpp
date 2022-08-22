@@ -842,3 +842,10 @@ char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to)
     memory::call<std::int32_t(std::int32_t, char*, const char*)>(0x4F8C70)(16, "Sys_SendPacket: %s\n", v7); //com_error_0
     return 0;
 }
+
+volatile int* sv_thread_owns_game = reinterpret_cast<volatile int*>(0x2089DB8);
+
+int SV_GetServerThreadOwnsGame()
+{
+    return *sv_thread_owns_game;
+}

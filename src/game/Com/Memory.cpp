@@ -15,18 +15,18 @@ static int g_largeLocalRightPos;
 static int g_maxLargeLocalPos;
 static int g_minLargeLocalRightPos;
 
+#define LARGE_LOCAL_BUF_SIZE 0x180000
+#define PAGE_SIZE 0x1000
+
 //DONE : 0x4A62A0
 void LargeLocalInit()
 {
-    g_largeLocalBuf = (std::uint8_t*)VirtualAlloc(nullptr, 0x180000, MEM_RESERVE, PAGE_READWRITE);
+    g_largeLocalBuf = static_cast<std::uint8_t*>(VirtualAlloc(nullptr, LARGE_LOCAL_BUF_SIZE, MEM_RESERVE, PAGE_READWRITE));
 
     g_maxLargeLocalPos = 0;
-    g_minLargeLocalRightPos = 0x180000;
+    g_minLargeLocalRightPos = LARGE_LOCAL_BUF_SIZE;
 
-    g_largeLocalPos = 0;
-    g_largeLocalRightPos = 0x180000;
-
-    LargeLocalReset();
+    LargeLocalClear();
 }
 
 //DONE : Inlined
@@ -47,20 +47,20 @@ void LargeLocalReset()
     auto context = memory::call<int()>(0x50B0D0)(); // R_PopRemoteScreenUpdate
     memory::call<void()>(0x5091B0)(); //  R_SyncRenderThread
 
-    auto unk1 = (g_largeLocalPos + 0xFFF) & 0xFFFFF000;
-    auto unk2 = (g_maxLargeLocalPos + 0xFFF) & 0xFFFFF000;
+    auto pos = (g_largeLocalPos + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
+    auto rightPos = (g_maxLargeLocalPos + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
 
-    if (unk1 != unk2)
+    if (pos != rightPos)
     {
-        VirtualFree(&g_largeLocalBuf[unk1], unk2 - unk1, MEM_DECOMMIT);
+        VirtualFree(&g_largeLocalBuf[pos], rightPos - pos, MEM_DECOMMIT);
     }
 
     g_maxLargeLocalPos = g_largeLocalPos;
-    unk2 = g_minLargeLocalRightPos & 0xFFFFF000;
+    rightPos = g_minLargeLocalRightPos & ~(PAGE_SIZE - 1);
 
-    if (unk2 != (g_largeLocalRightPos & 0xFFFFF000))
+    if (rightPos != (g_largeLocalRightPos & ~(PAGE_SIZE - 1)))
     {
-        VirtualFree(&g_largeLocalBuf[unk2], (g_largeLocalRightPos & 0xFFFFF000) - unk2, MEM_DECOMMIT);
+        VirtualFree(&g_largeLocalBuf[rightPos], (g_largeLocalRightPos & ~(PAGE_SIZE - 1)) - rightPos, MEM_DECOMMIT);
     }
 
     g_minLargeLocalRightPos = g_largeLocalRightPos;
@@ -85,20 +85,20 @@ void LargeLocalResetToMark(int markPos)
 int LargeLocalBegin(int size)
 {
     g_largeLocalPos += size;
-    auto address = g_largeLocalBuf[g_maxLargeLocalPos + 0xFFF] & 0xFFFFF000;
+    auto address = g_largeLocalBuf[g_maxLargeLocalPos + (PAGE_SIZE - 1)] & ~(PAGE_SIZE - 1);
 
     if (g_maxLargeLocalPos < g_largeLocalPos)
     {
         g_maxLargeLocalPos = g_largeLocalPos;
     }
 
-    auto dwSize = (g_largeLocalBuf[g_maxLargeLocalPos + 0xFFF]  & 0xFFFFF000) - address;
+    auto dwSize = (g_largeLocalBuf[g_maxLargeLocalPos + (PAGE_SIZE - 1)]  & ~(PAGE_SIZE - 1)) - address;
     if (dwSize != 0)
     {
-        auto result = VirtualAlloc((LPVOID)address, dwSize, MEM_COMMIT, PAGE_READWRITE);
+        auto result = VirtualAlloc(LPVOID(address), dwSize, MEM_COMMIT, PAGE_READWRITE);
         if (result == nullptr)
         {
-            Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\com_memory.cpp", 0x2D9);
+            Sys_OutOfMemError();
         }
     }
 
@@ -116,15 +116,15 @@ int LargeLocalBeginRight(int size)
         g_minLargeLocalRightPos = g_largeLocalRightPos;
     }
 
-    auto unk1 = g_largeLocalBuf[g_minLargeLocalRightPos] & 0xFFFFF000;
-    auto dwSize = (pos & 0xFFFFF000) - unk1;
+    auto unk1 = g_largeLocalBuf[g_minLargeLocalRightPos] & ~(PAGE_SIZE - 1);
+    auto dwSize = (pos & ~(PAGE_SIZE - 1)) - unk1;
 
     if (dwSize != 0)
     {
-        auto result = VirtualAlloc((LPVOID)unk1, dwSize, MEM_COMMIT, PAGE_READWRITE);
+        auto result = VirtualAlloc(LPVOID(unk1), dwSize, MEM_COMMIT, PAGE_READWRITE);
         if (result == nullptr)
         {
-            Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\com_memory.cpp", 0x2D9);
+            Sys_OutOfMemError();
         }
     }
 
@@ -146,19 +146,26 @@ int LargeLocalGetMark()
 void LargeLocalClear()
 {
     g_largeLocalPos = 0;
-    g_largeLocalRightPos = 0x180000;
+    g_largeLocalRightPos = LARGE_LOCAL_BUF_SIZE;
     LargeLocalReset();
 }
 
-//DONE : 0x4D1110
-std::uint8_t* LargeLocal::LargeLocalGetBuf(int startPos, int size)
+//DONE: Inlined
+void* LargeLocalGetBuf(int startPos, int size)
 {
-    if (!Sys_IsMainThread())
+    if (Sys_IsMainThread())
     {
-        startPos -= size;
+        return &g_largeLocalBuf[startPos];
     }
 
-    return &g_largeLocalBuf[startPos];
+    const auto startIndex = startPos - size;
+    return &g_largeLocalBuf[startIndex];
+}
+
+//DONE : 0x4D1110
+void* LargeLocal::GetBuf()
+{
+    return LargeLocalGetBuf(this->startPos, this->size);
 }
 
 //DONE : Inlined
@@ -179,30 +186,50 @@ void LargeLocal::PopBuf()
 //DONE : 0x457E50
 LargeLocal::LargeLocal(int sizeParam)
 {
-    const auto size_ = (sizeParam + 127) & 0xFFFFFF80;
+    sizeParam = ((sizeParam + (128 - 1)) & ~(128 - 1));
 
     if (Sys_IsMainThread())
     {
-        this->startPos = LargeLocalBegin(static_cast<int>(size_));
+        this->startPos = LargeLocalBegin(sizeParam);
     }
     else
     {
-        this->startPos = LargeLocalBeginRight(static_cast<int>(size_));
+        this->startPos = LargeLocalBeginRight(sizeParam);
     }
 
-    this->size = static_cast<int>(size_);
+    this->size = sizeParam;
 }
 
 //DONE : 0x44BD60
 LargeLocal::~LargeLocal()
 {
-    if (this->size != 0)
+    if (this->size)
     {
         this->PopBuf();
     }
 }
 
 // Z Section
+
+//DONE: Inlined
+int Z_TryVirtualCommitInternal(void* ptr, int size)
+{
+    if (VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE))
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+//DONE: Inlined
+void Z_VirtualCommit(void* ptr, int size)
+{
+    if (!Z_TryVirtualCommitInternal(ptr, size))
+    {
+        Sys_OutOfMemError();
+    }
+}
 
 //DONE : Inlined
 void Z_VirtualFree(void* ptr, int type)
@@ -251,7 +278,7 @@ void* Z_MallocInternal(int size)
     if (buf == NULL)
     {
         Com_PrintError(0x10, "Failed to Z_Malloc %i bytes\n", size);
-        Sys_OutOfMemErrorInternal("c:\\trees\\build-iw4-pc\\iw4\\code_source\\src\\universal\\com_memory.cpp", 0x3B5);
+        Sys_OutOfMemError();
         return NULL;
     }
 
@@ -343,7 +370,7 @@ void* Hunk_UserAlloc(HunkUser* user, int size, int alignment)
 char* Hunk_CopyString(HunkUser* user, const char* in)
 {
     int len = I_strlen(in);
-    char* result = (char*)Hunk_UserAlloc(user, len + 1, 1);
+    char* result = static_cast<char*>(Hunk_UserAlloc(user, len + 1, 1));
     memcpy(result, in, len + 1);
 
     return result;
@@ -387,4 +414,20 @@ const char* CopyString(const char* in)
 {
     uint32_t stringValue = SL_GetString_(in, 0, 0x16);
     return SL_ConvertToString(stringValue);
+}
+
+//DONE : 0x430E90
+HunkUser* Hunk_UserCreate(int maxSize, const char* name, bool fixed, int type)
+{
+    HunkUser* buffer = static_cast<HunkUser*>(Z_VirtualReserve(maxSize));
+    Z_VirtualCommit(buffer, 0x20);
+
+    buffer->end = (buffer->buf[0] + maxSize + -0x20);
+    buffer->pos = buffer->buf[0];
+    buffer->maxSize = maxSize;
+    buffer->name = name;
+    buffer->current = buffer;
+    buffer->fixed = fixed;
+    buffer->type = type;
+    return buffer;
 }

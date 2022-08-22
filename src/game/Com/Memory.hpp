@@ -8,7 +8,7 @@ public:
 	LargeLocal(int sizeParam);
 	~LargeLocal();
 
-	std::uint8_t* LargeLocalGetBuf(int startPos, int size);
+	void* GetBuf();
 
 	void PopBuf();
 
@@ -26,6 +26,7 @@ int LargeLocalBegin(int size);
 int LargeLocalBeginRight(int size);
 int LargeLocalGetMark();
 void LargeLocalClear();
+void* LargeLocalGetBuf(int startPos, int size);
 
 // Z (Name is from Quake III)
 void Z_VirtualFree(void* ptr, int type);

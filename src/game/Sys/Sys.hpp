@@ -3,6 +3,8 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+#define Sys_OutOfMemError() Sys_OutOfMemErrorInternal(__FILE__, __LINE__);
+
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
 void Sys_InitializeCriticalSections();
@@ -52,3 +54,4 @@ void NetadrToSockadr(netadr_t* a1, sockaddr* a2);
 std::int32_t Sys_GetCPUCount();
 std::int32_t Sys_SystemMemoryMB();
 void Sys_NormalExit();
+int SV_GetServerThreadOwnsGame();

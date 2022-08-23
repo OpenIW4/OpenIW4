@@ -203,7 +203,7 @@ void Com_Memset(void* dest, const int val, int count)
 static int* com_errorPrintsCount = reinterpret_cast<int*>(0x1AD7910);
 static int* com_fixedConsolePosition = reinterpret_cast<int*>(0x1AD8EC8);
 
-//DONE : 0x4AA830
+//THUNK : 0x4AA830
 void Com_PrintMessage_t(int channel, const char* msg, int error)
 {
     memory::call<void(int, const char*, int)>(0x4AA830)(channel, msg, error);
@@ -312,7 +312,7 @@ int I_strcmp(const char* s0, const char* s1)
     return I_strncmp(s0, s1, INT_MAX);
 }
 
-// DONE : 0x426080
+// THUNK : 0x426080
 int I_strnicmp(const char* s0, const char* s1, int n)
 {
     return memory::call<int(const char*, const char*, int)>(0x426080)(s0, s1, n);
@@ -416,7 +416,7 @@ int I_DrawStrlen(const char* str)
     return len;
 }
 
-//DONE : 0x4A9DB0
+//THUNK : 0x4A9DB0
 const char* I_stristr(const char* s0, const char* substr)
 {
     return memory::call<const char*(const char*, const char*)>(0x4A9DB0)(s0, substr);

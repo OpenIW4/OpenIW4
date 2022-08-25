@@ -6,7 +6,7 @@
 #include "../Com/Com.hpp"
 #include "../MSG/MSG.hpp"
 #include "../CL/CL.hpp"
-#include "../Unsorted/Unsortred.hpp"
+#include "../Unsorted/Unsorted.hpp"
 
 #include <utils/memory/memory.hpp>
 

@@ -10,10 +10,49 @@ void Cbuf_AddText(int a1, const char* a2)
 	memory::call<void(int, const char*)>(0x00404B20)(a1, a2);
 }
 
-//THUNK : 0x4AFB80
+//DONE : 0x4AFB80
+static Console con = *reinterpret_cast<Console*>(0x9FDCF8);
 void Con_GetTextCopy(char* text, int maxSize)
 {
-    memory::call<void(char*, int)>(0x4AFB80)(text, maxSize);
+    
+    if (con.consoleWindow.activeLineCount)
+    {
+        std::int32_t begin = con.consoleWindow.lines[con.consoleWindow.firstLineIndex].textBufPos;
+        std::int32_t end = con.consoleWindow.textBufPos;
+        std::size_t totalSize = con.consoleWindow.textBufPos - begin;
+
+        if (con.consoleWindow.textBufPos - begin < 0)
+        {
+            totalSize += con.consoleWindow.textBufSize;
+        }
+
+        if (totalSize > maxSize - 1)
+        {
+            begin += totalSize - maxSize + 1;
+
+            if (begin > con.consoleWindow.textBufSize)
+            {
+                begin -= con.consoleWindow.textBufSize;
+            }
+            totalSize = maxSize - 1;
+        }
+
+        if (begin >= con.consoleWindow.textBufPos)
+        {
+            memcpy(text, &con.consoleWindow.circularTextBuffer[begin], con.consoleWindow.textBufSize - begin);
+            memcpy(&text[con.consoleWindow.textBufSize - begin], con.consoleWindow.circularTextBuffer, end);
+        }
+        else
+        {
+            memcpy(text, &con.consoleWindow.circularTextBuffer[begin], con.consoleWindow.textBufPos - begin);
+        }
+
+        text[totalSize] = 0;
+    }
+    else
+    {
+        *text = 0;
+    }
 }
 
 //DONE : 0x64DD30

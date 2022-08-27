@@ -1,5 +1,6 @@
 #include "NET.hpp"
 
+//DONE : 0x4E7720
 const char* NET_ErrorString()
 {
     std::uint32_t error = WSAGetLastError();

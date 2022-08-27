@@ -44,22 +44,22 @@ bool LSP_FindTitleServers_f()
 	return LSP_FindTitleServers();
 }
 
-//TODO: 0x682360
-void /*__usercall*/ InitLog(std::int32_t a1)
+//DONE : 0x682360
+void InitLog(std::int32_t a1)
 {
-	std::int64_t v3;
-	memory::call<unsigned long* (unsigned long*, std::int32_t, std::int32_t)>(0x45FCA0/*MSG_Init*/)(*(unsigned long**)0x66C7160, *(std::int32_t*)0x66C7188, 1200);
-	Live_GetLSPXuid(a1, &v3);
+	std::int64_t v3[2];
+    MSG_Init(&unk_66C7160, *(char**)0x66C7188, 1200);
+    Live_GetLSPXuid(a1, v3);
 
-	std::int32_t* currentSession = Live_GetCurrentSession();
+	SessionData* currentSession = Live_GetCurrentSession();
 	const char* localClientName = Live_GetLocalClientName();
-	//fucking LSP_WritePacketHeader is TODO
+    LSP_WritePacketHeader(a1, &unk_66C7160, v3[0], v3[1], (char*)localClientName, currentSession);
 }
 
 //TODO : 0x682400
 void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 {
-	std::int32_t* currentSession = Live_GetCurrentSession();
+	SessionData* currentSession = Live_GetCurrentSession();
 
 	if (!*(bool*)0x66C639A /*logMsgInittialized*/)
 	{
@@ -121,7 +121,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
                         (msg_t*)0x66C7160,
                         v10,
                         v10, "Not signed in",
-                        (std::int32_t)Live_GetCurrentSession());
+                        Live_GetCurrentSession());
                 }
                 else
                 {
@@ -133,7 +133,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
                         v10,
                         v10,
                         (char*)v7,
-                        (std::int32_t)Live_GetCurrentSession()
+                        Live_GetCurrentSession()
                     );
                 }
             }
@@ -213,7 +213,7 @@ void LSP_ForceSendPacket()
 }
 
 //DONE : 0x4DA7F0
-void LSP_WritePacketHeader(std::int32_t a1, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, std::int32_t a6)
+void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, const SessionData* session)
 {
     const char* map;
     MSG_WriteByte(msg, 14);
@@ -232,9 +232,9 @@ void LSP_WritePacketHeader(std::int32_t a1, msg_t* msg, std::int32_t a3, std::in
     }
     MSG_WriteString(msg, map);
     MSG_WriteBit1(msg);
-    std::int32_t v9 = *(unsigned long*)(a6 + 472);
+    std::int32_t v9 = *(unsigned long*)session->dyn.sessionInfo.sessionID.ab;
     *(unsigned long*)0x66C7118 = v9;
-    std::int32_t v10 = *(unsigned long*)(a6 + 476);
+    std::int32_t v10 = *(unsigned long*)&session->dyn.sessionInfo.sessionID.ab[4];
     *(unsigned long*)0x66C711C = v10;
 
     if (*(unsigned long*)0x66C7110)
@@ -246,6 +246,6 @@ void LSP_WritePacketHeader(std::int32_t a1, msg_t* msg, std::int32_t a3, std::in
         MSG_WriteInt64(msg, v9, v10);
     }
 
-    *(unsigned long*)0x66C6C14 = a1;
+    *(unsigned long*)0x66C6C14 = localControllerIndex;
     *(std::int32_t*)0x66C7120 = 0; //s_firstLogWriteTime
 }

@@ -457,7 +457,7 @@ std::int32_t Sys_SystemMemoryMB()
     }
 }
 
-//TODO: 0x4C6610
+//DONE: 0x4C6610
 std::int32_t Sys_GetCPUCount()
 {
     return *(std::int32_t*)0x1CDE7F0; //s_cpuCount
@@ -725,16 +725,19 @@ void FixWindowsDesktop()
     ReleaseDC(hwndDesktop, hdc);
 }
 
+//DONE : 0x4B20E0
 bool Sys_IsRenderThread()
 {
     return GetCurrentThreadId() == *(unsigned long*)0x1CDE800;
 }
 
+//DONE : 0x4B0270
 bool Sys_IsServerThread()
 {
     return GetCurrentThreadId() == *(unsigned long*)0x1CDE80C;
 }
 
+//DONE : 0x4C6020
 bool Sys_IsDatabaseThread()
 {
     return GetCurrentThreadId() == *(unsigned long*)0x1CDE814;

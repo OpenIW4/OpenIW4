@@ -3,6 +3,9 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+//unknown, seems to be referenced a lot
+static msg_t unk_66C7160 = *reinterpret_cast<msg_t*>(0x66C7160);
+
 void MSG_Init(msg_t* buffer, char* data, std::size_t size);
 void MSG_WriteByte(msg_t* msg, std::int8_t c);
 void MSG_WriteBit0(msg_t* msg);

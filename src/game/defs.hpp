@@ -467,3 +467,120 @@ struct Console
     MessageBuffer messageBuffer[1];
     float color[4];
 };
+
+/* 214 */
+struct IWNetServerInfoAboutPlayer
+{
+    bool active;
+    __int64 uid;
+    char skill;
+    char teamIndex;
+    int mapPackFlags;
+};
+
+/* 215 */
+struct __declspec(align(8)) ClientInfo
+{
+    bool registered;
+    bool voiceRegistered;
+    unsigned __int64 xuid;
+    int natType;
+    netadr_t addr;
+    int voiceConnectivityBits;
+    int lastConnectivityTestTime;
+    bool muted;
+    bool privateSlot;
+};
+
+/* 216 */
+struct RegisteredUser
+{
+    bool active;
+    unsigned __int64 xuid;
+};
+
+/* 217 */
+struct __declspec(align(4)) SessionStaticData
+{
+    char* sessionName;
+    bool registerUsersWithVoice;
+};
+
+/* 218 */
+struct XNKID
+{
+    char ab[8];
+};
+
+/* 219 */
+struct XNKEY
+{
+    char ab[16];
+};
+
+/* 220 */
+enum IWNetServerSessionStatus
+{
+    SESSION_ONCLIENTONLY = 0x0,
+    SESSION_BEINGCREATED = 0x1,
+    SESSION_CREATED = 0x2,
+    SESSION_BEINGDELETED = 0x3,
+};
+
+/* 221 */
+struct IWNetSessionStatus
+{
+    IWNetServerSessionStatus status;
+    int sessionId;
+    int lastHeartbeatSent;
+    bool needsUpdate;
+    bool updatingPlayers;
+    int newPlayerCount;
+    IWNetServerInfoAboutPlayer pendingServerInfoForPlayers[18];
+};
+
+/* 226 */
+struct XNADDR
+{
+    in_addr ina;
+    in_addr inaOnline;
+    unsigned __int16 wPort;
+    unsigned __int16 wPortOnline;
+    char abEnet[4];
+    char abOnline[20];
+};
+
+/* 227 */
+struct XSESSION_INFO
+{
+    XNKID sessionID;
+    XNADDR hostAddress;
+    XNKEY keyExchangeKey;
+};
+
+/* 228 */
+struct SessionDynamicData
+{
+    bool sessionHandle;
+    IWNetSessionStatus iwnetServerSessionStatus;
+    XSESSION_INFO sessionInfo;
+    bool keysGenerated;
+    bool sessionStartCalled;
+    unsigned __int64 sessionNonce;
+    int privateSlots;
+    int publicSlots;
+    int flags;
+    bool qosListenEnabled;
+    ClientInfo users[18];
+    int voiceConnectivityBits;
+    int sessionCreateController;
+    int sessionDeleteTime;
+    RegisteredUser internalRegisteredUsers[18];
+};
+
+/* 229 */
+struct SessionData
+{
+    SessionStaticData staticData;
+    SessionDynamicData dyn;
+};

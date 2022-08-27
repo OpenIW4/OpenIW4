@@ -370,11 +370,11 @@ void Sys_EnterCriticalSection(CriticalSection critSect)
     memory::call<void(CriticalSection)>(0x4FC200)(critSect);
 }
 
-//THUNK : 0x4FC200
+//THUNK : 0x41B8C0
 //see above
 void Sys_LeaveCriticalSection(CriticalSection critSect)
 {
-    memory::call<void(CriticalSection)>(0x4FC200)(critSect);
+    memory::call<void(CriticalSection)>(0x41B8C0)(critSect);
 }
 
 //TODO : 0x64CF10

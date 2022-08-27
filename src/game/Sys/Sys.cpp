@@ -174,7 +174,7 @@ void Sys_InitializeCriticalSections()
 }*/
 
 //temp fix
-static _RTL_CRITICAL_SECTION** s_criticalSection = reinterpret_cast<_RTL_CRITICAL_SECTION**>(0x6499BC8);
+//THUNK : 0x42F0A0
 void Sys_InitializeCriticalSections()
 {
     memory::call<void()>(0x42F0A0)();
@@ -363,16 +363,18 @@ bool Sys_IsMainThread()
     return memory::call<bool()>(0x004C37D0)();
 }
 
-//DONE : 0x4FC200
+//THUNK : 0x4FC200
+//game seems to crash here when using disconnect command, lets have the game handle it for now
 void Sys_EnterCriticalSection(CriticalSection critSect)
 {
-    EnterCriticalSection(s_criticalSection[critSect]);
+    memory::call<void(CriticalSection)>(0x4FC200)(critSect);
 }
 
-//DONE : 0x4FC200
+//THUNK : 0x4FC200
+//see above
 void Sys_LeaveCriticalSection(CriticalSection critSect)
 {
-    LeaveCriticalSection(s_criticalSection[critSect]);
+    memory::call<void(CriticalSection)>(0x4FC200)(critSect);
 }
 
 //TODO : 0x64CF10

@@ -208,6 +208,5 @@ std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPS
 {
     loader::load("iw4mp.exe");
     replace_funcs();
-    patches();
     return memory::call<std::int32_t()>(0x6BAC0F)();
 }

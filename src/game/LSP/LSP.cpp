@@ -213,6 +213,7 @@ void LSP_ForceSendPacket()
 }
 
 //DONE : 0x4DA7F0
+static dvar_t* sv_map = *reinterpret_cast<dvar_t**>(0x2098DDC);
 void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, const SessionData* session)
 {
     const char* map;
@@ -222,9 +223,9 @@ void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::i
     MSG_WriteString(msg, source);
     MSG_WriteString(msg, va("%s %s build %s %s", "OpenIW4 MP", "inf-dev", getBuildNumber(), "win-x86"));
 
-    if (*(char**)0x2098DDC)
+    if (sv_map)
     {
-        map = *(char**)(0x2098DDC + 16);
+        map = (char*)sv_map->current.integer;
     }
     else
     {

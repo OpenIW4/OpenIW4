@@ -572,3 +572,35 @@ struct SessionData
     SessionStaticData staticData;
     SessionDynamicData dyn;
 };
+
+struct SessionJoinData
+{
+    int privateSlot;
+    int slot;
+    unsigned __int64 player;
+};
+
+struct SessionLeaveData
+{
+    unsigned __int64 playerList[18];
+};
+
+union $1DF3011DF14D02B793B0C36BCF5B9487
+{
+    SessionJoinData joinData;
+    SessionLeaveData leaveData;
+};
+
+struct SessionTaskData
+{
+    bool active;
+    SessionData* session;
+    $1DF3011DF14D02B793B0C36BCF5B9487 ___u2;
+};
+
+struct SessionModSkillData
+{
+    bool needsUpdate;
+    bool active;
+    unsigned __int64 playerList[18];
+};

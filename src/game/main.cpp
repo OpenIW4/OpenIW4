@@ -127,7 +127,8 @@ void patches()
     killCeg();
     Sys_ShowConsole();
     ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);
-    *(std::float_t*)(0x9FBE24) = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+    static const dvar_t* cg_fov = *reinterpret_cast<dvar_t**>(0x9FBE24);
+    cg_fov = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
 }
 
 //DONE : 0x004513D0

@@ -1,4 +1,7 @@
 #include "Dvar.hpp"
+#include "../Sys/Sys.hpp"
+#include "../Unsorted/Unsorted.hpp"
+#include "../Com/Com.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -26,4 +29,38 @@ const dvar_t* Dvar_RegisterBool(const char* command_name, bool default_value, un
 const dvar_t* Dvar_RegisterInt(const char* dvarName, std::int32_t a2, std::int32_t a3, std::int32_t a4, std::int32_t a5, const char* description)
 {
     return memory::call<dvar_t*(const char*, std::int32_t, std::int32_t, std::int32_t, std::int32_t, const char*)>(0x479830)(dvarName, a2, a3, a4, a5, description);
+}
+
+//DONE : 0x6479C0
+dvar_t* Dvar_FindMalleableVar(const char* dvarName)
+{
+    InterlockedIncrement(&dvarCritSect.readCount);
+
+    while (dvarCritSect.writeCount)
+    {
+        Sys_Sleep(1);
+    }
+
+    dvar_t* v3 = dvarHashTable[generateHashValue(dvarName)];
+
+    if (v3)
+    {
+        while (I_stricmp(dvarName, v3->name))
+        {
+            v3 = v3->hashNext;
+            if (!v3)
+            {
+                InterlockedDecrement(&dvarCritSect.readCount);
+                return 0;
+            }
+        }
+
+        InterlockedDecrement(&dvarCritSect.readCount);
+        return v3;
+    }
+    else
+    {
+        InterlockedDecrement(&dvarCritSect.readCount);
+        return 0;
+    }
 }

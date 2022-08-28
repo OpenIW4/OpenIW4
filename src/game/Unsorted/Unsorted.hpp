@@ -9,3 +9,4 @@ or if youre just spitballing things put them in here
 */
 
 char* getBuildNumber();
+std::int32_t generateHashValue(const char* dvarName);

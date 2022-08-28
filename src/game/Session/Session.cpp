@@ -23,8 +23,8 @@ void* Session_Init()
     g_searchSession.staticData.registerUsersWithVoice = 0;
 
     matchmaking_debug = Dvar_RegisterBool("matchmaking_debug", 1, 0, "Enable matchmaking debug information");
-    iwnet_sessionHeartBeat = Dvar_RegisterInt("iwnet_sessionHeartBeat", 5000, 3000, 0x7FFFFFFF, 0, "How often to send a heartbeat msg");
-    iwnet_sessionFullHeartbeat = Dvar_RegisterInt("iwnet_sessionFullHeartBeat", 20000, 3000, 0x7FFFFFFF, 0, "How often to send a heartbeat msg if the game is full");
+    iwnet_sessionHeartBeat = Dvar_RegisterInt("iwnet_sessionHeartBeat", 5000, 3000, INT_MAX, 0, "How often to send a heartbeat msg");
+    iwnet_sessionFullHeartbeat = Dvar_RegisterInt("iwnet_sessionFullHeartBeat", 20000, 3000, INT_MAX, 0, "How often to send a heartbeat msg if the game is full");
     session_immediateDeleteTinySessions = Dvar_RegisterBool("session_immediateDeleteTinySessions", 0, 0, "Whether to immediately delete sessions with 1 user");
 
     sessionModSkillData.needsUpdate = 0;

@@ -86,7 +86,7 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 	}
 }
 
-//TODO : 0x4B62C0
+//DONE : 0x4B62C0
 void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 {
     char* i;

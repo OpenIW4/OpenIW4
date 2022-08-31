@@ -312,10 +312,46 @@ int I_strcmp(const char* s0, const char* s1)
     return I_strncmp(s0, s1, INT_MAX);
 }
 
-// THUNK : 0x426080
-int I_strnicmp(const char* s0, const char* s1, int n)
+// DONE : 0x426080
+std::int32_t I_strnicmp(const char* s0, const char* s1, std::int32_t n)
 {
-    return memory::call<int(const char*, const char*, int)>(0x426080)(s0, s1, n);
+    //return memory::call<int(const char*, const char*, int)>(0x426080)(s0, s1, n);
+
+    while (1)
+    {
+        ++s0; //v6
+        ++s1; //v7
+        --n;
+
+        if (!n)
+        {
+            return 0;
+        }
+
+        if (s0 != s1)
+        {
+            if ((std::uint32_t)(s0 - 65) <= 25)
+            {
+                s0 += 32;
+            }
+
+            if ((std::uint32_t)(s1 - 65) <= 25)
+            {
+                s1 += 32;
+            }
+
+            if (s0 != s1)
+            {
+                break;
+            }
+        }
+        if (!s0)
+        {
+            return 0;
+        }
+    }
+
+    return 2 * (s0 >= s1) - 1;
 }
 
 //DONE : 0x4DCF20

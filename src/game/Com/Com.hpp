@@ -34,7 +34,7 @@ bool I_isdigit(int c);
 bool I_islower(int c);
 int I_strncmp(const char* s0, const char* s1, int n);
 int I_strcmp(const char* s0, const char* s1);
-int I_strnicmp(const char* s0, const char* s1, int n);
+std::int32_t I_strnicmp(const char* s0, const char* s1, std::int32_t n);
 int I_stricmp(const char* s0, const char* s1);
 void I_strncat(char* dest, int size, const char* src);
 char* I_strlwr(char* s);

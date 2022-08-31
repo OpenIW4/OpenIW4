@@ -416,10 +416,36 @@ int I_DrawStrlen(const char* str)
     return len;
 }
 
-//THUNK : 0x4A9DB0
+//DONE : 0x4A9DB0
 const char* I_stristr(const char* s0, const char* substr)
 {
-    return memory::call<const char*(const char*, const char*)>(0x4A9DB0)(s0, substr);
+    std::int32_t substrChar = -1;
+    std::int32_t v4;
+    std::int32_t v6 = 0;
+
+    if (*s0)
+    {
+        while (1)
+        {
+            do
+            {
+                if (!substr[++substrChar])
+                {
+                    return &s0[v6];
+                }
+                v4 = tolower(s0[substrChar]);
+            }
+            while (v4 == tolower(substr[substrChar]));
+            ++v6;
+            if (*++s0)
+            {
+                continue;
+            }
+            break;
+        }
+    }
+
+    return 0;
 }
 
 //DONE : 0x4785B0

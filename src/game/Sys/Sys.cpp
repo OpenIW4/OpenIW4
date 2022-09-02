@@ -677,7 +677,7 @@ void Sys_UnlockRead(FastCriticalSection* section)
     Sys_InterlockedDecrement(&section->readCount);
 }
 
-//THUNK : 0x6417F0
+//DONE : 0x6417F0
 int __stdcall HideWindowCallback(HWND hWnd, long lParam)
 {
     int style;
@@ -695,11 +695,8 @@ int __stdcall HideWindowCallback(HWND hWnd, long lParam)
             SetWindowLongA(hWnd, -16, style & 0xEFFFFFFF);
             SetWindowLongA(hWnd, -20, styleEx & 0xFFFFFFF7);
         }
-
-        return 1;
     }
-
-    return 0;
+    return 1;
 }
 
 //DONE : 0x4CFA00
@@ -787,6 +784,7 @@ void NetadrToSockadr(netadr_t* a1, sockaddr* a2)
     }
 }
 
+//DONE : 0x48F500
 char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to)
 {
     std::uint32_t v3; //SOCKET

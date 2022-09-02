@@ -680,9 +680,9 @@ void Sys_UnlockRead(FastCriticalSection* section)
 //DONE : 0x6417F0
 int __stdcall HideWindowCallback(HWND hWnd, long lParam)
 {
-    int style;
-    int styleEx;
-    // int hiddenCount;
+    std::int32_t style;
+    std::int32_t styleEx;
+    std::int32_t* v4 = *(std::int32_t**)0x63D0B78; //anything using this is probably all wrong
     char caption[1024];
 
     if (!GetWindowTextA(hWnd, caption, 1024) || !strcmp(caption, "Modern Warfare 2 Multiplayer")) // the build display name is a returned string from a function
@@ -692,6 +692,7 @@ int __stdcall HideWindowCallback(HWND hWnd, long lParam)
 
         if (style & 0x10000000)
         {
+            *(HWND*)(0x63D0B80)[v4] = hWnd;
             SetWindowLongA(hWnd, -16, style & 0xEFFFFFFF);
             SetWindowLongA(hWnd, -20, styleEx & 0xFFFFFFF7);
         }

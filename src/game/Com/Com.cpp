@@ -11,46 +11,46 @@
 //DONE : 0x004FF220
 void Com_InitParse()
 {
-    *(int*)(0x06466A28) = 1;
-    *(bool*)(0x06466A2C) = 0;
-    *(bool*)(0x06466A2D) = 1;
-    *(bool*)(0x06466A2E) = 0;
-    *(bool*)(0x06466A2F) = 0;
-    *(bool*)(0x06466A30) = 0;
-    *(int*)(0x06466A34) = 0;
-    *(int*)(0x06466A38) = 0;
-    *(int*)(0x06466A3C) = 0;
-    *(int*)(0x06466A40) = 0;
-    *(int*)(0x0646B034) = 1;
-    *(bool*)(0x0646B038) = 0;
-    *(bool*)(0x0646B039) = 1;
-    *(bool*)(0x0646B03A) = 0;
-    *(bool*)(0x0646B03B) = 0;
-    *(bool*)(0x0646B03C) = 0;
-    *(int*)(0x0646B040) = 0;
-    *(int*)(0x0646B044) = 0;
-    *(int*)(0x0646B048) = 0;
-    *(int*)(0x0646B04C) = 0;
-    *(int*)(0x0646F640) = 1;
-    *(bool*)(0x0646F644) = 0;
-    *(bool*)(0x0646F645) = 1;
-    *(bool*)(0x0646F646) = 0;
-    *(bool*)(0x0646F647) = 0;
-    *(bool*)(0x0646F648) = 0;
-    *(int*)(0x0646F64C) = 0;
-    *(int*)(0x0646F650) = 0;
-    *(int*)(0x0646F654) = 0;
-    *(int*)(0x0646F658) = 0;
-    *(int*)(0x06473C4C) = 1;
-    *(bool*)(0x06473C50) = 0;
-    *(bool*)(0x06473C51) = 1;
-    *(bool*)(0x06473C52) = 0;
-    *(bool*)(0x06473C53) = 0;
-    *(bool*)(0x06473C54) = 0;
-    *(int*)(0x06473C58) = 0;
-    *(int*)(0x06473C5C) = 0;
-    *(int*)(0x06473C60) = 0;
-    *(int*)(0x06473C64) = 0;
+    g_parse[0].parseInfo[0].lines = 1;
+    g_parse[0].parseInfo[0].ungetToken = 0;
+    g_parse[0].parseInfo[0].spaceDelimited = 1;
+    g_parse[0].parseInfo[0].keepStringQuotes = 0;
+    g_parse[0].parseInfo[0].csv = 0;
+    g_parse[0].parseInfo[0].negativeNumbers = 0;
+    g_parse[0].parseInfo[0].errorPrefix = String;
+    g_parse[0].parseInfo[0].warningPrefix = String;
+    g_parse[0].parseInfo[0].backup_lines = 0;
+    g_parse[0].parseInfo[0].backup_text = 0;
+    g_parse[1].parseInfo[0].lines = 1;
+    g_parse[1].parseInfo[0].ungetToken = 0;
+    g_parse[1].parseInfo[0].spaceDelimited = 1;
+    g_parse[1].parseInfo[0].keepStringQuotes = 0;
+    g_parse[1].parseInfo[0].csv = 0;
+    g_parse[1].parseInfo[0].negativeNumbers = 0;
+    g_parse[1].parseInfo[0].errorPrefix = String;
+    g_parse[1].parseInfo[0].warningPrefix = String;
+    g_parse[1].parseInfo[0].backup_lines = 0;
+    g_parse[1].parseInfo[0].backup_text = 0;
+    g_parse[2].parseInfo[0].lines = 1;
+    g_parse[2].parseInfo[0].ungetToken = 0;
+    g_parse[2].parseInfo[0].spaceDelimited = 1;
+    g_parse[2].parseInfo[0].keepStringQuotes = 0;
+    g_parse[2].parseInfo[0].csv = 0;
+    g_parse[2].parseInfo[0].negativeNumbers = 0;
+    g_parse[2].parseInfo[0].errorPrefix = String;
+    g_parse[2].parseInfo[0].warningPrefix = String;
+    g_parse[2].parseInfo[0].backup_lines = 0;
+    g_parse[2].parseInfo[0].backup_text = 0;
+    g_parse[3].parseInfo[0].lines = 1;
+    g_parse[3].parseInfo[0].ungetToken = 0;
+    g_parse[3].parseInfo[0].spaceDelimited = 1;
+    g_parse[3].parseInfo[0].keepStringQuotes = 0;
+    g_parse[3].parseInfo[0].csv = 0;
+    g_parse[3].parseInfo[0].negativeNumbers = 0;
+    g_parse[3].parseInfo[0].errorPrefix = String;
+    g_parse[3].parseInfo[0].warningPrefix = String;
+    g_parse[3].parseInfo[0].backup_lines = 0;
+    g_parse[3].parseInfo[0].backup_text = 0;
 }
 
 //DONE : 0x004B7230
@@ -315,8 +315,7 @@ int I_strcmp(const char* s0, const char* s1)
 // DONE : 0x426080
 std::int32_t I_strnicmp(const char* s0, const char* s1, std::int32_t n)
 {
-    //return memory::call<int(const char*, const char*, int)>(0x426080)(s0, s1, n);
-
+   
     while (1)
     {
         ++s0; //v6
@@ -509,7 +508,6 @@ char* va(const char* format, ...)
 }
 
 //DONE : inlined
-static ParseThreadInfo* g_parse = reinterpret_cast<ParseThreadInfo*>(0x6466628);
 ParseThreadInfo* Com_GetParseThreadInfo()
 {
     if (Sys_IsMainThread())

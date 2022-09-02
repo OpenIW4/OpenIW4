@@ -3,6 +3,9 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+static ParseThreadInfo* g_parse = reinterpret_cast<ParseThreadInfo*>(0x6466628); //4 elements
+static const char* String = *reinterpret_cast<const char**>(0x6FAC0D); //used a lot, not sure as to what it is
+
 void Com_InitParse();
 void Com_Frame();
 void Com_Init(char* src);

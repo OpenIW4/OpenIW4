@@ -5,7 +5,7 @@
 //DONE : 0x4A5510
 cmd_function_s* Cmd_FindCommand(const char* cmdName)
 {
-	cmd_function_s* result = *(cmd_function_s**)0x1AAC658; //cmd_functions
+	cmd_function_s* result = cmd_functions;
 
 	if (!result)
 	{
@@ -39,7 +39,7 @@ void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_
 		allocedCmd->name = cmdName;
 		allocedCmd->function = function;
 		allocedCmd->flags = flags;
-		allocedCmd->next = *(cmd_function_s**)0x1AAC658;
-		*(cmd_function_s**)0x1AAC658 = allocedCmd;
+        allocedCmd->next = cmd_functions;
+		cmd_functions = allocedCmd;
 	}
 }

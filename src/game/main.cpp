@@ -119,6 +119,12 @@ void killCeg()
     }
 }
 
+void testMe()
+{
+    Com_Printf(16, "testMe was called\n");
+    Sys_Error("Oh god oh fuck");
+}
+
 void patches()
 {
 #if defined(NOUPNP) && defined(DEBUG)
@@ -167,6 +173,10 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 Cbuf_AddText(0, "readStats\n");
                 Sys_getcwd();
                 SetFocus(*(HWND*)(0x64A3AD0) /*g_wv*/);
+
+                //cmd_function_s testFunction;
+                //Cmd_AddCommandInternal("testMe", testMe, &testFunction, 0);
+                //this crashes, result->name is null for some reason
 
                 while (1)
                 {

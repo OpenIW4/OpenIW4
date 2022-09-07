@@ -5,7 +5,12 @@
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
 # Compiling
-We have decided to swith to premake. To compile, clone the repo and cd into it and run generate.bat and build with VS2022.
+1. Clone repo
+2. Run generate.bat
+3. Compile it in VS2022
+4. Copy OpenIW4.exe to you game directory (you do own the game, right?)
+5. Copy iw4mp.exe from the runtime folder into your game directory (backup the vanilla iw4mp.exe just in case)
+6. Run OpenIW4.exe
 
 # Contributing
 We really don't care, just send us stuff.

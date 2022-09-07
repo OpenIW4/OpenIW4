@@ -64,7 +64,7 @@ struct cmd_function_s
     const char* autoCompleteDir;
     const char* autoCompleteExt;
     void(__cdecl* function)();
-    int flags;
+    bool isKey;
 };
 
 enum errorParm_t

@@ -174,9 +174,8 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 Sys_getcwd();
                 SetFocus(*(HWND*)(0x64A3AD0) /*g_wv*/);
 
-                //cmd_function_s testFunction;
-                //Cmd_AddCommandInternal("testMe", testMe, &testFunction, 0);
-                //this crashes, result->name is null for some reason
+                cmd_function_s testFunction;
+                Cmd_AddCommandInternal("testMe", testMe, &testFunction, 0);
 
                 while (1)
                 {

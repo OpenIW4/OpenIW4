@@ -5,41 +5,36 @@
 //DONE : 0x4A5510
 cmd_function_s* Cmd_FindCommand(const char* cmdName)
 {
-	cmd_function_s* result = cmd_functions;
+    cmd_function_s* cmd;
 
-	if (!result)
-	{
-		return 0;
-	}
+    for (cmd = *cmd_functions; cmd; cmd = cmd->next)
+    {
+        if (!strcmp(cmdName, cmd->name))
+        {
+            return cmd;
+        }
+    }
 
-	while (strcmp(cmdName, result->name))
-	{
-		result = result->next;
-		if (!result)
-		{
-			return 0;
-		}
-	}
-
-	return result;
+    return 0;
 }
 
 //DONE : 0x470090
-void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_function_s* allocedCmd, std::int32_t flags)
+void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_function_s* allocedCmd, bool isKey)
 {
-	if (Cmd_FindCommand(cmdName))
-	{
-		if (function)
-		{
-			Com_Printf(16, "Cmd_AddCommand: %s already defined\n", cmdName);
-		}
-	}
-	else
-	{
-		allocedCmd->name = cmdName;
-		allocedCmd->function = function;
-		allocedCmd->flags = flags;
-        allocedCmd->next = cmd_functions;
-		cmd_functions = allocedCmd;
-	}
+
+    if (Cmd_FindCommand(cmdName))
+    {
+        if (function)
+        {
+            Com_Printf(16, "Cmd_AddCommand: %s already defined\n", cmdName);
+        }
+    }
+    else
+    {
+        allocedCmd->name = cmdName;
+        allocedCmd->function = function;
+        allocedCmd->isKey = isKey;
+        allocedCmd->next = *cmd_functions;
+        *cmd_functions = allocedCmd;
+    }
 }

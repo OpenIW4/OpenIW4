@@ -847,9 +847,8 @@ char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to)
     return 0;
 }
 
-volatile int* sv_thread_owns_game = reinterpret_cast<volatile int*>(0x2089DB8);
-
-int SV_GetServerThreadOwnsGame()
+//DONE : 0x4808E0
+std::int32_t SV_GetServerThreadOwnsGame()
 {
     return *sv_thread_owns_game;
 }

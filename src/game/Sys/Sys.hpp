@@ -5,6 +5,9 @@
 
 #define Sys_OutOfMemError() Sys_OutOfMemErrorInternal(__FILE__, __LINE__);
 
+static volatile std::int32_t* sv_thread_owns_game = reinterpret_cast<volatile std::int32_t*>(0x2089DB8);
+
+
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
 void Sys_InitializeCriticalSections();

@@ -357,10 +357,10 @@ void Sys_getcwd()
     Com_Printf(16, "Working directory: %s\n", destBuf);
 }
 
-//THUNK : 0x4C37D0
+//DONE : 0x4C37D0
 bool Sys_IsMainThread()
 {
-    return memory::call<bool()>(0x004C37D0)();
+    return GetCurrentThreadId() == *(unsigned long*)0x004C37D0;
 }
 
 //THUNK : 0x4FC200

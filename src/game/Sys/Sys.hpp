@@ -57,4 +57,4 @@ void NetadrToSockadr(netadr_t* a1, sockaddr* a2);
 std::int32_t Sys_GetCPUCount();
 std::int32_t Sys_SystemMemoryMB();
 void Sys_NormalExit();
-int SV_GetServerThreadOwnsGame();
+std::int32_t SV_GetServerThreadOwnsGame();

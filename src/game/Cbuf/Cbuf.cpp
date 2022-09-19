@@ -96,7 +96,7 @@ int Conbuf_CleanText(const char* source, char* target, int sizeofTarget)
 	return target - start;
 }
 
-//THUNK : 0x004F5770
+//DONE : 0x004F5770
 void Conbuf_AppendText(const char* pMsg)
 {
 	const char* v1 = pMsg;

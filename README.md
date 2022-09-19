@@ -4,7 +4,11 @@
 
 <h2 align="center"> An attempt at documenting and reimplementing important IW4MP functions </h2>
 
+# Dependencies
+1. [DirectX 9 SDK](https://www.microsoft.com/en-us/download/details.aspx?id=6812) (If you get error S1023 after installing, it can be ignored)
+
 # Compiling
+Make sure you have the dependencies installed first before compiling!
 1. Clone repo
 2. Run generate.bat
 3. Compile it in VS2022

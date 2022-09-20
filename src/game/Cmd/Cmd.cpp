@@ -38,3 +38,26 @@ void Cmd_AddCommandInternal(const char* cmdName, void(__cdecl* function)(), cmd_
         *cmd_functions = allocedCmd;
     }
 }
+
+//DONE : 0x4379F0
+void Cmd_RemoveCommand(const char* cmdName)
+{
+    auto p_next = &cmd_functions;
+    auto v2 = *cmd_functions;
+
+    if (cmd_functions)
+    {
+        while (strcmp(cmdName, v2->name))
+        {
+            *p_next = &v2->next;
+            v2 = v2->next;
+
+            if (!v2)
+            {
+                return;
+            }
+        }
+
+        **p_next = v2->next;
+    }
+}

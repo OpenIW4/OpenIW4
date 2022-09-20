@@ -378,17 +378,23 @@ void Sys_LeaveCriticalSection(CriticalSection critSect)
 }
 
 //TODO : 0x64CF10
-//static char* gpuDesc = *reinterpret_cast<char**>(0x64A17BC);
 void Sys_EnumerateHw()
 {
+    /*
+        something here is very wrong
+        if you look through the console log, it says there are no CPUs, no RAM, no GPU
+        for now we can call the game's version of this
+    */
     memory::call<void()>(0x0064CF10)();
-    //there is still a lot here to do
-    //DX9 SDK will be needed quite soon
-    /**(std::int32_t*)0x64A17B0 = Sys_GetCPUCount();
-    *(std::double_t*)0x64A17A0 = 1.0 / (((std::double_t)1i64 - (double)0i64) * *(std::double_t*)0x6499BA8 * 1000000.0);
-    *(std::int64_t*)0x64A17B8 = Sys_SystemMemoryMB();
-
-    Sys_DetectVideoCard(2048, gpuDesc);*/
+    /*sys_info.logicalCpuCount = Sys_GetCPUCount();
+    std::double_t msecPerRawTimerTick = *(std::double_t*)0x6499BA8;
+    sys_info.cpuGHz = 1.0 / ((1i64 - 0i64) * msecPerRawTimerTick * 1000000.0);
+    sys_info.sysMB = Sys_SystemMemoryMB();
+    Sys_DetectVideoCard(512, sys_info.gpuDescription);
+    sys_info.SSE = memory::call<bool()>(0x453350)(); //Sys_SupportsSSE
+    memory::call<void(const char*, const char*)>(0x4F0BB0)(sys_info.cpuVendor, sys_info.cpuName); //Sys_DetectCpuVenderAndName
+    memory::call<void(SysInfo*)>(0x4F0170)(&sys_info); //Sys_SetAutoConfigureGHz
+    */
 }
 
 //DONE : 0x4C9540

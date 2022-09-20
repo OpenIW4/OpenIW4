@@ -65,10 +65,11 @@ double SecondsPerTick()
     return *(std::double_t*)&v8;
 }
 
-//DONE : 0x47ADF0
+//TODO : 0x47ADF0
 void InitTiming()
 {
-	*(std::double_t*)(0x47ADF0) /*msecPerRawTimerTick*/ = SecondsPerTick() * 1000.0;
+	//*(std::double_t*)(0x47ADF0) /*msecPerRawTimerTick*/ = SecondsPerTick() * 1000.0;
+    memory::call<void()>(0x47ADF0)();
 }
 
 //DONE : 0x437EB0

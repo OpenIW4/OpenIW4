@@ -380,15 +380,9 @@ void Sys_LeaveCriticalSection(CriticalSection critSect)
 //TODO : 0x64CF10
 void Sys_EnumerateHw()
 {
-    /*
-        something here is very wrong
-        if you look through the console log, it says there are no CPUs, no RAM, no GPU
-        for now we can call the game's version of this
-    */
-    //memory::call<void()>(0x0064CF10)();
     sys_info->logicalCpuCount = Sys_GetCPUCount();
     std::double_t msecPerRawTimerTick = *(std::double_t*)0x6499BA8;
-    sys_info->cpuGHz = 1.0 / ((1i64 - 0i64) * msecPerRawTimerTick * 1000000.0);
+    sys_info->cpuGHz = 1.0 / (((std::double_t)1i64 - (std::double_t)0i64) * msecPerRawTimerTick * 1000000.0);
     sys_info->sysMB = Sys_SystemMemoryMB();
     Sys_DetectVideoCard(512, sys_info->gpuDescription);
     sys_info->SSE = memory::call<bool()>(0x453350)(); //Sys_SupportsSSE

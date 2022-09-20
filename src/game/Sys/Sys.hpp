@@ -58,3 +58,4 @@ std::int32_t Sys_GetCPUCount();
 std::int32_t Sys_SystemMemoryMB();
 void Sys_NormalExit();
 std::int32_t SV_GetServerThreadOwnsGame();
+void Sys_DetectVideoCard(std::int32_t descLimit, char* description);

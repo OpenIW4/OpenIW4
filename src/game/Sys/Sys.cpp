@@ -378,16 +378,17 @@ void Sys_LeaveCriticalSection(CriticalSection critSect)
 }
 
 //TODO : 0x64CF10
+//static char* gpuDesc = *reinterpret_cast<char**>(0x64A17BC);
 void Sys_EnumerateHw()
 {
-    //memory::call<void()>(0x0064CF10)();
+    memory::call<void()>(0x0064CF10)();
     //there is still a lot here to do
     //DX9 SDK will be needed quite soon
-    *(std::int32_t*)0x64A17B0 = Sys_GetCPUCount();
-
+    /**(std::int32_t*)0x64A17B0 = Sys_GetCPUCount();
     *(std::double_t*)0x64A17A0 = 1.0 / (((std::double_t)1i64 - (double)0i64) * *(std::double_t*)0x6499BA8 * 1000000.0);
-
     *(std::int64_t*)0x64A17B8 = Sys_SystemMemoryMB();
+
+    Sys_DetectVideoCard(2048, gpuDesc);*/
 }
 
 //DONE : 0x4C9540
@@ -851,4 +852,21 @@ char Sys_SendPacket(std::int32_t len, const void* data, netadr_t to)
 std::int32_t SV_GetServerThreadOwnsGame()
 {
     return *sv_thread_owns_game;
+}
+
+//DONE : 0x4EEF40
+void Sys_DetectVideoCard(std::int32_t descLimit, char* description)
+{
+    IDirect3D9* d3d9 = Direct3DCreate9(0x20);
+    strcpy(description, "Unknown video card");
+    _D3DADAPTER_IDENTIFIER9 ID;
+
+    if (d3d9)
+    {
+        if (d3d9->GetAdapterIdentifier(0, 0, &ID) >=0 )
+        {
+            strcpy(description, ID.Description);
+        }
+        d3d9->Release();
+    }
 }

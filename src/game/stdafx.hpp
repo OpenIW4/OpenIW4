@@ -8,6 +8,6 @@
 #include <timeapi.h>
 #include <setjmp.h>
 #include <WinSock2.h>
-#include <d3dx9.h>
+#include <d3d9.h>
 
 //#define MATCHING

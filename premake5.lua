@@ -22,7 +22,7 @@ workspace "OpenIW4"
 	}
 	
 	syslibdirs {
-		"$(DXSDK_DIR)lib/x86"
+		"$(DXSDK_DIR)Lib/x86"
 	}
 
 	buildoptions {
@@ -86,7 +86,7 @@ workspace "OpenIW4"
 		links {
 			"Winmm",
 			"WS2_32",
-			"d3dx9"
+			"d3d9"
 		}
 
 		files {

@@ -3,6 +3,18 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+#pragma region LSP Variables
+static netadr_t g_iwnetMatchmakingServerAddr = *reinterpret_cast<netadr_t*>(0x66BB650);
+static netadr_t g_iwnetStorageServerAddr = *reinterpret_cast<netadr_t*>(0x66BB090);
+static netadr_t stru_66BB078 = *reinterpret_cast<netadr_t*>(0x66BB078);
+static netadr_t g_iwnetLoggingServerAddr = *reinterpret_cast<netadr_t*>(0x66C714C);
+
+static bool s_logStrings = *reinterpret_cast<bool*>(0x66C6C1E);
+static bool s_sendStats = *reinterpret_cast<bool*>(0x66C6C1C);
+static bool lsp_connected = *reinterpret_cast<bool*>(0x66C7638);
+static bool logMsgInittialized = *reinterpret_cast<bool*>(0x66C639A);
+#pragma endregion LSP Variables
+
 void LSP_Init();
 bool LSP_Connected();
 bool LSP_FindTitleServers();

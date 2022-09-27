@@ -11,7 +11,7 @@ SessionData* Live_GetCurrentSession()
 
 	if (v0)
 	{
-		return (SessionData*)0x66B7008; //g_serverSession
+        return g_serverSession;
 	}
 
 	return result;

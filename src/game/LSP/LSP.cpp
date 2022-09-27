@@ -13,28 +13,27 @@
 //DONE : 0x48A9D0
 void LSP_Init()
 {
-	*(bool*)0x66C6C1E = 1; //s_logStrings
-	*(bool*)0x66C6C1C = 1; //s_sendStats
+    s_logStrings = 1;
+    s_sendStats = 1;
 
 	*(const dvar_t**)0x66C639C = Dvar_RegisterBool("lsp_debug", 0, 0, "Whether to print LSP debug info"); //lsp_debug
-	*(std::uint32_t*)0x66BB650 = 4; //g_iwnetMatchmakingServerAddr
-	*(std::uint32_t*)0x66BB090 = 4; //g_iwnetStorageServerAddr
-	*(std::uint32_t*)0x66BB078 = 4; //dword_66BB078
-	*(std::uint32_t*)0x66C714c = 4; //g_iwnetLoggingServerAddr
-
+    g_iwnetMatchmakingServerAddr.type = NA_IP;
+    g_iwnetStorageServerAddr.type = NA_IP;
+    stru_66BB078.type = NA_IP;
+    g_iwnetLoggingServerAddr.type = NA_IP;
 }
 
 //DONE : 0x4EC640
 bool LSP_Connected()
 {
-	return *(bool*)0x66C7638; //lsp_connected
+    return lsp_connected;
 }
 
 //DONE : 0x4664A0
 bool LSP_FindTitleServers()
 {
 	bool result = IWNet_DNSResolved();
-	*(bool*)0x4664A5 = result; //lsp_connected
+	lsp_connected = result;
 	return result;
 }
 
@@ -61,11 +60,11 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 {
 	SessionData* currentSession = Live_GetCurrentSession();
 
-	if (!*(bool*)0x66C639A /*logMsgInittialized*/)
+	if (!logMsgInittialized)
 	{
 		Sys_EnterCriticalSection(CRITSECT_LIVE);
 
-		if (!*(bool*)0x66C639A)
+		if (!logMsgInittialized)
 		{
 			if (!Live_IsSignedIn())
 			{
@@ -73,7 +72,7 @@ void /*__usercall*/ LSP_CheckForLogSend(std::int32_t a1, std::int32_t a2)
 				return;
 			}
 			InitLog(a1);
-			*(bool*)0x66C639A = true;
+            logMsgInittialized = true;
 		}
 		Sys_LeaveCriticalSection(CRITSECT_LIVE);
 	}
@@ -92,7 +91,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
     char* i;
     std::int64_t v10 = 0;
 
-    if (*(bool*)0x66C6C1E /*s_logString*/)
+    if (s_logStrings)
     {
         for (i = (char*)string; *i == 10; ++i)
         {
@@ -107,12 +106,12 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
             LSP_ForceSendPacket();
         }
 
-        if (!*(bool*)0x66C639A /*logMsgInitialized*/)
+        if (!logMsgInittialized)
         {
             Sys_EnterCriticalSection(CRITSECT_LIVE);
-            if (!*(bool*)0x66C639A)
+            if (!logMsgInittialized)
             {
-                *(bool*)0x66C639A = true;
+                logMsgInittialized = true;
                 MSG_Init((msg_t*)0x66C7160, *(char**)0x66C7188, 1200);
 
                 if (CL_AllLocalClientsInactive() || (CL_GetFirstActiveControllerIndex(), !Live_IsSignedIn()))
@@ -194,11 +193,11 @@ std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t a2, netad
 //DONE : 0x682520
 void LSP_ForceSendPacket()
 {
-    if (*(bool*)0x66C7638 /*lsp_connected*/)
+    if (lsp_connected)
     {
         Sys_EnterCriticalSection(CRITSECT_LIVE);
 
-        if (*(bool*)0x66C639A /*logMsgInitialized*/)
+        if (logMsgInittialized)
         {
             (*(netadr_t*)0x66C714C).port = htons(3005);
 

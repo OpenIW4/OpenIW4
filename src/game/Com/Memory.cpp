@@ -288,12 +288,6 @@ void* Z_MallocInternal(int size)
 
 // Hunk section
 
-static hunkUsed_t* hunk_low = reinterpret_cast<hunkUsed_t*>(0x63D97AC);
-static hunkUsed_t* hunk_high = reinterpret_cast<hunkUsed_t*>(0x63D97A4);
-static uint8_t** s_hunkData = reinterpret_cast<uint8_t**>(0x63E2638);
-static int* s_hunkTotal = reinterpret_cast<int*>(0x63D978C);
-static HunkUser** g_debugUser = reinterpret_cast<HunkUser**>(0x201A45C);
-
 //DONE : 0x6440D0
 void Hunk_ClearData()
 {

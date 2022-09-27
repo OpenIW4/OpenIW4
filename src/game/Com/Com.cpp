@@ -4,6 +4,8 @@
 #include "../DB/DB.hpp"
 #include "../LSP/LSP.hpp"
 
+#include "Memory.hpp"
+
 #include <utils/memory/memory.hpp>
 
 // None of these do anything to my knowledge
@@ -199,9 +201,6 @@ void Com_Memset(void* dest, const int val, int count)
     // In Quake III this is all inline assembly
     memset(dest, val, count);
 }
-
-static int* com_errorPrintsCount = reinterpret_cast<int*>(0x1AD7910);
-static int* com_fixedConsolePosition = reinterpret_cast<int*>(0x1AD8EC8);
 
 //THUNK : 0x4AA830
 void Com_PrintMessage_t(int channel, const char* msg, int error)
@@ -992,10 +991,6 @@ char* Com_Parse(const char** data_p)
 }
 
 //DONE : 0x48C550
-static hunkUsed_t* hunk_low = reinterpret_cast<hunkUsed_t*>(0x63D97AC);
-static hunkUsed_t* hunk_high = reinterpret_cast<hunkUsed_t*>(0x63D97A4);
-static unsigned char* s_hunkData = reinterpret_cast<unsigned char*>(0x63E2638);
-static std::size_t s_hunkTotal = *reinterpret_cast<std::size_t*>(0x63D978C);
 void Com_TouchMemory()
 {
     std::int32_t start = Sys_Milliseconds();

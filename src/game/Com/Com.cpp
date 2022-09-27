@@ -1014,3 +1014,9 @@ void Com_TouchMemory()
     std::int32_t end = Sys_Milliseconds();
     Com_Printf(16, "Com_TouchMemory: %i msec. Using sum: %d\n", end - start, sum);
 }
+
+//DONE : 0x4303E0
+bool Com_IsRunningMenuLevel()
+{
+    return sv_running->current.enabled && I_strnicmp(sv_map->current.string, "menu_", 5) == 0;
+}

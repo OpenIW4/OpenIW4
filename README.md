@@ -12,7 +12,7 @@ Make sure you have the dependencies installed first before compiling!
 1. Clone repo
 2. Run generate.bat
 3. Compile it in VS2022
-4. Copy OpenIW4.exe to you game directory (you do own the game, right?)
+4. Copy OpenIW4.exe to your game directory (you do own the game, right?)
 5. Copy iw4mp.exe from the runtime folder into your game directory (backup the vanilla iw4mp.exe just in case)
 6. Run OpenIW4.exe
 

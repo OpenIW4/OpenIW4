@@ -617,3 +617,13 @@ struct __declspec(align(8)) SysInfo
     char cpuVendor[13];
     char cpuName[49];
 };
+
+struct GfxGlobals
+{
+    bool mainThreadHasOwnership;
+    bool startedRenderThread;
+    bool isRenderingRemoteUpdate;
+    volatile int screenUpdateNotify;
+    volatile int remoteScreenUpdateNesting;
+    int backEndFrameCount;
+};

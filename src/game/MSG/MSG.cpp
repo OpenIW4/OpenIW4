@@ -6,8 +6,6 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x48B180
-static huffman_t* huff = reinterpret_cast<huffman_t*>(0x1CB9EC0);
-static std::int32_t* msg = reinterpret_cast<std::int32_t*>(0x1CB9EB8);
 void MSG_InitHuffman()
 {
     *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
@@ -21,7 +19,7 @@ void MSG_InitHuffman()
 //DONE : 0x45FCA0
 void MSG_Init(msg_t* buffer, char* data, std::size_t size)
 {
-	if (!*(bool*)0x1CB9EB8 /*msgInit*/)
+	if (!msgInit)
 	{
 		MSG_InitHuffman();
 	}

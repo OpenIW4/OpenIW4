@@ -89,13 +89,30 @@ void Com_Frame()
 
         if (Sys_IsMainThread())
         {
-            R_PushRemoteScreenUpdate(*(int*)(0x001AD8F2C));
+            Com_LeaveError(*(int*)(0x001AD8F2C));
         }
 
         if (v1)
         {
             Com_ErrorCleanup();
             Com_StartHunkUsers();
+        }
+    }
+}
+
+//TODO : 0x50B070
+void Com_LeaveError(std::int32_t a1)
+{
+    for (std::int32_t i = a1; i; --i)
+    {
+        if (Sys_IsMainThread() && r_glob.startedRenderThread && !r_glob.remoteScreenUpdateNesting++)
+        {
+            if (r_glob.startedRenderThread && r_glob.mainThreadHasOwnership)
+            {
+                Sys_ReleaseThreadOwnership();
+                r_glob.mainThreadHasOwnership = 0;
+            }
+            memory::call<std::int32_t()>(0x4413B0)();
         }
     }
 }
@@ -132,16 +149,14 @@ void Com_Frame_Try_Block_Function()
 //DONE : 0x005091E0
 bool Com_EnterError()
 {
-    bool result; // eax
+    bool result;
 
-    if (*(bool*)(0x066DAD5D))
+    if (r_glob.startedRenderThread && r_glob.mainThreadHasOwnership)
     {
-        if (*(int*)(0x066DAD5C) /*r_glob_0*/)
-        {
-            result = Sys_ReleaseThreadOwnership();
-            *(int*)(0x066DAD5C) /*r_glob_0*/ = 0;
-        }
+        result = Sys_ReleaseThreadOwnership();
+        r_glob.mainThreadHasOwnership = 0;
     }
+
     return result;
 }
 

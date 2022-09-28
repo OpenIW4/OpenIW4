@@ -12,8 +12,8 @@ bool Win_InitLocalization(language_t* language)
 //DONE : 0x0040C6D0
 void Win_ShutdownLocalization()
 {
-	*(char*)(0x06428EB8) = 0;	//__ZL12localization_0
-	*(char*)(0x06428EBC) = 0;	//__ZL12localization_1
+    localization->language = 0;
+    localization->strings = 0;
 }
 
 //DONE : 0x004F7950
@@ -23,7 +23,6 @@ const char* Win_GetLocalizationFilename()
 }
 
 //DONE : 0x44AB20
-static localization_t* localization = reinterpret_cast<localization_t*>(0x649E744);
 const char* Win_LocalizeRef(const char* ref)
 {
 	Com_BeginParseSession("localization");

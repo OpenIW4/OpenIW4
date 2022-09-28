@@ -3,8 +3,14 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+#pragma region MSG Variables
 //unknown, seems to be referenced a lot
 static msg_t unk_66C7160 = *reinterpret_cast<msg_t*>(0x66C7160);
+static huffman_t* huff = reinterpret_cast<huffman_t*>(0x1CB9EC0);
+static std::int32_t* msg = reinterpret_cast<std::int32_t*>(0x1CB9EB8);
+
+static bool msgInit = *reinterpret_cast<bool*>(0x1CB9EB8);
+#pragma endregion MSG Variables
 
 void MSG_Init(msg_t* buffer, char* data, std::size_t size);
 void MSG_WriteByte(msg_t* msg, std::int8_t c);

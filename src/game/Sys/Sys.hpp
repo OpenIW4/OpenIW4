@@ -7,6 +7,7 @@
 
 static volatile std::int32_t* sv_thread_owns_game = reinterpret_cast<volatile std::int32_t*>(0x2089DB8);
 static SysInfo* sys_info = reinterpret_cast<SysInfo*>(0x064A17A0);
+static std::uint32_t s_cpuCount = *reinterpret_cast<std::uint32_t*>(0x1CDE7F0);
 
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);

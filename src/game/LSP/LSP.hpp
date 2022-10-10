@@ -13,6 +13,8 @@ static bool s_logStrings = *reinterpret_cast<bool*>(0x66C6C1E);
 static bool s_sendStats = *reinterpret_cast<bool*>(0x66C6C1C);
 static bool lsp_connected = *reinterpret_cast<bool*>(0x66C7638);
 static bool logMsgInittialized = *reinterpret_cast<bool*>(0x66C639A);
+
+static const dvar_t* lsp_debug = *reinterpret_cast<const dvar_t**>(0x66C639C);
 #pragma endregion LSP Variables
 
 void LSP_Init();
@@ -25,3 +27,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string);
 void LSP_ForceSendPacket();
 std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t, netadr_t* net);
 void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, const SessionData* session);
+
+#pragma region Unreferenced
+char sub_4DC200();
+#pragma endregion Unreferenced

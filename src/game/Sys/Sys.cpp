@@ -461,7 +461,7 @@ std::int32_t Sys_SystemMemoryMB()
 //DONE: 0x4C6610
 std::int32_t Sys_GetCPUCount()
 {
-    return *(std::int32_t*)0x1CDE7F0; //s_cpuCount
+    return s_cpuCount;
 }
 
 //DONE : 0x4CA4A0

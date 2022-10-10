@@ -3,6 +3,7 @@
 #include "../stdafx.hpp"
 #include "../defs.hpp"
 
+#pragma region Com Variables
 static ParseThreadInfo* g_parse = reinterpret_cast<ParseThreadInfo*>(0x6466628); //4 elements
 static const char* String = *reinterpret_cast<const char**>(0x6FAC0D); //used a lot, not sure as to what it is
 
@@ -10,6 +11,7 @@ static const dvar_t* sv_running = *reinterpret_cast<const dvar_t**>(0x1AD7934);
 static const dvar_t* sv_map = *reinterpret_cast<const dvar_t**>(0x2098DDC);
 static std::int32_t* com_errorPrintsCount = reinterpret_cast<std::int32_t*>(0x1AD7910);
 static std::int32_t* com_fixedConsolePosition = reinterpret_cast<std::int32_t*>(0x1AD8EC8);
+#pragma endregion Com Variables
 
 void Com_InitParse();
 void Com_Frame();

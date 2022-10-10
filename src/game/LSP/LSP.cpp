@@ -16,7 +16,7 @@ void LSP_Init()
     s_logStrings = 1;
     s_sendStats = 1;
 
-	*(const dvar_t**)0x66C639C = Dvar_RegisterBool("lsp_debug", 0, 0, "Whether to print LSP debug info"); //lsp_debug
+	lsp_debug = Dvar_RegisterBool("lsp_debug", 0, 0, "Whether to print LSP debug info"); //lsp_debug
     g_iwnetMatchmakingServerAddr.type = NA_IP;
     g_iwnetStorageServerAddr.type = NA_IP;
     stru_66BB078.type = NA_IP;
@@ -159,7 +159,7 @@ std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t a2, netad
     sockaddr to;
     NetadrToSockadr(net, &to);
     std::int32_t v3 = sendto(*(std::uint32_t*)0x64A1E04, (const char*)buf, a2, 0, &to, 16);
-    if (*(std::uint8_t*)0x66C639C + 16)
+    if (*(std::uint8_t*)0x66C639C + 16) //some sort of struct most likely
     {
         std::uint16_t v4 = ntohs(net->port);
         Com_Printf(14,
@@ -199,7 +199,7 @@ void LSP_ForceSendPacket()
 
         if (logMsgInittialized)
         {
-            (*(netadr_t*)0x66C714C).port = htons(3005);
+            g_iwnetLoggingServerAddr.port = htons(3005);
 
             if (Xenon_SendLSPPacket((const std::uint8_t*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, *(netadr_t**)0x66C714C) < 0)
             {
@@ -248,4 +248,15 @@ void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::i
 
     *(unsigned long*)0x66C6C14 = localControllerIndex;
     *(std::int32_t*)0x66C7120 = 0; //s_firstLogWriteTime
+}
+
+//TODO : 0x4DC200
+//needs to be named but its not referenced
+char sub_4DC200()
+{
+    if (lsp_debug->current.enabled)
+    {
+        Com_Printf(25, "IWNet transaction complete\n");
+    }
+    return 1;
 }

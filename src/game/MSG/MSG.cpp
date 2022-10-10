@@ -8,7 +8,7 @@
 //DONE : 0x48B180
 void MSG_InitHuffman()
 {
-    *(std::int32_t*)0x1CB9EB8 = 1; //msgInit
+    msgInit = true;
     Huff_Init(huff);
     std::int32_t time = Sys_Milliseconds();
     Huff_BuildFromData(&huff->compressDecompress, msg);

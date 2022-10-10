@@ -1,15 +1,9 @@
-#include "game/defs.hpp"
-
 #include "PhysicalMemory.hpp"
 #include "Com.hpp"
 
 #include "../Sys/Sys.hpp"
 
-#include "utils/memory/memory.hpp"
-
-#define MAX_PHYSICAL_MEMORY 0x12C00000
-
-static PhysicalMemory* g_mem = reinterpret_cast<PhysicalMemory*>(0x64663F8);
+#include <utils/memory/memory.hpp>
 
 //DONE : Inlined
 void PMem_InitPhysicalMemory(PhysicalMemory* pmem, void* memory, unsigned int memorySize)

@@ -212,7 +212,6 @@ void LSP_ForceSendPacket()
 }
 
 //DONE : 0x4DA7F0
-static dvar_t* sv_map = *reinterpret_cast<dvar_t**>(0x2098DDC);
 void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::int32_t a3, std::int32_t a4, char* source, const SessionData* session)
 {
     const char* map;

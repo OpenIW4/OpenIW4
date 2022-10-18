@@ -73,15 +73,13 @@ void InitTiming()
 }
 
 //DONE : 0x437EB0
-void* Field_Clear(field_t* edit)
+void Field_Clear(field_t* edit)
 {
-    void* result = memset(edit->buffer, 0, sizeof(edit->buffer));
+    memset(edit->buffer, 0, sizeof(edit->buffer));
 
     edit->cursor = 0;
     edit->scroll = 0;
     edit->drawWidth = 256;
-
-    return result;
 }
 
 //This function is blank in 159

@@ -61,3 +61,11 @@ void Cmd_RemoveCommand(const char* cmdName)
         **p_next = v2->next;
     }
 }
+
+//DONE : 0x40EDC0
+void Cmd_SetAutoComplete(const char* cmdName, const char* dir, const char* ext)
+{
+    cmd_function_s* cmd = Cmd_FindCommand(cmdName);
+    cmd->autoCompleteDir = dir;
+    cmd->autoCompleteExt = ext;
+}

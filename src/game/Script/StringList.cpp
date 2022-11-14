@@ -4,9 +4,7 @@
 
 #include "utils/memory/memory.hpp"
 
-static scrMemTreePub_t* scrMemTreePub = reinterpret_cast<scrMemTreePub_t*>(0x1DC2200);
-
-//DONE : 0x436B40
+//THUNK : 0x436B40
 uint32_t SL_GetStringOfSize(const char* str, uint32_t user, uint32_t len, int type)
 {
     return memory::call<uint32_t(const char*, uint32_t, uint32_t, int)>(0x436B40)(str, user, len, type);
@@ -33,4 +31,13 @@ char* SL_ConvertToString(uint32_t stringValue)
         return NULL;
 
     return GetRefString(stringValue)->str;
+}
+
+//Inlined
+//Moved from Memory.cpp
+const char* CopyString(const char* in)
+{
+    //CopyString takes 2 more functions, but they are never used for some reason
+    uint32_t stringValue = SL_GetString_(in, 0, 22);
+    return SL_ConvertToString(stringValue);
 }

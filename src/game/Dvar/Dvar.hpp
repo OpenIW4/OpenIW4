@@ -12,3 +12,5 @@ const dvar_t* Dvar_RegisterBool(const char* a1, bool a2, unsigned int a3, const 
 const dvar_t* Dvar_RegisterInt(const char* dvarName, std::int32_t a2, std::int32_t a3, std::int32_t a4, std::int32_t a5, const char* description);
 
 dvar_t* Dvar_FindMalleableVar(const char* dvarName);
+
+const char* Dvar_AllocNameString(const char* name);

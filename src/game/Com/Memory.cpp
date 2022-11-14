@@ -404,12 +404,6 @@ void Hunk_UserReset(HunkUser* user)
     memory::call<void(HunkUser*)>(0x4D55D0)(user);
 }
 
-const char* CopyString(const char* in)
-{
-    uint32_t stringValue = SL_GetString_(in, 0, 0x16);
-    return SL_ConvertToString(stringValue);
-}
-
 //DONE : 0x430E90
 HunkUser* Hunk_UserCreate(int maxSize, const char* name, bool fixed, int type)
 {

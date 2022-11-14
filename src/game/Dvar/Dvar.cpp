@@ -2,6 +2,7 @@
 #include "../Sys/Sys.hpp"
 #include "../Unsorted/Unsorted.hpp"
 #include "../Com/Com.hpp"
+#include "../Script/StringList.hpp"
 
 #include <utils/memory/memory.hpp>
 
@@ -64,3 +65,13 @@ dvar_t* Dvar_FindMalleableVar(const char* dvarName)
         return 0;
     }
 }
+
+
+//DONE : 0x4F3C80
+const char* Dvar_AllocNameString(const char* name)
+{
+    //seems to be inlined
+    return CopyString(name);
+}
+
+//there was more work here, but it was bad (awful)

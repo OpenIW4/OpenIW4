@@ -870,3 +870,4 @@ void Sys_DetectVideoCard(std::int32_t descLimit, char* description)
         d3d9->Release();
     }
 }
+

@@ -622,3 +622,18 @@ struct GfxGlobals
     volatile int remoteScreenUpdateNesting;
     int backEndFrameCount;
 };
+
+struct WinConData
+{
+	HWND__* hWnd;
+	HWND__* hwndBuffer;
+	HWND__* codLogo;
+	HFONT__* hfBufferFont;
+	HWND__* hwndInputLine;
+	char errorString[512];
+	char consoleText[512];
+	char returnedText[512];
+	int windowWidth;
+	int windowHeight;
+	int(__stdcall* SysInputLineWndProc)(HWND__*, unsigned int, unsigned int, int);
+};

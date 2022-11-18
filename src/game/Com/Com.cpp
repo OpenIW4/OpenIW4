@@ -162,7 +162,7 @@ void Com_AddStartupCommands()
     memory::call<void()>(0x60C3D0)();
 }
 
-//THUNK : 0x402500
+//TODO : 0x402500
 void Com_Printf(std::uint32_t channel, const char* Format, ...)
 {
     char Buffer[0x1000];

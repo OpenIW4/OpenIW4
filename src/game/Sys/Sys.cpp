@@ -11,15 +11,13 @@
 //DONE : 0x004305E0
 void Sys_ShowConsole()
 {
-    HMODULE handle;
-    if (!*(HWND*)0x064A3288)
-    {
-        handle = GetModuleHandleA(0);
-        Sys_CreateConsole(handle);
-    }
+	if (!s_wcd.hWnd)
+	{
+		Sys_CreateConsole(nullptr);
+	}
 
-    ShowWindow(*(HWND*)0x064A3288 /*s_wcd.hWnd*/, 1);
-    SendMessageA(*(HWND*)0x0064A328C /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
+	ShowWindow(s_wcd.hWnd, 1);
+	SendMessageA(s_wcd.hwndBuffer, 0xB6, 0, 0xFFFF);
 }
 
 //DONE : 0x004288A0
@@ -61,50 +59,50 @@ void Sys_CreateConsole(HINSTANCE hInstance)
     sheight = GetDeviceCaps(hDC, 10);
     ReleaseDC(GetDesktopWindow(), hDC);
 
-    *(int*)0x64A389C = Rect.right - Rect.left + 1;
-    *(int*)0x64A38A0 = Rect.bottom - Rect.top + 1;
+    s_wcd.windowWidth = Rect.right - Rect.left + 1;
+    s_wcd.windowHeight = Rect.bottom - Rect.top + 1;
 
-    *(HWND*)0x64A3288 = CreateWindowExA( // hWndParent
+    s_wcd.hWnd = CreateWindowExA( // hWndParent
         0, "OpenIW4 WinConsole", "OpenIW4 Console", 0x80CA0000, (swidth - 600) / 2, (sheight - 450) / 2,
         Rect.right - Rect.left + 1, Rect.bottom - Rect.top + 1, 0, 0, hInstance, 0);
 
-    if (!*(HWND*)0x64A3288)
+    if (!s_wcd.hWnd)
     {
         return;
     }
 
     // create fonts
-    hDC = GetDC(*(HWND*)0x64A3288);
+    hDC = GetDC(s_wcd.hWnd);
     nHeight = MulDiv(8, GetDeviceCaps(hDC, 90), 72);
 
-    *(HFONT*)0x64A3294 = CreateFontA( // hfBufferFont
+    s_wcd.hfBufferFont = CreateFontA( // hfBufferFont
         -nHeight, 0, 0, 0, 300, 0, 0, 0, 1u, 0, 0, 0, 0x31u, "Courier New");
 
-    ReleaseDC(*(HWND*)0x64A3288, hDC);
+    ReleaseDC(s_wcd.hWnd, hDC);
 
-    auto logo = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 0x10u);
+    HANDLE logo = LoadImageA(0, "openiw4-logo.bmp", 0, 0, 0, 0x10u);
     if (logo)
     {
-        *(HWND*)0x64A3290 = CreateWindowExA(
-            0, "Static", 0, 0x5000000Eu, 5, 5, 0, 0, *(HWND*)0x64A3288, (HMENU)1, hInstance, 0);
-        SendMessageA(*(HWND*)0x64A3290, 0x172u, 0, (LPARAM)logo);
+        s_wcd.codLogo = CreateWindowExA(
+            0, "Static", 0, 0x5000000Eu, 5, 5, 0, 0, s_wcd.hWnd, (HMENU)1, hInstance, 0);
+        SendMessageA(s_wcd.codLogo, 0x172u, 0, (LPARAM)logo);
     }
 
     // create the input line
-    *(HWND*)0x64A3298 = CreateWindowExA( // hwndInputLine
-        0, "edit", 0, 0x50800080u, 6, 400, 608, 20, *(HWND*)0x64A3288, (HMENU)0x65, hInstance, 0);
-    *(HWND*)0x64A328C = CreateWindowExA( // hwndBuffer
-        0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, *(HWND*)0x64A3288, (HMENU)0x64, hInstance, 0);
+    s_wcd.hwndInputLine = CreateWindowExA( // hwndInputLine
+        0, "edit", 0, 0x50800080u, 6, 400, 608, 20, s_wcd.hWnd, (HMENU)0x65, hInstance, 0);
+    s_wcd.hwndBuffer = CreateWindowExA( // hwndBuffer
+        0, "edit", 0, 0x50A00844u, 6, 70, 606, 324, s_wcd.hWnd, (HMENU)0x64, hInstance, 0);
     SendMessageA(*(HWND*)0x64A328C, 0x30, *(WPARAM*)0x64A3294, 0);
 
     *(WNDPROC*)0x64A38A4 = (WNDPROC)SetWindowLongA( // SysInputLineWndProc
-        *(HWND*)0x64A3298, -4, (long)InputLineWndProc);
-    SendMessageA(*(HWND*)0x64A3298, 0x30, *(WPARAM*)0x64A3294, 0);
+        s_wcd.hwndInputLine, -4, (long)InputLineWndProc);
+    SendMessageA(s_wcd.hwndInputLine, 0x30, (WPARAM)s_wcd.hfBufferFont, 0);
 
-    SetFocus(*(HWND*)0x64A3298);
+    SetFocus(s_wcd.hwndInputLine);
     Con_GetTextCopy(text, 0x4000);
     Conbuf_CleanText(text, target, 0x4000);
-    SetWindowTextA(*(HWND*)0x64A328C, target);
+    SetWindowTextA(s_wcd.hwndBuffer, target);
 }
 
 //DONE : 0x0064DC50

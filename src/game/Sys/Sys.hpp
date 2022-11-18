@@ -5,10 +5,17 @@
 
 #define Sys_OutOfMemError() Sys_OutOfMemErrorInternal(__FILE__, __LINE__);
 
+#pragma region Sys variables
+
 static volatile std::int32_t* sv_thread_owns_game = reinterpret_cast<volatile std::int32_t*>(0x2089DB8);
 static SysInfo* sys_info = reinterpret_cast<SysInfo*>(0x064A17A0);
 static std::uint32_t s_cpuCount = *reinterpret_cast<std::uint32_t*>(0x1CDE7F0);
 
+static HANDLE hEvent = *reinterpret_cast<HANDLE*>(0x1CDE7EC);
+static HANDLE noThreadOwnershipEvent = *reinterpret_cast<HANDLE*>(0x1CDE704);
+static HANDLE dword_1CDE730 = *reinterpret_cast<HANDLE*>(0x1CDE730);
+static HANDLE dword_1CDE850 = *reinterpret_cast<HANDLE*>(0x1CDE850);
+#pragma endregion
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
 void Sys_InitializeCriticalSections();
@@ -61,3 +68,4 @@ void Sys_NormalExit();
 std::int32_t SV_GetServerThreadOwnsGame();
 void Sys_DetectVideoCard(std::int32_t descLimit, char* description);
 void Sys_UnlockWrite(FastCriticalSection* critSect);
+void Sys_FrontEndSleep();

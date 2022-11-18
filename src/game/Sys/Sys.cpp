@@ -880,3 +880,11 @@ void Sys_DetectVideoCard(std::int32_t descLimit, char* description)
     }
 }
 
+//DONE : 0x49DA10
+void Sys_FrontEndSleep()
+{
+    WaitForSingleObject(hEvent, INFINITE);
+    ResetEvent(noThreadOwnershipEvent);
+    SetEvent(dword_1CDE730);
+    WaitForSingleObject(dword_1CDE850, INFINITE);
+}

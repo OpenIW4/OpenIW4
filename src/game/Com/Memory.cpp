@@ -5,8 +5,9 @@
 
 #include "../Sys/Sys.hpp"
 #include "../Script/StringList.hpp"
+#include "../Render/Render.hpp"
 
-#include "utils/memory/memory.hpp"
+#include <utils/memory/memory.hpp>
 
 static std::uint8_t* g_largeLocalBuf;
 static int g_largeLocalPos;
@@ -44,8 +45,8 @@ void LargeLocalEndRight(int startPos)
 //DONE : 0x430630
 void LargeLocalReset()
 {
-    auto context = memory::call<int()>(0x50B0D0)(); // R_PopRemoteScreenUpdate
-    memory::call<void()>(0x5091B0)(); //  R_SyncRenderThread
+    auto context = R_PopRemoteScreenUpdate();
+    R_SyncRenderThread();
 
     auto pos = (g_largeLocalPos + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
     auto rightPos = (g_maxLargeLocalPos + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);

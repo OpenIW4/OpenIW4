@@ -4,7 +4,7 @@
 #include <utils/memory/memory.hpp>
 
 //DONE : 0x0050B0D0
-int R_PopRemoteScreenUpdate()
+std::int32_t R_PopRemoteScreenUpdate()
 {
     volatile std::int32_t remoteScreenUpdateNesting = r_glob.remoteScreenUpdateNesting;
 
@@ -44,5 +44,15 @@ void R_EndRemoteScreenUpdate()
         {
             --r_glob.remoteScreenUpdateNesting;
         }
+    }
+}
+
+//DONE : 0x5091B0
+void R_SyncRenderThread()
+{
+    if (!Sys_IsRenderThread() && byte_66E1E30 && r_glob.startedRenderThread && !r_glob.mainThreadHasOwnership)
+    {
+        Sys_FrontEndSleep();
+        r_glob.mainThreadHasOwnership = true;
     }
 }

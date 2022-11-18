@@ -730,7 +730,6 @@ const char* SkipWhitespace(const char* data, std::int32_t* newLines)
 }
 
 //DONE : 0x64A2D0
-static const char** puncuation = reinterpret_cast<const char**>(0x79D208);
 parseInfo_t* Com_ParseExt(const char** data_p, std::int32_t allowLineBreaks)
 {
     //T5 code, used for readability, *should* act the same as IW4

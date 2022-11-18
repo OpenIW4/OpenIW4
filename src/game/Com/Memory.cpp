@@ -399,10 +399,24 @@ void Hunk_ShutdownDebugMemory()
     *g_debugUser = NULL;
 }
 
-//THUNK : 0x4D55D0
+//DONE : 0x4D55D0
 void Hunk_UserReset(HunkUser* user)
 {
-    memory::call<void(HunkUser*)>(0x4D55D0)(user);
+	if (user->next)
+	{
+		Hunk_UserDestroy(user->next);
+		user->current = user;
+		user->next = 0;
+	}
+
+	std::int32_t pos = user->pos;
+	std::uint32_t v2 = ((*user[114].name + 3) & 0xFFFFF000);
+	if (v2 != ((pos + 4095) & 0xFFFFF000))
+	{
+		VirtualFree((void*)v2, pos - v2, 0x4000);
+	}
+	user->pos = (std::int32_t)user->buf;
+	memset(user->buf, 0, 4064);
 }
 
 //DONE : 0x430E90

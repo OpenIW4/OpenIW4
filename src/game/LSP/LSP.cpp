@@ -154,7 +154,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 
 //DONE : 0x4B41E0
 //this function may need to be moved
-std::int32_t Xenon_SendLSPPacket(const std::uint8_t* buf, std::int32_t a2, netadr_t* net)
+std::int32_t Xenon_SendLSPPacket(const char* buf, std::int32_t a2, netadr_t* net)
 {
     sockaddr to;
     NetadrToSockadr(net, &to);
@@ -201,7 +201,7 @@ void LSP_ForceSendPacket()
         {
             g_iwnetLoggingServerAddr.port = htons(3005);
 
-            if (Xenon_SendLSPPacket((const std::uint8_t*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, *(netadr_t**)0x66C714C) < 0)
+            if (Xenon_SendLSPPacket((const char*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, *(netadr_t**)0x66C714C) < 0)
             {
                 *(bool*)0x66C7638 = 0;
             }
@@ -258,4 +258,23 @@ char sub_4DC200()
         Com_Printf(25, "IWNet transaction complete\n");
     }
     return 1;
+}
+
+//DONE : 0x682520
+void LSP_ForceSendPacket()
+{
+    if (byte_66C7638)
+    {
+        Sys_EnterCriticalSection(CRITSECT_LSP);
+        if (logMsgInittialized)
+        {
+            g_iwnetLoggingServerAddr.port = htons(3005);
+            if (Xenon_SendLSPPacket(stru_66C7160.data, stru_66C7160.curSize, &g_iwnetLoggingServerAddr) < 0)
+            {
+                byte_66C7638 = 0;
+            }
+        }
+    }
+    logMsgInittialized = false;
+    Sys_LeaveCriticalSection(CRITSECT_LSP);
 }

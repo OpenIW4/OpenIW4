@@ -195,19 +195,19 @@ void LSP_ForceSendPacket()
 {
     if (lsp_connected)
     {
-        Sys_EnterCriticalSection(CRITSECT_LIVE);
+        Sys_EnterCriticalSection(CRITSECT_LSP);
 
         if (logMsgInittialized)
         {
             g_iwnetLoggingServerAddr.port = htons(3005);
 
-            if (Xenon_SendLSPPacket((const char*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, *(netadr_t**)0x66C714C) < 0)
+            if (Xenon_SendLSPPacket((const char*)(*(msg_t*)0x66C7160).data, (*(msg_t*)0x66C7160).curSize, &g_iwnetLoggingServerAddr) < 0)
             {
-                *(bool*)0x66C7638 = 0;
+                lsp_connected = false;
             }
         }
-        *(bool*)0x66C639A = 0;
-        Sys_LeaveCriticalSection(CRITSECT_LIVE);
+        logMsgInittialized = false;
+        Sys_LeaveCriticalSection(CRITSECT_LSP);
     }
 }
 

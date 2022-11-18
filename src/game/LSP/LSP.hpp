@@ -15,8 +15,6 @@ static bool lsp_connected = *reinterpret_cast<bool*>(0x66C7638);
 static bool logMsgInittialized = *reinterpret_cast<bool*>(0x66C639A);
 
 static const dvar_t* lsp_debug = *reinterpret_cast<const dvar_t**>(0x66C639C);
-static char byte_66C7638 = *reinterpret_cast<char*>(0x66C7638);
-static msg_t stru_66C7160 = *reinterpret_cast<msg_t*>(0x66C7160);
 #pragma endregion LSP Variables
 
 void LSP_Init();

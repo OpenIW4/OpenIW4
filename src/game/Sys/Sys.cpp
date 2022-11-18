@@ -483,21 +483,17 @@ bool Sys_ReleaseThreadOwnership()
 }
 
 //DONE : 0x004C3650
-bool Sys_DatabaseCompleted()
+void Sys_DatabaseCompleted()
 {
     Sys_EnterCriticalSection(CRITSECT_START_SERVER);
     *(DWORD*)0x1CDE84C = 1; //dword_1CDE84C
     Sys_LeaveCriticalSection(CRITSECT_START_SERVER);
 
-    HANDLE result = *(HANDLE*)0x1CDE85C; //dword_1CDE85C
-
-    if(result)
-    {
-        WaitForSingleObject(result, INFINITE);
-    }
-
-    HANDLE event = *(HANDLE*)0x1CDE7F8; //dword_1CDE7F8
-    return SetEvent(event);
+	if (*(HANDLE*)0x1CDE85C)
+	{
+		WaitForSingleObject(*(HANDLE*)0x1CDE85C, INFINITE);
+	}
+	SetEvent(databseCompletedEvent);
 }
 
 //TODO : 0x43D570
@@ -509,7 +505,7 @@ void Sys_Error(const char* error, ...)
 
     va_start(args, error);
 
-    memory::call<void()>(0x4B9660)(); // our current Com_EnterError code is questionable, lets just call the game for now
+	Com_EnterError();
     memory::call<void()>(0x45A190)(); // possibly Sys_SuspendOtherThreads
 
     _vsnprintf(buffer, 4096, error, args);

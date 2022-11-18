@@ -15,6 +15,7 @@ static HANDLE hEvent = *reinterpret_cast<HANDLE*>(0x1CDE7EC);
 static HANDLE noThreadOwnershipEvent = *reinterpret_cast<HANDLE*>(0x1CDE704);
 static void* backendEvent = *reinterpret_cast<void**>(0x1CDE730); //backendEvent[2] (was just a HANDLE in IDA)
 static HANDLE dword_1CDE850 = *reinterpret_cast<HANDLE*>(0x1CDE850);
+static HANDLE databseCompletedEvent = *reinterpret_cast<HANDLE*>(0x1CDE7F8);
 #pragma endregion
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
@@ -38,7 +39,7 @@ void Sys_EnumerateHw();
 bool Sys_IsDatabaseReady();
 bool Sys_IsDatabaseReady2();
 bool Sys_ReleaseThreadOwnership();
-bool Sys_DatabaseCompleted();
+void Sys_DatabaseCompleted();
 long __stdcall ConsoleWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
 long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wParam, long lParam);
 void Sys_Error(const char* error, ...);

@@ -248,7 +248,7 @@ void Com_PrintError(int channel, const char* fmt, ...)
     int* cls_uiStarted = (int*)(0x0A7FFA0);
     if (*cls_uiStarted)
     {
-        if (!*com_fixedConsolePosition)
+        if (!com_fixedConsolePosition)
         {
             memory::call<void()>(0x44A430); // CL_ConsoleFixPosition
         }

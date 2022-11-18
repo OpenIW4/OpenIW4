@@ -146,18 +146,19 @@ void Com_Frame_Try_Block_Function()
     memory::call<void()>(0x0047DCA0)();
 }
 
-//DONE : 0x005091E0
-bool Com_EnterError()
+//DONE : 0x4B9660
+void Com_EnterError()
 {
-    bool result;
+	if (Sys_IsMainThread())
+	{
+		*(std::int32_t*)0x1AD8F2C = R_PopRemoteScreenUpdate();
+	}
+	Sys_EnterCriticalSection(CRITSECT_COM_ERROR);
 
-    if (r_glob.startedRenderThread && r_glob.mainThreadHasOwnership)
-    {
-        result = Sys_ReleaseThreadOwnership();
-        r_glob.mainThreadHasOwnership = 0;
-    }
-
-    return result;
+	if (Sys_IsMainThread())
+	{
+		R_ReleaseThreadOwnership();
+	}
 }
 
 //THUNK : 0x0060BFD0

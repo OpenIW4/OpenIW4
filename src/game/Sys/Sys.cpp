@@ -551,11 +551,9 @@ void Sys_SetErrorText(const char* text)
     MessageBoxA(activeWindow, text, "Error", 0x10u);
 }
 
-//TODO : 0x4B2E60
+//DONE : 0x4B2E60
 void Sys_OutOfMemErrorInternal(const char* filename, std::int32_t line)
 {
-    //memory::call<void(const char*, int)>(0x4B2E60)(filename, line);
-
     Sys_EnterCriticalSection(CRITSECT_FATAL_ERROR);
     Com_Printf(16, "Out of memory: filename '%s', line '%d'\n", filename, line);
 
@@ -567,29 +565,27 @@ void Sys_OutOfMemErrorInternal(const char* filename, std::int32_t line)
 }
 
 //TODO : 0x45A190
-unsigned long Sys_SuspendOtherThreads()
+void Sys_SuspendOtherThreads()
 {
-    Sys_EnterCriticalSection(CRITSECT_FX_ALLOC);
-    memory::call<int(void)>(0x51CA20)(); // R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
-    unsigned long result = GetCurrentThreadId();
-    unsigned long v1 = result;
+    Sys_EnterCriticalSection(CRITSECT_STATS_WRITE);
+    memory::call<void(void)>(0x51CA20)(); // R_Cinematic_SuspendPlayback(), if you follow it, it calls bink stuff
 
-    for (std::uint32_t i = 0; i < 36; i++)
+    unsigned long currentThreadId = GetCurrentThreadId();
+
+    for (std::uint32_t threadIndex = 0; threadIndex < 36; threadIndex+= 4)
     {
-        if (*(HANDLE*)(*(char**)0x1CDE828 + i))
+        if (*(HANDLE*)(*(char**)0x1CDE828 + threadIndex))
         {
-            result = *(unsigned long*)(*(char**)0x1CDE7FC + i);
-            if (result)
+            unsigned long v2 = *(unsigned long*)(*(char**)0x1CDE7FC + threadIndex);
+            if (v2)
             {
-                if (result != v1)
+                if (v2 != currentThreadId)
                 {
-                    result = SuspendThread(*(HANDLE*)(*(char**)0x1CDE828 + i));
+                    SuspendThread(*(HANDLE*)(*(char**)0x1CDE828 + threadIndex));
                 }
             }
         }
     }
-
-    return result;
 }
 
 //DONE : Inlined

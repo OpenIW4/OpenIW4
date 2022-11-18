@@ -479,7 +479,7 @@ bool Sys_IsDatabaseReady2()
 //DONE : 0x004F5250
 bool Sys_ReleaseThreadOwnership()
 {
-    return SetEvent(*(HANDLE*)0x01CDE704 /*noThreadOwnershipEvent*/);
+    return SetEvent(noThreadOwnershipEvent);
 }
 
 //DONE : 0x004C3650
@@ -885,6 +885,12 @@ void Sys_FrontEndSleep()
 {
     WaitForSingleObject(hEvent, INFINITE);
     ResetEvent(noThreadOwnershipEvent);
-    SetEvent(dword_1CDE730);
+    SetEvent(backendEvent);
     WaitForSingleObject(dword_1CDE850, INFINITE);
+}
+
+//DONE : 0x4413B0
+void Sys_NotifyRenderer()
+{
+    SetEvent(backendEvent); //this doesnt seem right
 }

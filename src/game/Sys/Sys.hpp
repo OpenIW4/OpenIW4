@@ -13,7 +13,7 @@ static std::uint32_t s_cpuCount = *reinterpret_cast<std::uint32_t*>(0x1CDE7F0);
 
 static HANDLE hEvent = *reinterpret_cast<HANDLE*>(0x1CDE7EC);
 static HANDLE noThreadOwnershipEvent = *reinterpret_cast<HANDLE*>(0x1CDE704);
-static HANDLE dword_1CDE730 = *reinterpret_cast<HANDLE*>(0x1CDE730);
+static void* backendEvent = *reinterpret_cast<void**>(0x1CDE730); //backendEvent[2] (was just a HANDLE in IDA)
 static HANDLE dword_1CDE850 = *reinterpret_cast<HANDLE*>(0x1CDE850);
 #pragma endregion
 void Sys_ShowConsole();
@@ -69,3 +69,4 @@ std::int32_t SV_GetServerThreadOwnsGame();
 void Sys_DetectVideoCard(std::int32_t descLimit, char* description);
 void Sys_UnlockWrite(FastCriticalSection* critSect);
 void Sys_FrontEndSleep();
+void Sys_NotifyRenderer();

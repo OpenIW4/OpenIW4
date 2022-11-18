@@ -56,3 +56,30 @@ void R_SyncRenderThread()
         r_glob.mainThreadHasOwnership = true;
     }
 }
+
+//DONE : 0x5091E0
+void R_ReleaseThreadOwnership()
+{
+    if (r_glob.startedRenderThread && r_glob.mainThreadHasOwnership)
+    {
+        Sys_ReleaseThreadOwnership();
+        r_glob.mainThreadHasOwnership = false;
+    }
+}
+
+//DONE : 0x50B070
+void R_PushRemoteScreenUpdate(std::int32_t remoteScreenUpdateNesting)
+{
+    for (std::int32_t i = remoteScreenUpdateNesting; i; --i)
+    {
+        if (Sys_IsMainThread() && r_glob.startedRenderThread && !r_glob.remoteScreenUpdateNesting++)
+        {
+            if (r_glob.startedRenderThread && r_glob.mainThreadHasOwnership)
+            {
+                Sys_ReleaseThreadOwnership();
+                r_glob.mainThreadHasOwnership = false;
+            }
+            Sys_NotifyRenderer();
+        }
+    }
+}

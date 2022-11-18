@@ -9,3 +9,5 @@ static bool byte_66E1E30 = *reinterpret_cast<bool*>(0x66E1E30); //this is most l
 std::int32_t R_PopRemoteScreenUpdate();
 void R_EndRemoteScreenUpdate();
 void R_SyncRenderThread();
+void R_ReleaseThreadOwnership();
+void R_PushRemoteScreenUpdate(std::int32_t remoteScreenUpdateNesting);

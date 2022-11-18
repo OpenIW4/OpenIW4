@@ -65,8 +65,8 @@ void LargeLocalReset()
     }
 
     g_minLargeLocalRightPos = g_largeLocalRightPos;
-    memory::call<void()>(0x5091E0)(); // R_ReleaseThreadOwnership
-    memory::call<void(int)>(0x50B070)(context); // R_PushRemoteScreenUpdate
+    R_ReleaseThreadOwnership();
+    R_PushRemoteScreenUpdate(context);
 }
 
 //DONE : 0x4458F0
@@ -289,13 +289,13 @@ void* Z_MallocInternal(int size)
 
 // Hunk section
 
-//DONE : 0x6440D0
+//THUNK : 0x6440D0
 void Hunk_ClearData()
 {
     memory::call<void()>(0x6440D0);
 }
 
-//DONE : 0x492F20
+//THUNK : 0x492F20
 void* Hunk_AllocAlign(int size, int alignment)
 {
     return memory::call<void*(int, int)>(0x492F20)(size, alignment);
@@ -307,19 +307,19 @@ void* Hunk_Alloc(int size)
     return Hunk_AllocAlign(size, 32);
 }
 
-//DONE : 0x4FF4D0
+//THUNK : 0x4FF4D0
 void* Hunk_AllocateTempMemory(int size)
 {
     return memory::call<void*(int)>(0x4FF4D0)(size);
 }
 
-//DONE : 0x475B30
+//THUNK : 0x475B30
 void* Hunk_AllocateTempMemoryHigh(int size)
 {
     return memory::call<void* (int)>(0x475B30)(size);
 }
 
-//DONE : 0x43B100
+//THUNK : 0x43B100
 void* Hunk_AllocLowAlign(int size, int alignment)
 {
     return memory::call<void* (int, int)>(0x43B100)(size, alignment);

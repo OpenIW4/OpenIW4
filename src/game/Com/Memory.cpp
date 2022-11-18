@@ -337,25 +337,25 @@ void Hunk_Clear()
     VirtualFree(*s_hunkData, *s_hunkTotal, MEM_DECOMMIT);
 }
 
-//DONE : 0x4A0460
+//THUNK : 0x4A0460
 void Hunk_ClearTempMemory()
 {
     memory::call<void()>(0x4A0460);
 }
 
-//DONE : 0x4AB3A0
+//THUNK : 0x4AB3A0
 void Hunk_ClearTempMemoryHigh()
 {
     memory::call<void()>(0x4AB3A0);
 }
 
-//DONE : 0x432AA0
+//THUNK : 0x432AA0
 void Hunk_ClearToMarkLow(int mark)
 {
     memory::call<void(int)>(0x432AA0)(mark);
 }
 
-//DONE : 0x45D1C0
+//THUNK : 0x45D1C0
 void* Hunk_UserAlloc(HunkUser* user, int size, int alignment)
 {
     return memory::call<void*(HunkUser*, int, int)>(0x45D1C0)(user, size, alignment);
@@ -371,7 +371,7 @@ char* Hunk_CopyString(HunkUser* user, const char* in)
     return result;
 }
 
-//DONE : 0x49AAC0
+//THUNK : 0x49AAC0
 void Hunk_FreeTempMemory(void* buf)
 {
     memory::call<void(void*)>(0x49AAC0)(buf);
@@ -392,14 +392,14 @@ void Hunk_UserDestroy(HunkUser* user)
     Z_VirtualFree(user, user->type);
 }
 
-//DONE : 0x434E30
+//THUNK : 0x434E30
 void Hunk_ShutdownDebugMemory()
 {
     Hunk_UserDestroy(*g_debugUser);
     *g_debugUser = NULL;
 }
 
-//DONE : 0x4D55D0
+//THUNK : 0x4D55D0
 void Hunk_UserReset(HunkUser* user)
 {
     memory::call<void(HunkUser*)>(0x4D55D0)(user);

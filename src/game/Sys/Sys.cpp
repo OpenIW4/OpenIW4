@@ -568,20 +568,13 @@ void Sys_SuspendOtherThreads()
 
     unsigned long currentThreadId = GetCurrentThreadId();
 
-    for (std::uint32_t threadIndex = 0; threadIndex < 36; threadIndex+= 4)
-    {
-        if (*(HANDLE*)(*(char**)0x1CDE828 + threadIndex))
-        {
-            unsigned long v2 = *(unsigned long*)(*(char**)0x1CDE7FC + threadIndex);
-            if (v2)
-            {
-                if (v2 != currentThreadId)
-                {
-                    SuspendThread(*(HANDLE*)(*(char**)0x1CDE828 + threadIndex));
-                }
-            }
-        }
-    }
+	for (std::int32_t threadIndex = 0; threadIndex < 9; ++threadIndex)
+	{
+		if (threadHandle[threadIndex] && threadId[threadIndex] && threadId[threadIndex] != currentThreadId)
+		{
+			SuspendThread(threadHandle[threadIndex]);
+		}
+	}
 }
 
 //DONE : Inlined

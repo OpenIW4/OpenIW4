@@ -37,7 +37,7 @@ long __stdcall InputLineWndProc(HWND hWnd, std::uint32_t msg, std::uint32_t wPar
 void Sys_Error(const char* error, ...);
 unsigned long Sys_SuspendOtherThreads();
 void Sys_SetErrorText(const char* text);
-void Sys_OutOfMemErrorInternal(const char* filename, int line);
+void Sys_OutOfMemErrorInternal(const char* filename, std::int32_t line);
 long Sys_InterlockedDecrement(volatile long* target);
 long Sys_InterlockedIncrement(volatile long* target);
 long Sys_InterlockedCompareExchange(volatile long* target, long exChange, long comperand);

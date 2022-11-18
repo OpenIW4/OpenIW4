@@ -37,7 +37,7 @@ char* SL_ConvertToString(uint32_t stringValue)
 //Moved from Memory.cpp
 const char* CopyString(const char* in)
 {
-    //CopyString takes 2 more functions, but they are never used for some reason
+    //CopyString takes 2 more arguments, but they are never used for some reason
     uint32_t stringValue = SL_GetString_(in, 0, 22);
     return SL_ConvertToString(stringValue);
 }

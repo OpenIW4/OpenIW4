@@ -552,9 +552,18 @@ void Sys_SetErrorText(const char* text)
 }
 
 //TODO : 0x4B2E60
-void Sys_OutOfMemErrorInternal(const char* filename, int line)
+void Sys_OutOfMemErrorInternal(const char* filename, std::int32_t line)
 {
-    memory::call<void(const char*, int)>(0x4B2E60)(filename, line);
+    //memory::call<void(const char*, int)>(0x4B2E60)(filename, line);
+
+    Sys_EnterCriticalSection(CRITSECT_FATAL_ERROR);
+    Com_Printf(16, "Out of memory: filename '%s', line '%d'\n", filename, line);
+
+    const char* title = Win_LocalizeRef("WIN_OUT_OF_MEM_TITLE");
+    const char* body = Win_LocalizeRef("WIN_OUT_OF_MEM_BODY");
+    MessageBoxA(GetActiveWindow(), body, title, 0x10);
+    memory::call<void()>(0x48A4E0)();
+    exit(-1);
 }
 
 //TODO : 0x45A190

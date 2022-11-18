@@ -945,7 +945,7 @@ parseInfo_t* Com_ParseExt(const char** data_p, std::int32_t allowLineBreaks)
     else
     {
         //this might be wrong
-        for (const char** punc = puncuation; *punc; ++punc)
+        for (const char** punc = punctuation; *punc; ++punc)
         {
             std::size_t l = strlen(*punc);
             for (j = 0; j < l && data[j] == (*punc)[j]; ++j)

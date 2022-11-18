@@ -11,7 +11,7 @@ static const dvar_t* sv_running = *reinterpret_cast<const dvar_t**>(0x1AD7934);
 static const dvar_t* sv_map = *reinterpret_cast<const dvar_t**>(0x2098DDC);
 static std::int32_t* com_errorPrintsCount = reinterpret_cast<std::int32_t*>(0x1AD7910);
 static std::int32_t com_fixedConsolePosition = *reinterpret_cast<std::int32_t*>(0x1AD8EC8);
-static const char** puncuation = reinterpret_cast<const char**>(0x79D208);
+static const char** punctuation = reinterpret_cast<const char**>(0x79D208);
 #pragma endregion Com Variables
 
 void Com_InitParse();

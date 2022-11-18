@@ -117,8 +117,9 @@ struct FastCriticalSection
     TempPriority tempPriority;
 };
 
-enum $5C7603243A829E5BC6BA7F928C72347C
+enum eThreadValue
 {
+	//this was an anonymous enum named $5C7603243A829E5BC6BA7F928C72347C
     THREAD_VALUE_PROF_STACK = 0x0,
     THREAD_VALUE_VA = 0x1,
     THREAD_VALUE_COM_ERROR = 0x2,

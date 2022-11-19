@@ -112,15 +112,15 @@ void Conbuf_AppendText(const char* pMsg)
 	
 	if (*(std::uint32_t*)0x64A38B8 <= 0x4000)
 	{
-		SendMessageA(*(HWND*)0x64A328C /*s_wcd.hwndBuffer*/, 0xB1, 0xFFFF, 0xFFFF);
+		SendMessageA(s_wcd.hwndBuffer, 0xB1, 0xFFFF, 0xFFFF);
 	}
 	else
 	{
-		SendMessageA(*(HWND*)0x64A328C, 0xB1, 0, -1);
+		SendMessageA(s_wcd.hwndBuffer, 0xB1, 0, -1);
 		*(std::uint32_t*)0x64A38B8 = v2;
 	}
 
-	SendMessageA(*(HWND*)0x64A328C, 0xB6, 0, 0xFFFF);
-	SendMessageA(*(HWND*)0x64A328C, 0xB7, 0, 0);
-	SendMessageA(*(HWND*)0x64A328C, 0xC2, 0, (long)target);
+	SendMessageA(s_wcd.hwndBuffer, 0xB6, 0, 0xFFFF);
+	SendMessageA(s_wcd.hwndBuffer, 0xB7, 0, 0);
+	SendMessageA(s_wcd.hwndBuffer, 0xC2, 0, (long)target);
 }

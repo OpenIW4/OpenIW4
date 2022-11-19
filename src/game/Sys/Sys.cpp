@@ -468,13 +468,13 @@ std::int32_t Sys_GetCPUCount()
 //DONE : 0x4CA4A0
 bool Sys_IsDatabaseReady()
 {
-    return WaitForSingleObject(databaseCompletedEvent, 0) == 0;
+    return WaitForSingleObject(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/, 0) == 0;
 }
 
 //DONE : 0x00441280
 bool Sys_IsDatabaseReady2()
 {
-    return WaitForSingleObject(databaseCompletedEvent2, 0) == 0;
+    return WaitForSingleObject(*(HANDLE*)(0x01CDE858)/*databaseCompletedEvent2*/, 0) == 0;
 }
 
 //DONE : 0x004F5250
@@ -494,7 +494,7 @@ void Sys_DatabaseCompleted()
 	{
 		WaitForSingleObject(*(HANDLE*)0x1CDE85C, INFINITE);
 	}
-	SetEvent(databaseCompletedEvent);
+	SetEvent(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/);
 }
 
 //TODO : 0x43D570

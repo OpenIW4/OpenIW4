@@ -15,8 +15,6 @@ static HANDLE hEvent = *reinterpret_cast<HANDLE*>(0x1CDE7EC);
 static HANDLE noThreadOwnershipEvent = *reinterpret_cast<HANDLE*>(0x1CDE704);
 static void* backendEvent = *reinterpret_cast<void**>(0x1CDE730); //backendEvent[2] (was just a HANDLE in IDA)
 static HANDLE dword_1CDE850 = *reinterpret_cast<HANDLE*>(0x1CDE850);
-static HANDLE databaseCompletedEvent = *reinterpret_cast<HANDLE*>(0x1CDE7F8);
-static HANDLE databaseCompletedEvent2 = *reinterpret_cast<HANDLE*>(0x01CDE858);
 
 static HANDLE* threadHandle = *reinterpret_cast<HANDLE**>(0x1CDE828); //9 elements
 static std::int32_t* threadId = *reinterpret_cast<std::int32_t**>(0x1CDE7FC); //9 elements

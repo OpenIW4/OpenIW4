@@ -12,14 +12,15 @@
 void Sys_ShowConsole()
 {
 	HMODULE handle;
-	if (!*(HWND*)0x064A3288)
+	if (!s_wcd->hWnd)
 	{
 		handle = GetModuleHandleA(0);
 		Sys_CreateConsole(handle);
 	}
 
-	ShowWindow(*(HWND*)0x064A3288 /*s_wcd.hWnd*/, 1);
-	SendMessageA(*(HWND*)0x0064A328C /*s_wcd.hwndBuffer*/, 0x00B6, 0, 0xFFFF);
+	ShowWindow(s_wcd->hWnd, 1);
+	SendMessageA(s_wcd->hwndBuffer, 0x00B6, 0, 0xFFFF);
+
 }
 
 //DONE : 0x004288A0
@@ -468,13 +469,13 @@ std::int32_t Sys_GetCPUCount()
 //DONE : 0x4CA4A0
 bool Sys_IsDatabaseReady()
 {
-    return WaitForSingleObject(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/, 0) == 0;
+    return WaitForSingleObject(*databaseCompletedEvent, 0) == 0;
 }
 
 //DONE : 0x00441280
 bool Sys_IsDatabaseReady2()
 {
-    return WaitForSingleObject(*(HANDLE*)(0x01CDE858)/*databaseCompletedEvent2*/, 0) == 0;
+    return WaitForSingleObject(*databaseCompletedEvent2, 0) == 0;
 }
 
 //DONE : 0x004F5250

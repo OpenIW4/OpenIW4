@@ -19,7 +19,9 @@ static HANDLE dword_1CDE850 = *reinterpret_cast<HANDLE*>(0x1CDE850);
 static HANDLE* threadHandle = *reinterpret_cast<HANDLE**>(0x1CDE828); //9 elements
 static std::int32_t* threadId = *reinterpret_cast<std::int32_t**>(0x1CDE7FC); //9 elements
 
-static WinConData s_wcd = *reinterpret_cast<WinConData*>(0x064A3288);
+static WinConData* s_wcd = reinterpret_cast<WinConData*>(0x064A3288);
+static HANDLE* databaseCompletedEvent = reinterpret_cast<HANDLE*>(0x1CDE7F8);
+static HANDLE* databaseCompletedEvent2 = reinterpret_cast<HANDLE*>(0x01CDE858);
 #pragma endregion
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);

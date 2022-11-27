@@ -5,7 +5,7 @@
 
 #pragma region Com Variables
 static ParseThreadInfo* g_parse = reinterpret_cast<ParseThreadInfo*>(0x6466628); //4 elements
-static const char* String = *reinterpret_cast<const char**>(0x6FAC0D); //used a lot, not sure as to what it is
+static const char* toastPopupTitle = *reinterpret_cast<const char**>(0x6FAC0D); //used a lot, not sure as to what it is
 
 static const dvar_t* sv_running = *reinterpret_cast<const dvar_t**>(0x1AD7934);
 static const dvar_t* sv_map = *reinterpret_cast<const dvar_t**>(0x2098DDC);
@@ -39,7 +39,7 @@ parseInfo_t* Com_ParseCSV(const char** data_p, std::int32_t allowLineBreaks);
 const char* SkipWhitespace(const char* data, std::int32_t* newLines); //IDA is weird with this one
 void Com_TouchMemory();
 bool Com_IsRunningMenuLevel();
-
+void Com_InitParseInfo(parseInfo_t* pi);
 
 int I_strlen(const char* s);
 char I_CleanChar(char c);

@@ -13,46 +13,25 @@
 //DONE : 0x004FF220
 void Com_InitParse()
 {
-    g_parse[0].parseInfo[0].lines = 1;
-    g_parse[0].parseInfo[0].ungetToken = 0;
-    g_parse[0].parseInfo[0].spaceDelimited = 1;
-    g_parse[0].parseInfo[0].keepStringQuotes = 0;
-    g_parse[0].parseInfo[0].csv = 0;
-    g_parse[0].parseInfo[0].negativeNumbers = 0;
-    g_parse[0].parseInfo[0].errorPrefix = String;
-    g_parse[0].parseInfo[0].warningPrefix = String;
-    g_parse[0].parseInfo[0].backup_lines = 0;
-    g_parse[0].parseInfo[0].backup_text = 0;
-    g_parse[1].parseInfo[0].lines = 1;
-    g_parse[1].parseInfo[0].ungetToken = 0;
-    g_parse[1].parseInfo[0].spaceDelimited = 1;
-    g_parse[1].parseInfo[0].keepStringQuotes = 0;
-    g_parse[1].parseInfo[0].csv = 0;
-    g_parse[1].parseInfo[0].negativeNumbers = 0;
-    g_parse[1].parseInfo[0].errorPrefix = String;
-    g_parse[1].parseInfo[0].warningPrefix = String;
-    g_parse[1].parseInfo[0].backup_lines = 0;
-    g_parse[1].parseInfo[0].backup_text = 0;
-    g_parse[2].parseInfo[0].lines = 1;
-    g_parse[2].parseInfo[0].ungetToken = 0;
-    g_parse[2].parseInfo[0].spaceDelimited = 1;
-    g_parse[2].parseInfo[0].keepStringQuotes = 0;
-    g_parse[2].parseInfo[0].csv = 0;
-    g_parse[2].parseInfo[0].negativeNumbers = 0;
-    g_parse[2].parseInfo[0].errorPrefix = String;
-    g_parse[2].parseInfo[0].warningPrefix = String;
-    g_parse[2].parseInfo[0].backup_lines = 0;
-    g_parse[2].parseInfo[0].backup_text = 0;
-    g_parse[3].parseInfo[0].lines = 1;
-    g_parse[3].parseInfo[0].ungetToken = 0;
-    g_parse[3].parseInfo[0].spaceDelimited = 1;
-    g_parse[3].parseInfo[0].keepStringQuotes = 0;
-    g_parse[3].parseInfo[0].csv = 0;
-    g_parse[3].parseInfo[0].negativeNumbers = 0;
-    g_parse[3].parseInfo[0].errorPrefix = String;
-    g_parse[3].parseInfo[0].warningPrefix = String;
-    g_parse[3].parseInfo[0].backup_lines = 0;
-    g_parse[3].parseInfo[0].backup_text = 0;
+	for (std::uint32_t i = 0; i < 4; ++i)
+	{
+		Com_InitParseInfo(g_parse[i].parseInfo);
+	}
+}
+
+//DONE : Inlined
+void Com_InitParseInfo(parseInfo_t* pi)
+{
+	pi->lines = 1;
+	pi->ungetToken = 0;
+	pi->spaceDelimited = 1;
+	pi->keepStringQuotes = 0;
+	pi->csv = 0;
+	pi->negativeNumbers = 0;
+	pi->errorPrefix = toastPopupTitle;
+	pi->warningPrefix = toastPopupTitle;
+	pi->backup_lines = 0;
+	pi->backup_text = 0;
 }
 
 //DONE : 0x004B7230

@@ -149,7 +149,7 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     if (Win_InitLocalization(0))
     {
 #ifdef MATCHING
-        if (!I_strnicmp(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (sub_64D200(), sub_411350()))
+        if (!I_strnicmp(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (Sys_CreateSemaphoreFile(), sub_411350()))
         {
 #endif
             if (!hPrevInstance)

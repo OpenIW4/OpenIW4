@@ -22,6 +22,8 @@ static std::int32_t* threadId = *reinterpret_cast<std::int32_t**>(0x1CDE7FC); //
 static WinConData* s_wcd = reinterpret_cast<WinConData*>(0x064A3288);
 static HANDLE* databaseCompletedEvent = reinterpret_cast<HANDLE*>(0x1CDE7F8);
 static HANDLE* databaseCompletedEvent2 = reinterpret_cast<HANDLE*>(0x01CDE858);
+
+static char* sys_processSemaphoreFile = *reinterpret_cast<char**>(0x649FF74);
 #pragma endregion
 void Sys_ShowConsole();
 void Sys_CreateConsole(HINSTANCE hInstance);
@@ -77,3 +79,4 @@ void Sys_DetectVideoCard(std::int32_t descLimit, char* description);
 void Sys_UnlockWrite(FastCriticalSection* critSect);
 void Sys_FrontEndSleep();
 void Sys_NotifyRenderer();
+std::int32_t Sys_CreateSemaphoreFile(); //guessed name

@@ -495,7 +495,7 @@ void Sys_DatabaseCompleted()
 	{
 		WaitForSingleObject(*(HANDLE*)0x1CDE85C, INFINITE);
 	}
-	SetEvent(*(HANDLE*)(0x01CDE7F8)/*databaseCompletedEvent*/);
+	SetEvent(*databaseCompletedEvent);
 }
 
 //TODO : 0x43D570
@@ -880,4 +880,31 @@ void Sys_FrontEndSleep()
 void Sys_NotifyRenderer()
 {
     SetEvent(backendEvent); //this doesnt seem right
+}
+
+//DONE : 0x64D200
+std::int32_t Sys_CreateSemaphoreFile()
+{
+	//function name is guessed
+	char fileName[260];
+	char* v0;
+
+	GetModuleFileNameA(nullptr, fileName, 0x104);
+	v0 = fileName;
+	fileName[259] = 0;
+
+	for (char* i = fileName; *i; ++i)
+	{
+		char v2 = *i;
+		if (*i == 92 || v2 == 58)
+		{
+			v0 = i + 1;
+		}
+		else if (v2 == 46)
+		{
+			*i = 0;
+		}
+	}
+
+	return sprintf(sys_processSemaphoreFile, "__%s", v0);
 }

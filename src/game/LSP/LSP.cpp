@@ -108,7 +108,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
 
         if (!logMsgInittialized)
         {
-            Sys_EnterCriticalSection(CRITSECT_LIVE);
+            Sys_EnterCriticalSection(CRITSECT_LSP);
             if (!logMsgInittialized)
             {
                 logMsgInittialized = true;
@@ -136,7 +136,7 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
                     );
                 }
             }
-            Sys_LeaveCriticalSection(CRITSECT_LIVE);
+            Sys_LeaveCriticalSection(CRITSECT_LSP);
         }
 
         if (!*(std::int32_t*)0x66C7120/*s_firstLogWriteTime*/)
@@ -144,11 +144,11 @@ void LSP_LogStringEvenIfControllerIsInactive(const char* string)
             *(std::int32_t*)0x66C7120 = Sys_Milliseconds();
         }
 
-        Sys_EnterCriticalSection(CRITSECT_LIVE);
+        Sys_EnterCriticalSection(CRITSECT_LSP);
         MSG_WriteByte((msg_t*)0x66C7160, 2);
         MSG_WriteLong((msg_t*)0x66C7160, Sys_Milliseconds());
         MSG_WriteString((msg_t*)0x66C7160, i);
-        Sys_LeaveCriticalSection(CRITSECT_LIVE);
+        Sys_LeaveCriticalSection(CRITSECT_LSP);
     }
 }
 

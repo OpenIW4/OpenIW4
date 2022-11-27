@@ -223,7 +223,7 @@ void LSP_WritePacketHeader(std::int32_t localControllerIndex, msg_t* msg, std::i
 
     if (sv_map)
     {
-        map = (char*)sv_map->current.integer;
+        map = sv_map->current.string;
     }
     else
     {

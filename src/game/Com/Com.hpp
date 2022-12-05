@@ -39,7 +39,6 @@ parseInfo_t* Com_ParseCSV(const char** data_p, std::int32_t allowLineBreaks);
 const char* SkipWhitespace(const char* data, std::int32_t* newLines); //IDA is weird with this one
 void Com_TouchMemory();
 bool Com_IsRunningMenuLevel();
-void Com_InitParseInfo(parseInfo_t* pi);
 
 int I_strlen(const char* s);
 char I_CleanChar(char c);

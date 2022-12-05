@@ -19,21 +19,6 @@ void Com_InitParse()
 	}
 }
 
-//DONE : Inlined
-void Com_InitParseInfo(parseInfo_t* pi)
-{
-	pi->lines = 1;
-	pi->ungetToken = 0;
-	pi->spaceDelimited = 1;
-	pi->keepStringQuotes = 0;
-	pi->csv = 0;
-	pi->negativeNumbers = 0;
-	pi->errorPrefix = toastPopupTitle;
-	pi->warningPrefix = toastPopupTitle;
-	pi->backup_lines = 0;
-	pi->backup_text = 0;
-}
-
 //DONE : 0x004B7230
 void Com_Frame()
 {

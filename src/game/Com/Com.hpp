@@ -17,7 +17,7 @@ static const char** punctuation = reinterpret_cast<const char**>(0x79D208);
 void Com_InitParse();
 void Com_Frame();
 void Com_Init(char* src);
-void Com_Init_Cont();
+void Com_Init_Try_Block_Function();
 void Com_Frame_Try_Block_Function();
 void Com_EnterError();
 int Com_ErrorCleanup();

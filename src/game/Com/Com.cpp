@@ -76,13 +76,13 @@ void Com_Init(char* src)
         v2 = va("Error during initialization:\n%s\n", (char*)(0x01AD7EC0)/*com_errorMessage*/);
         Sys_Error(v2);
     }
-    Com_Init_Cont();
+	Com_Init_Try_Block_Function();
     Com_AddStartupCommands();
     Com_StartHunkUsers();
 }
 
 //THUNK : 0x0060BAE0
-void Com_Init_Cont()
+void Com_Init_Try_Block_Function()
 {
     memory::call<void()>(0x0060BAE0)();
 }

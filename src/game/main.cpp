@@ -134,6 +134,9 @@ void patches()
     ReallocateAssetPool(ASSET_TYPE_WEAPON, 2400);
     static const dvar_t* cg_fov = *reinterpret_cast<dvar_t**>(0x9FBE24);
     cg_fov = Dvar_RegisterFloat("cg_fov", 90.0f, 0.0f, FLT_MAX, 68, "The field of view angle in degrees");
+
+	//ignore IWI version check
+	memory::set<std::uint8_t>(0x53A446, 0xEB);
 }
 
 //DONE : 0x004513D0

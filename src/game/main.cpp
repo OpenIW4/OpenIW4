@@ -9,6 +9,7 @@
 #include "Cbuf/Cbuf.hpp"
 #include "DB/DB.hpp"
 #include "LSP/LSP.hpp"
+#include "Images/Images.hpp"
 
 #include "MSG/MSG.hpp"
 #include "Huffman/Huffman.hpp"
@@ -214,6 +215,7 @@ void replace_funcs()
     memory::replace(0x4305E0, Sys_ShowConsole);
     memory::replace(0x43D570, Sys_Error);
     memory::replace(0x4CF7F0, DB_DirtyDiscError);
+	//memory::replace(0x53A430, Image_VerifyHeader);
 }
 
 std::int32_t __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, std::int32_t nShowCmd)

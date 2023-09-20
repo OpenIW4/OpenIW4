@@ -643,3 +643,14 @@ struct WinConData
 	int windowHeight;
 	int(__stdcall* SysInputLineWndProc)(HWND__*, unsigned int, unsigned int, int);
 };
+
+struct GfxImageFileHeader
+{
+	char tag[3];
+	char version;
+	std::uint32_t flags;
+	char format;
+	char unused;
+	std::uint16_t dimensions[3];
+	std::uint32_t fileSizeForPicmip[4];
+};

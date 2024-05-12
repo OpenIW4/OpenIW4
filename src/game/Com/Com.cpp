@@ -977,3 +977,9 @@ bool Com_IsRunningMenuLevel()
 {
     return sv_running->current.enabled && I_strnicmp(sv_map->current.string, "menu_", 5) == 0;
 }
+
+//Done : 0x47F2D0
+void Com_ForceSafeMode()
+{
+	com_safemode = 1;
+}

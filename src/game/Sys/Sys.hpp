@@ -79,4 +79,6 @@ void Sys_DetectVideoCard(std::int32_t descLimit, char* description);
 void Sys_UnlockWrite(FastCriticalSection* critSect);
 void Sys_FrontEndSleep();
 void Sys_NotifyRenderer();
-std::int32_t Sys_CreateSemaphoreFile(); //guessed name
+int Sys_GetSemaphoreFileName();
+int Sys_IsGameProcess(int id);
+int Sys_CheckCrashOrRerun();

@@ -883,28 +883,93 @@ void Sys_NotifyRenderer()
 }
 
 //DONE : 0x64D200
-std::int32_t Sys_CreateSemaphoreFile()
+int Sys_GetSemaphoreFileName()
 {
-	//function name is guessed
-	char fileName[260];
-	char* v0;
+	char* i;
+	const char* moduleName;
+	char modulePath[260];
 
-	GetModuleFileNameA(nullptr, fileName, 0x104);
-	v0 = fileName;
-	fileName[259] = 0;
-
-	for (char* i = fileName; *i; ++i)
+	GetModuleFileNameA(0, modulePath, 0x104u);
+	modulePath[259] = 0;
+	moduleName = modulePath;
+	for (i = modulePath; *i; ++i)
 	{
-		char v2 = *i;
-		if (*i == 92 || v2 == 58)
+		if (*i == 92 || *i == 58)
 		{
-			v0 = i + 1;
+			moduleName = i + 1;
 		}
-		else if (v2 == 46)
+		else if (*i == 46)
 		{
 			*i = 0;
 		}
 	}
+	return sprintf(sys_processSemaphoreFile, "__%s", moduleName);
+}
 
-	return sprintf(sys_processSemaphoreFile, "__%s", v0);
+//TODO : 0x64D100
+int Sys_IsGameProcess(int id)
+{
+	return NULL;
+}
+
+//DONE : 0x411350
+int Sys_CheckCrashOrRerun()
+{
+	HANDLE File;
+	HWND ActiveWindow;
+	const char* Body;
+	const char* Title;
+	const char* DiskFullBody;
+	const char* DiskFullTitle;
+	DWORD NumberOfBytesRead;
+	DWORD CurrentProcessId;
+	int Answer;
+	int Buffer;
+	unsigned int id;
+
+	if (!sys_processSemaphoreFile[0])
+		return 1;
+	CurrentProcessId = GetCurrentProcessId();
+	File = CreateFileA(sys_processSemaphoreFile, 0x80000000, 0, 0, 3u, 2u, 0);
+	if (File != (HANDLE)-1)
+	{
+		if (ReadFile(File, &Buffer, 4u, &NumberOfBytesRead, 0) && NumberOfBytesRead == 4)
+		{
+			CloseHandle(File);
+			if (CurrentProcessId != Buffer && Sys_IsGameProcess(id))
+				return 0;
+			Title = Win_LocalizeRef("WIN_IMPROPER_QUIT_TITLE");
+			Body = Win_LocalizeRef("WIN_IMPROPER_QUIT_BODY");
+			ActiveWindow = GetActiveWindow();
+			Answer = MessageBoxA(ActiveWindow, Body, Title, 0x33u);
+			if (Answer == 6)
+			{
+				Com_ForceSafeMode();
+			}
+			else if (Answer == 2)
+			{
+				return 0;
+			}
+			else
+			{
+				CloseHandle(File);
+			}
+		}
+		File = CreateFileA(sys_processSemaphoreFile, 0x40000000u, 0, 0, 2u, 2u, 0);
+		if (File == (void*)-1)
+			goto LABEL_18; // Should we be doing this?
+		if (!WriteFile(File, &CurrentProcessId, 4u, &NumberOfBytesRead, 0) || NumberOfBytesRead != 4)
+		{
+			CloseHandle(File);
+LABEL_18:
+			Sys_EnterCriticalSection(CRITSECT_FATAL_ERROR);
+			DiskFullTitle = Win_LocalizeRef("WIN_DISK_FULL_TITLE");
+			DiskFullBody = Win_LocalizeRef("WIN_DISK_FULL_BODY");
+			ActiveWindow = GetActiveWindow();
+			MessageBoxA(ActiveWindow, DiskFullBody, DiskFullTitle, 0x10u);
+			memory::call<void()>(0x48A4E0)(); // BG_EvalVehicleName - This should be the correct name
+		}
+	}
+	CloseHandle(File);
+	return 1;
 }

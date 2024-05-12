@@ -152,10 +152,8 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     Sys_InitMainThread();
     if (Win_InitLocalization(0))
     {
-#ifdef MATCHING
-        if (!I_strnicmp(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (Sys_CreateSemaphoreFile(), sub_411350()))
+        if (!I_strnicmp(lpCmdLine, "allowdupe", 9) && lpCmdLine[9] <= 32 || (Sys_GetSemaphoreFileName(), Sys_CheckCrashOrRerun()))
         {
-#endif
             if (!hPrevInstance)
             {
                 Com_InitParse();
@@ -191,9 +189,7 @@ std::int32_t main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                     Com_Frame();
                 }
             }
-#ifdef MATCHING
         }
-#endif
         Win_ShutdownLocalization();
         return 0;
     }

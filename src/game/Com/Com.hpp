@@ -12,6 +12,7 @@ static const dvar_t* sv_map = *reinterpret_cast<const dvar_t**>(0x2098DDC);
 static std::int32_t* com_errorPrintsCount = reinterpret_cast<std::int32_t*>(0x1AD7910);
 static std::int32_t com_fixedConsolePosition = *reinterpret_cast<std::int32_t*>(0x1AD8EC8);
 static const char** punctuation = reinterpret_cast<const char**>(0x79D208);
+static int com_safemode = 0x1AD8F8C; //Is this a good way to do it?
 #pragma endregion Com Variables
 
 void Com_InitParse();
@@ -39,6 +40,7 @@ parseInfo_t* Com_ParseCSV(const char** data_p, std::int32_t allowLineBreaks);
 const char* SkipWhitespace(const char* data, std::int32_t* newLines); //IDA is weird with this one
 void Com_TouchMemory();
 bool Com_IsRunningMenuLevel();
+void Com_ForceSafeMode();
 
 int I_strlen(const char* s);
 char I_CleanChar(char c);

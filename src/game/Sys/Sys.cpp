@@ -967,7 +967,7 @@ LABEL_18:
 			DiskFullBody = Win_LocalizeRef("WIN_DISK_FULL_BODY");
 			ActiveWindow = GetActiveWindow();
 			MessageBoxA(ActiveWindow, DiskFullBody, DiskFullTitle, 0x10u);
-			memory::call<void()>(0x48A4E0)(); // BG_EvalVehicleName - This should be the correct name
+			memory::call<void()>(0x48A4E0)();
 		}
 	}
 	CloseHandle(File);
